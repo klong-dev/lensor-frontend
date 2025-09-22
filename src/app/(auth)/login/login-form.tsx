@@ -27,7 +27,7 @@ export function LoginForm(props: PaperProps) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [type, toggle] = useToggle(['login', 'register']);
+    const [type, toggle] = useToggle(['login', 'register'])
     const form = useForm({
         initialValues: {
             email: '',
@@ -63,7 +63,7 @@ export function LoginForm(props: PaperProps) {
                 router.push('/')
             }
         } catch (err) {
-            setError('Adu lỗi mà sao ko log được ta')
+            setError('Đã xảy ra lỗi khi đăng nhập!')
             notifications.show({
                 title: 'Error',
                 message: error,

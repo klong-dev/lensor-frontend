@@ -32,23 +32,23 @@ export const authHelpers = {
         return { data, error }
     },
 
-    // Đăng xuất
+    
     signOut: async () => {
         const { error } = await supabase.auth.signOut()
         return { error }
     },
 
-    // Lấy user hiện tại
+    
     getCurrentUser: () => {
         return supabase.auth.getUser()
     },
 
-    // Theo dõi thay đổi auth state
+    
     onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
         return supabase.auth.onAuthStateChange(callback)
     },
 
-    // Reset password
+    
     resetPassword: async (email: string) => {
         const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: `${window.location.origin}/reset-password`,
@@ -56,5 +56,5 @@ export const authHelpers = {
         return { data, error }
     }
 
-    // KHÔNG CHỈNH BẬY, ĐỂ YÊN
+    
 }
