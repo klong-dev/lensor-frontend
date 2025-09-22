@@ -4,5 +4,11 @@
   },
   "LoginPage": {
      "button": "Login"
+  },
+  "MainHeader": {
+    "feature": "Feature",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "login": "Login"
   }
 }

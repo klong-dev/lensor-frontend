@@ -1,16 +1,25 @@
 @import "tailwindcss";
 
-:root {
+@utility container {
+  margin-inline: auto;
+}
 
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 480px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+}
+
+:root {
 }
 
 @theme inline {
-
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-
   }
 }
 
