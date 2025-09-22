@@ -1,5 +1,4 @@
-'use client'
-
+import MainFooter from "@/components/layout/footer/main-footer"
 import MainHeader from "@/components/layout/header/main-header"
 import { Button } from "@mantine/core"
 import { useTranslations } from "next-intl"
@@ -16,14 +15,13 @@ export default function Home() {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
-                  Community for,{" "}
+                  Community for {" "}
                   <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
                     Photographer.
                   </span>
                 </h1>
                 <p className="text-xl text-gray-300 leading-relaxed max-w-2xl">
-                  The ultimate platform for photographer to create stunning portfolios, build a personal brand, and sell
-                  their work.
+                  The ultimate platform for photographer to create stunning portfolios, build a personal brand, and sell their work.
                 </p>
               </div>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -42,33 +40,22 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-            <div className="relative">
-              <div className="relative w-full h-0 pb-[65%] rounded-lg overflow-hidden shadow-2xl">
-                <video
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video-vzjr7k51nyB62iitsJPVrl9a6I8NKm.mp4"
-                  className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  disablePictureInPicture
-                  controlsList="nodownload nofullscreen noremoteplayback"
-                />
-
-                <div className="absolute inset-0 rounded-lg pointer-events-none">
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-900/60 via-transparent to-gray-900/60 rounded-lg"></div>
-                  <div className="absolute inset-0 bg-gradient-to-b from-gray-900/60 via-transparent to-gray-900/60 rounded-lg"></div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-gray-800/40 via-transparent to-gray-800/40 rounded-lg"></div>
-                </div>
-
-                <div className="absolute inset-0 rounded-lg shadow-inner shadow-gray-900/50"></div>
-              </div>
-
-              <div className="absolute -inset-2 bg-gradient-to-br from-purple-500/10 to-blue-500/10 rounded-3xl blur-xl -z-10"></div>
+            <div className="relative w-full h-0 pb-[65%] rounded-lg overflow-hidden shadow-2xl">
+              <video
+                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video-vzjr7k51nyB62iitsJPVrl9a6I8NKm.mp4"
+                className="absolute top-0 left-0 w-full h-full object-cover rounded-lg"
+                autoPlay
+                muted
+                loop
+                playsInline
+                disablePictureInPicture
+                controlsList="nodownload nofullscreen noremoteplayback"
+              />
             </div>
           </div>
         </div>
       </section>
+      <MainFooter />
     </>
   )
 }

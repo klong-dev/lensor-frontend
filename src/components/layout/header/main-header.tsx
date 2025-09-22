@@ -1,4 +1,4 @@
-'usee client'
+'use client'
 
 import { Burger, Button, Drawer, NavLink } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
@@ -27,7 +27,7 @@ export default function MainHeader({ isLogin }: MainHeaderProps) {
           {navLinkItems.map((item, index) =>
             <Link href={item.href} key={index}>{item.title}</Link>)
           }
-          {!isLogin && <Button variant='default'>{t('login')}</Button>}
+          {!isLogin && <Button component={Link} href='/login' variant='default'>{t('login')}</Button>}
         </div>
 
         <Burger className='md:hidden' opened={opened} onClick={open} />
