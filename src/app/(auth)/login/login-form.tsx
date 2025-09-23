@@ -33,12 +33,13 @@ export function LoginForm(props: PaperProps) {
             email: '',
             name: '',
             password: '',
-            terms: true,
+            term: false,
         },
 
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
             password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+            term: (val) => (type === 'register' && !val ? 'You must accept terms and conditions' : null)
         },
     });
 
@@ -75,10 +76,13 @@ export function LoginForm(props: PaperProps) {
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        if(!form.validate()) return
+
         setLoading(true)
         setError('')
         const email = form.values.email.toLowerCase().trim();
-    
+
         try {
             const { data, error: signInError } = await authHelpers.signUpWithEmail(
                 form.values.name,
@@ -249,10 +253,11 @@ export function LoginForm(props: PaperProps) {
                     {type === 'register' && (
                         <Checkbox
                             label="I accept terms and conditions"
-                            checked={form.values.terms}
-                            onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+                            checked={form.values.term}
+                            onChange={(event) => form.setFieldValue('term', event.currentTarget.checked)}
                             color="violet"
                             size="sm"
+                            error={form.errors.term}
                             styles={{
                                 label: {
                                     color: '#6B7280'
@@ -283,7 +288,7 @@ export function LoginForm(props: PaperProps) {
                         disabled={loading}
 
                         style={{
-                            background: loading ? '#9CA3AF' : 'linear-gradient(135deg, #6441A5 70%, #2a0845 100%)'
+                            background: loading ? '#9CA3AF' : 'linear-gradient(135deg, #6441A5 100%, #2a0845 100%)'
                         }}
                     >
                         {loading && type === 'login' ? 'Signing in...' : loading && type === 'register' ? 'Creating account...' : upperFirst(type)}

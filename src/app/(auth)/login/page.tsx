@@ -21,9 +21,9 @@ export default function Page() {
           <LoginForm />
         </div>
 
-        <div className="w-full hidden md:block md:w-7/12 h-full bg-[url('/camera1.jpg')] bg-cover bg-center rounded-4xl p-10">
-          <h2 className='uppercase absolute bottom-30 font-bold opacity-20 text-5xl md:text-[58px] select-none text-white tracking-wide'>
-            Make your <br />perfect portfolio
+        <div className="w-full hidden md:w-7/12 h-full bg-[url('/camera1.jpg')] bg-cover bg-center rounded-4xl p-10 relative md:flex items-end">
+          <h2 className='uppercase font-bold opacity-30 text-5xl md:text-[53px] select-none text-white tracking-wide pb-4'>
+            Where vision <br />meets opportunity
           </h2>
         </div>
       </div>

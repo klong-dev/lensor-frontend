@@ -15,7 +15,6 @@ export const authHelpers = {
     },
 
     signUpWithEmail: async (full_name: string, email: string, password: string) => {
-        console.log("Email supa: ", email)
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
