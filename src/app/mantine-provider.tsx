@@ -4,7 +4,7 @@ import { createTheme, MantineProvider } from '@mantine/core'
 import React from 'react'
 
 const theme = createTheme({
-     fontFamily: "Poppins, sans-serif"
+     fontFamily: "inherit"
 })
 
 export default function MantineProviderWrapper({ children }: { children: React.ReactNode }) {
