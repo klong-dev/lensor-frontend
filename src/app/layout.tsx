@@ -4,13 +4,18 @@ import { Notifications } from '@mantine/notifications'
 import '@mantine/notifications/styles.css'
 import type { Metadata } from "next"
 import { NextIntlClientProvider } from 'next-intl'
-import { Poppins } from "next/font/google"
+import { Poppins, Nunito } from "next/font/google"
 import "./globals.css"
 import MantineProviderWrapper from './mantine-provider'
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"]
+})
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"]
 })
 
 export const metadata: Metadata = {
@@ -24,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={poppins.className} {...mantineHtmlProps}>
+    <html lang="en" className={nunito.className} {...mantineHtmlProps}>
       <head>
         <ColorSchemeScript />
       </head>
