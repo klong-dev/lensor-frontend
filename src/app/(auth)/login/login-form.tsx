@@ -33,12 +33,13 @@ export function LoginForm(props: PaperProps) {
             email: '',
             name: '',
             password: '',
-            terms: true,
+            term: false,
         },
 
         validate: {
             email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
             password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+            term: (val) => (type === 'register' && !val ? 'You must accept terms and conditions' : null)
         },
     });
 
@@ -75,17 +76,19 @@ export function LoginForm(props: PaperProps) {
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        if(!form.validate()) return
+
         setLoading(true)
         setError('')
         const email = form.values.email.toLowerCase().trim();
 
         try {
             const { data, error: signInError } = await authHelpers.signUpWithEmail(
+                form.values.name,
                 email,
                 form.values.password
             )
-
-
             if (signInError) {
                 if (signInError.message.includes("invalid")) {
                     setError("Email không hợp lệ hoặc đã tồn tại. Vui lòng dùng email khác.");
@@ -94,6 +97,7 @@ export function LoginForm(props: PaperProps) {
                         message: error,
                     })
                 } else if (data.user) {
+                    console.log(data.user)
                     router.push('/')
                 }
             }
@@ -170,9 +174,9 @@ export function LoginForm(props: PaperProps) {
             <Divider
                 label="Or continue with email"
                 labelPosition="center"
-                my="xl"
+                my="md"
                 color="gray.3"
-                size="sm"
+                size="xs"
             />
 
             <form
@@ -249,10 +253,11 @@ export function LoginForm(props: PaperProps) {
                     {type === 'register' && (
                         <Checkbox
                             label="I accept terms and conditions"
-                            checked={form.values.terms}
-                            onChange={(event) => form.setFieldValue('terms', event.currentTarget.checked)}
+                            checked={form.values.term}
+                            onChange={(event) => form.setFieldValue('term', event.currentTarget.checked)}
                             color="violet"
                             size="sm"
+                            error={form.errors.term}
                             styles={{
                                 label: {
                                     color: '#6B7280'
@@ -262,7 +267,7 @@ export function LoginForm(props: PaperProps) {
                     )}
                 </Stack>
 
-                <Group justify="space-between" mt="xl" className="pt-4">
+                <Group justify="space-between" mt="md" className="pt-4">
                     <Anchor
                         component="button"
                         type="button"
@@ -272,8 +277,8 @@ export function LoginForm(props: PaperProps) {
                         className="hover:no-underline"
                     >
                         {type === 'register'
-                            ? <p className="text-gray-600">Already have an account? <span className='text-violet-600 font-medium hover:text-violet-700'>Login</span></p>
-                            : <p className="text-gray-600">Don&apos;t have an account? <span className='text-violet-600 font-medium hover:text-violet-700'>Register</span></p>
+                            ? <p className="text-gray-600">Already have an account? <span className='text-[#6441A5] font-medium hover:text-violet-700'>Login</span></p>
+                            : <p className="text-gray-600">Don&apos;t have an account? <span className='text-[#6441A5] font-medium hover:text-violet-700'>Register</span></p>
                         }
                     </Anchor>
                     <Button
@@ -281,9 +286,9 @@ export function LoginForm(props: PaperProps) {
                         radius="md"
                         size="md"
                         disabled={loading}
-                        className="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 border-0 transition-all duration-300 hover:shadow-lg px-8"
+
                         style={{
-                            background: loading ? '#9CA3AF' : 'linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%)'
+                            background: loading ? '#9CA3AF' : 'linear-gradient(135deg, #6441A5 100%, #2a0845 100%)'
                         }}
                     >
                         {loading && type === 'login' ? 'Signing in...' : loading && type === 'register' ? 'Creating account...' : upperFirst(type)}
