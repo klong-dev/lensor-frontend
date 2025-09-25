@@ -14,12 +14,14 @@ export default function NavbarLink({ label, icon, href, isActive, onClick }: Nav
           <Link
                href={href}
                className={
-                    `flex items-center gap-3 py-3 pl-5 hover:opacity-80 hover:bg-gradient-to-r from-neutral-700 to-40% duration-200 ${isActive && 'bg-gradient-to-r from-neutral-700 to-40% duration-200 font-bold'}`
+                    `flex items-center gap-3 py-3 pl-8 opacity-70 hover:opacity-90 duration-200 transition-all
+                    ${isActive && 'bg-gradient-to-r from-neutral-700 to-40% opacity-100'}
+                    `
                }
                onClick={onClick}
           >
                {icon}
-               <span className='font-light'>{label}</span>
+               <span className=''>{label}</span>
           </Link>
      )
 }
