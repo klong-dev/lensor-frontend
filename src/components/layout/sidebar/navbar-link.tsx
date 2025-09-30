@@ -19,8 +19,8 @@ export default function NavbarLink({ label, icon, href, isActive, onClick }: Nav
           <Link
                href={href}
                className={
-                    `flex items-center gap-3 py-3 px-8 opacity-70 hover:opacity-90 duration-200 transition-all
-                    ${pathname.split('/')[1] === href.split('/')[1] && 'bg-gradient-to-r from-neutral-700 to-40% opacity-100'}
+                    `flex items-center gap-3 py-2 px-6 opacity-70 hover:opacity-90 duration-200 transition-all rounded-lg
+                    ${pathname.split('/')[1] === href.split('/')[1] && 'bg-[var(--color-box-inside)] to-40% opacity-100'}
                     `
                }
                onClick={onClick}

@@ -1,5 +1,6 @@
 import { PostProps } from '@/types'
 import { Avatar, Button, Image, UnstyledButton } from '@mantine/core'
+import Link from 'next/link'
 import { BsThreeDots } from 'react-icons/bs'
 import { FaRegComment } from 'react-icons/fa'
 import { LuDot } from 'react-icons/lu'
@@ -10,7 +11,7 @@ export default function Post({ userName, time, title, content, imageUrl }: PostP
           <div className='p-5'>
                <div className='flex items-center justify-between'>
                     <div className='flex items-center'>
-                         <Avatar src='/images/avatar_test.jpg' />
+                         <Link href={`/profile/${userName}`}><Avatar src='/images/avatar_test.jpg' /></Link>
                          <span className='font-bold ml-2 text-[var(--color-text-muted)]'>{userName}</span>
                          <LuDot />
                          <span className='text-[var(--color-text-subtle)]'>{time}</span>
@@ -35,7 +36,7 @@ export default function Post({ userName, time, title, content, imageUrl }: PostP
                </div>
                <div className='flex gap-3 mt-4'>
                     <Button variant='default' size='compact-md' radius='lg'>Vote</Button>
-                    <Button variant='default' size='compact-md' radius='lg' leftSection={<FaRegComment />}>36</Button>
+                    <Link href='/forum/36'><Button variant='default' size='compact-md' radius='lg' leftSection={<FaRegComment />}>36</Button></Link>
                     <Button variant='default' size='compact-md' radius='lg' leftSection={<PiShareFat />}>Share</Button>
                </div>
           </div>
