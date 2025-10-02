@@ -8,6 +8,7 @@ import { FaStar } from "react-icons/fa"
 export default function MarketplacePage() {
     const [failedImages, setFailedImages] = useState<Set<number>>(new Set())
     const [failedAvatars, setFailedAvatars] = useState<Set<number>>(new Set())
+    const [searchQuery, setSearchQuery] = useState('')
 
     const marketplaceItems = [
         {
@@ -122,12 +123,21 @@ export default function MarketplacePage() {
         }
     ];
 
-    const handleSearch = () => {
-        //TODO
+    const filteredItems = marketplaceItems.filter(item => {
+        const query = searchQuery.toLowerCase()
+        return (
+            item.title.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query) ||
+            item.userName.toLowerCase().includes(query)
+        )
+    })
+
+    const handleSearch = (query: string) => {
+        setSearchQuery(query)
     }
 
-    const handleSubmit = () => {
-        //TODO
+    const handleSubmit = (query: string) => {
+        setSearchQuery(query)
     }
 
     const handleImageError = (itemId: number) => {
@@ -149,20 +159,33 @@ export default function MarketplacePage() {
                     onSubmit={handleSubmit}
                     className='mb-5'
                 />
+
+                {searchQuery && (
+                    <div>
+                        <p className='font-bold text-lg'>Found <span className='text-purple-500'>{filteredItems.length}</span> resul{filteredItems.length !== 1 ? 's' : ''} for &quot;<span className='text-purple-500'>{searchQuery}</span>&quot;</p>
+                    </div>
+                )}
                 <Divider my='xl' />
 
                 <div className='p-5 bg-[var(--color-box-inside)] min-h-screen rounded-xl'>
+                    {searchQuery && filteredItems.length === 0 && (
+                        <div className='text-center py-10 text-gray-400'>
+                            <p className='text-lg mb-2'>No items found</p>
+                            <p>Try searching with different keywords</p>
+                        </div>
+                    )}
+
                     <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                        {marketplaceItems.map((item) => (
+                        {filteredItems.map((item) => (
                             <div
                                 key={item.id}
-                                className='bg-[var(--mantine-color-body)] rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden h-fit'
+                                className='bg-[var(--mantine-color-body)] rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden h-fit cursor-pointer'
                             >
                                 <div className="aspect-[2/3] overflow-hidden">
                                     <Image
                                         src={failedImages.has(item.id) ? "/camera1.jpg" : item.image}
                                         alt={item.title}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover hover:scale-110 transition-all duration-300"
                                         onError={() => handleImageError(item.id)}
                                     />
                                 </div>
