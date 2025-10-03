@@ -3,11 +3,11 @@ import React from 'react'
 
 export default function UserDashboardLayout({ children }: { children: React.ReactNode }) {
      return (
-          <div className='grid grid-cols-7'>
-               <div>
+          <div className='grid lg:grid-cols-[250px_1fr]'>
+               <div className='hidden lg:block'>
                     <UserSidebar />
                </div>
-               <section className='col-span-6'>
+               <section>
                     {children}
                </section>
           </div>

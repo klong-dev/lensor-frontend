@@ -1,14 +1,12 @@
+'use client'
+
 import React from 'react'
 import Post from '../components/post'
+import { useParams } from 'next/navigation'
 
 export default function PostDetail() {
+     const { id } = useParams()
      return (
-          <Post
-               userName='Lê Trà Thảo'
-               time='4 days ago'
-               title='Post title'
-               content='Post content test Post content test Post content test Post content test Post content test Post content test'
-               imageUrl='/images/photo_test_2.jpg'
-          />
+          <h1>{id}</h1>
      )
 }

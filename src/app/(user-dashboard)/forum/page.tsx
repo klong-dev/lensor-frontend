@@ -1,27 +1,27 @@
 import React from 'react'
 import Post from './components/post'
 import { Divider } from '@mantine/core'
+import forum from '@/data-test/forum.json'
 
 export default function ForumPage() {
+     const { data: dataForum } = forum
+
      return (
           <div className='w-150 mx-auto'>
-               <Post
-                    userName='Lê Trà Thảo'
-                    time='4 days ago'
-                    title='Post title'
-                    content='Post content test Post content test Post content test Post content test Post content test Post content test'
-                    imageUrl='/images/photo_test.jpg'
-               />
-
-               <Divider />
-
-               <Post
-                    userName='Lê Trà Thảo'
-                    time='4 days ago'
-                    title='Post title'
-                    content='Post content test Post content test Post content test Post content test Post content test Post content test'
-                    imageUrl='/images/photo_test_2.jpg'
-               />
+               {dataForum?.map((post, index) =>
+                    <div key={index}>
+                         <Post
+                              id={post.id}
+                              user={post.user}
+                              time={post.createdAt}
+                              title={post.title}
+                              content={post.content}
+                              imageUrl={post.imageUrl}
+                              commentCount={post.commentCount}
+                         />
+                         {index + 1 < dataForum.length && <Divider />}
+                    </div>
+               )}
           </div>
      )
 }

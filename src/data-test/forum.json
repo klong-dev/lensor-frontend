@@ -1,0 +1,34 @@
+{
+  "data": [
+    {
+      "id": "1",
+      "user": {
+        "id": "36",
+        "name": "Lê Trà Thảo",
+        "avatarUrl": "/images/avatar_test.jpg",
+        "isFollowed": true
+      },
+      "title": "Post title",
+      "content": "Post content post content post content",
+      "imageUrl": "/images/photo_test.jpg",
+      "voteCount": 36,
+      "commentCount": 36,
+      "createdAt": "4 days ago"
+    },
+    {
+      "id": "2",
+      "user": {
+        "id": "37",
+        "name": "Lê Trà Thảo",
+        "avatarUrl": "/images/avatar_test.jpg",
+        "isFollowed": false
+      },
+      "title": "Post title",
+      "content": "Post content post content post content",
+      "imageUrl": "/images/photo_test_2.jpg",
+      "voteCount": 36,
+      "commentCount": 36,
+      "createdAt": "4 days ago"
+    }
+  ]
+}
