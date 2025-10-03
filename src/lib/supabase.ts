@@ -14,10 +14,15 @@ export const authHelpers = {
         return { data, error }
     },
 
-    signUpWithEmail: async (email: string, password: string) => {
+    signUpWithEmail: async (full_name: string, email: string, password: string) => {
         const { data, error } = await supabase.auth.signUp({
             email,
             password,
+            options: {
+                data: {
+                    full_name
+                }
+            }
         })
         return { data, error }
     },
@@ -32,23 +37,23 @@ export const authHelpers = {
         return { data, error }
     },
 
-    
+
     signOut: async () => {
         const { error } = await supabase.auth.signOut()
         return { error }
     },
 
-    
+
     getCurrentUser: () => {
         return supabase.auth.getUser()
     },
 
-    
+
     onAuthStateChange: (callback: (event: string, session: unknown) => void) => {
         return supabase.auth.onAuthStateChange(callback)
     },
 
-    
+
     resetPassword: async (email: string) => {
         const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
             redirectTo: `${window.location.origin}/reset-password`,
@@ -56,5 +61,5 @@ export const authHelpers = {
         return { data, error }
     }
 
-    
+
 }

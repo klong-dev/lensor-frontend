@@ -3,6 +3,12 @@
     "title": "Hello world!"
   },
   "LoginPage": {
-     "button": "Login"
+    "button": "Login"
+  },
+  "MainHeader": {
+    "feature": "Feature",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "login": "Login"
   }
 }
