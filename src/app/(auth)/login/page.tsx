@@ -11,10 +11,10 @@ export default function Page() {
       fluid
       size={'xl'}
       className="flex justify-center items-center h-screen w-screen dark:bg-gradient-to-br from-[#27282A] to-black py-0 px-2 overflow-hidden">
-      <div className="flex flex-col md:flex-row gap-6 justify-center items-center shadow-purple-400 shadow-md bg-white h-[650px] w-[1200px] border-white-1 rounded-4xl overflow-hidden p-6 ">
+      <div className="flex flex-col md:flex-row gap-6 justify-center items-center shadow-purple-400 shadow-md h-[650px] w-[1200px] border-white-1 rounded-4xl overflow-hidden p-6 ">
         <div className="flex flex-col justify-center items-center w-full md:w-5/12 h-full rounded-4xl text-center py-8 md:py-0">
           <Link href='/' >
-            <h1 className='font-extrabold text-3xl md:text-4xl text-[#6441A5] mb-4 md:mb-10 drop-shadow-md'>
+            <h1 className='font-extrabold text-3xl md:text-4xl text-main-theme mb-4 md:mb-10 drop-shadow-md'>
               Lensor
             </h1>
           </Link>
@@ -22,7 +22,7 @@ export default function Page() {
         </div>
 
         <div className="w-full hidden md:w-7/12 h-full bg-[url('/camera1.jpg')] bg-cover bg-center rounded-4xl p-10 relative md:flex items-end">
-          <h2 className='uppercase font-bold opacity-30 text-5xl md:text-[53px] select-none text-white tracking-wide pb-4'>
+          <h2 className='uppercase font-extrabold opacity-40 text-5xl md:text-[51px] select-none text-white tracking-wide pb-4'>
             Where vision <br />meets opportunity
           </h2>
         </div>

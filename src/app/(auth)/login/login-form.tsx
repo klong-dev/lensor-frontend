@@ -141,7 +141,7 @@ export function LoginForm(props: PaperProps) {
 
 
     return (
-        <Paper radius="md" p="xl" withBorder {...props} className='w-full py-12 shadow-lg'>
+        <Paper radius="md" p="xl" withBorder {...props} className='w-full py-12 shadow-lg bg-[var(--color-box-inside)]'>
             <Flex
                 mih={60}
                 gap="md"
@@ -149,7 +149,7 @@ export function LoginForm(props: PaperProps) {
                 align="center"
                 direction="row"
                 wrap="wrap"
-                className="mb-2"
+                className="mb-2 "
             >
                 <button
                     className='cursor-pointer bg-red-500 hover:bg-red-600 items-center justify-center w-12 h-12 flex rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-md'
@@ -192,17 +192,7 @@ export function LoginForm(props: PaperProps) {
                             onChange={(event) => form.setFieldValue('name', event.currentTarget.value)}
                             radius="md"
                             size="md"
-                            styles={{
-                                input: {
-                                    '&:focus': {
-                                        borderColor: '#8B5CF6',
-                                    },
-                                },
-                                label: {
-                                    fontWeight: 500,
-                                    color: '#374151'
-                                }
-                            }}
+                            className='[&_input]:focus:border-purple-500 [&_input]:focus:font-medium'
                         />
                     )}
 
@@ -215,17 +205,7 @@ export function LoginForm(props: PaperProps) {
                         error={form.errors.email && 'Invalid email'}
                         radius="md"
                         size="md"
-                        styles={{
-                            input: {
-                                '&:focus': {
-                                    borderColor: '#8B5CF6',
-                                },
-                            },
-                            label: {
-                                fontWeight: 500,
-                                color: '#374151'
-                            }
-                        }}
+                        className='[&_input]:focus:border-purple-500 [&_input]:focus:font-medium'
                     />
 
                     <PasswordInput
@@ -237,17 +217,7 @@ export function LoginForm(props: PaperProps) {
                         error={form.errors.password && 'Password should include at least 6 characters'}
                         radius="md"
                         size="md"
-                        styles={{
-                            input: {
-                                '&:focus': {
-                                    borderColor: '#8B5CF6',
-                                },
-                            },
-                            label: {
-                                fontWeight: 500,
-                                color: '#374151'
-                            }
-                        }}
+                        className='[&_input]:focus:border-purple-500 [&_input]:focus:font-medium'
                     />
 
                     {type === 'register' && (
@@ -258,11 +228,7 @@ export function LoginForm(props: PaperProps) {
                             color="violet"
                             size="sm"
                             error={form.errors.term}
-                            styles={{
-                                label: {
-                                    color: '#6B7280'
-                                }
-                            }}
+                            
                         />
                     )}
                 </Stack>
@@ -286,10 +252,7 @@ export function LoginForm(props: PaperProps) {
                         radius="md"
                         size="md"
                         disabled={loading}
-
-                        style={{
-                            background: loading ? '#9CA3AF' : 'linear-gradient(135deg, #6441A5 100%, #2a0845 100%)'
-                        }}
+                        
                     >
                         {loading && type === 'login' ? 'Signing in...' : loading && type === 'register' ? 'Creating account...' : upperFirst(type)}
                     </Button>
