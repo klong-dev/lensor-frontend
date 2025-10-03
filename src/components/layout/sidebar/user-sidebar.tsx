@@ -6,8 +6,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BsThreeDots } from 'react-icons/bs'
 import { CiSearch } from 'react-icons/ci'
-import { FaHome, FaMoneyCheckAlt, FaPhotoVideo, FaTools, FaUser } from 'react-icons/fa'
-import { FaMessage } from 'react-icons/fa6'
+import { FaHome, FaLayerGroup, FaMoneyCheckAlt, FaShoppingCart, FaTools, FaUser } from 'react-icons/fa'
+import { FaCircleQuestion, FaMessage, FaShop } from 'react-icons/fa6'
 import { IoMdMoon, IoMdSunny } from 'react-icons/io'
 import NavbarLink from './navbar-link'
 
@@ -27,7 +27,7 @@ export default function UserSidebar() {
 
      const sidebar = [
           {
-               title: 'MENU',
+               title: 'MAIN MENU',
                subs: [
                     {
                          label: 'Forum',
@@ -40,19 +40,34 @@ export default function UserSidebar() {
                          href: '/profile/36'
                     },
                     {
+                         label: 'Create Portfolio',
+                         icon: <FaLayerGroup />,
+                         href: '/portfolio'
+                    },
+                    {
                          label: 'Message',
                          icon: <FaMessage />,
                          href: '/message'
                     },
+               ]
+          },
+          {
+               title: 'MARKETPLACES',
+               subs: [
                     {
-                         label: 'Purchases',
+                         label: 'Marketplace',
+                         icon: <FaShop />,
+                         href: '/marketplace'
+                    },
+                    {
+                         label: 'Purchased presets',
                          icon: <FaMoneyCheckAlt />,
                          href: '/purchases'
                     },
                     {
-                         label: 'Gallery',
-                         icon: <FaPhotoVideo />,
-                         href: '/gallery'
+                         label: 'Cart',
+                         icon: <FaShoppingCart />,
+                         href: '/cart'
                     },
                ]
           },
@@ -66,14 +81,9 @@ export default function UserSidebar() {
                     },
                     {
                          label: 'Help',
-                         icon: <FaTools />,
-                         href: '/setting'
+                         icon: <FaCircleQuestion />,
+                         href: '/help'
                     },
-                    {
-                         label: 'Subscriptions',
-                         icon: <FaTools />,
-                         href: '/setting'
-                    }
                ]
           }
      ]
@@ -91,21 +101,23 @@ export default function UserSidebar() {
                          onChange={(e) => setSearchValue(e.currentTarget.value)}
                     />
 
-                    {sidebar.map((item, index) =>
-                         <div key={index}>
-                              <h1 className='text-neutral-600 text-sm py-1'>{item.title}</h1>
-                              {item.subs.map((sub, index) =>
-                                   <NavbarLink
-                                        key={index}
-                                        href={sub.href}
-                                        label={sub.label}
-                                        icon={sub.icon}
-                                        isActive={index === active}
-                                        onClick={() => setActive(index)}
-                                   />
-                              )}
-                         </div>
-                    )}
+                    <div className=''>
+                         {sidebar.map((item, index) =>
+                              <div key={index}>
+                                   <h1 className='text-neutral-600 text-sm py-1'>{item.title}</h1>
+                                   {item.subs.map((sub, index) =>
+                                        <NavbarLink
+                                             key={index}
+                                             href={sub.href}
+                                             label={sub.label}
+                                             icon={sub.icon}
+                                             isActive={index === active}
+                                             onClick={() => setActive(index)}
+                                        />
+                                   )}
+                              </div>
+                         )}
+                    </div>
                </div>
                <div className='flex items-center justify-between py-3 px-2'>
                     <div className='flex gap-2'>
