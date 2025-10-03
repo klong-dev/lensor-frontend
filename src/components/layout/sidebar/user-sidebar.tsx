@@ -1,6 +1,6 @@
 'use client'
 
-import { Avatar, Menu, Switch, TextInput, UnstyledButton, useMantineColorScheme } from '@mantine/core'
+import { Avatar, Divider, Menu, Switch, TextInput, UnstyledButton, useMantineColorScheme } from '@mantine/core'
 import { useDebouncedValue } from '@mantine/hooks'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -60,9 +60,9 @@ export default function UserSidebar() {
                          href: '/marketplace'
                     },
                     {
-                         label: 'Purchased presets',
+                         label: 'Purchased Presets',
                          icon: <FaMoneyCheckAlt />,
-                         href: '/purchases'
+                         href: '/purchased-presets'
                     },
                     {
                          label: 'Cart',
@@ -89,8 +89,8 @@ export default function UserSidebar() {
      ]
 
      return (
-          <nav className='h-screen flex flex-col justify-between sticky top-0 bg-[var(--color-box-inside)]'>
-               <div className='p-4'>
+          <nav className='h-screen flex flex-col justify-between sticky top-0 border-r border-black/10 dark:border-white/10'>
+               <div className='p-4 hidden lg:block'>
                     <h1 className='py-8'>LENSOR LOGO</h1>
 
                     <TextInput
@@ -101,26 +101,25 @@ export default function UserSidebar() {
                          onChange={(e) => setSearchValue(e.currentTarget.value)}
                     />
 
-                    <div className=''>
-                         {sidebar.map((item, index) =>
-                              <div key={index}>
-                                   <h1 className='text-neutral-600 text-sm py-1'>{item.title}</h1>
-                                   {item.subs.map((sub, index) =>
-                                        <NavbarLink
-                                             key={index}
-                                             href={sub.href}
-                                             label={sub.label}
-                                             icon={sub.icon}
-                                             isActive={index === active}
-                                             onClick={() => setActive(index)}
-                                        />
-                                   )}
-                              </div>
-                         )}
-                    </div>
+                    {sidebar.map((item, index) =>
+                         <div key={index}>
+                              <h1 className='text-neutral-600 text-sm py-1'>{item.title}</h1>
+                              {item.subs.map((sub, index) =>
+                                   <NavbarLink
+                                        key={index}
+                                        href={sub.href}
+                                        label={sub.label}
+                                        icon={sub.icon}
+                                        isActive={index === active}
+                                        onClick={() => setActive(index)}
+                                   />
+                              )}
+                         </div>
+                    )}
                </div>
+
                <div className='flex items-center justify-between py-3 px-2'>
-                    <div className='flex gap-2'>
+                    <div className='hidden lg:flex gap-2'>
                          <Link href='/profile/36'><Avatar src='/images/avatar_test.jpg' /></Link>
                          <Link href='/profile/36' className='flex-1 w-[150px] overflow-hidden text-sm'>
                               <p className='truncate whitespace-nowrap font-bold'>Bảo Trọng Nguyễn Huỳnh</p>
