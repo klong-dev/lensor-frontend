@@ -12,3 +12,6 @@ export interface PostProps {
      imageUrl?: string,
      commentCount: number,
 }
+
+export type { NavbarLinkProps } from "./sidebar-type"
+
