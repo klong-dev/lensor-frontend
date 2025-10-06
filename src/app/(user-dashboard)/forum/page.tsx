@@ -1,5 +1,5 @@
 import React from 'react'
-import Post from './components/post'
+import Post from '../../../components/forum/post'
 import { Divider } from '@mantine/core'
 import forum from '@/data-test/forum.json'
 

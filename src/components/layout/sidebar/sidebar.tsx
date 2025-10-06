@@ -1,7 +1,7 @@
 'use client'
 
 import { Avatar, Menu, Switch, TextInput, UnstyledButton, useMantineColorScheme } from '@mantine/core'
-import { useDebouncedState, useDebouncedValue, useHotkeys } from '@mantine/hooks'
+import { useDebouncedState, useHotkeys } from '@mantine/hooks'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -10,20 +10,9 @@ import { CiSearch } from 'react-icons/ci'
 import { IoMdMoon, IoMdSunny } from 'react-icons/io'
 import { RiArrowLeftDoubleLine, RiArrowRightDoubleLine } from 'react-icons/ri'
 import NavbarLink from './components/navbar-link'
+import { SidebarProps } from '@/interface/sidebar'
 
-interface sidebarProps {
-     listItems: {
-          title: string,
-          subs: {
-               label: string,
-               icon: React.ReactNode,
-               href: string
-          }[]
-     }[]
-
-}
-
-export default function Sidebar({ listItems }: sidebarProps) {
+export default function Sidebar({ listItems }: SidebarProps) {
      const [searchValue, setSearchValue] = useDebouncedState('', 750)
      const { setColorScheme, colorScheme, toggleColorScheme } = useMantineColorScheme()
      const [collapsed, setCollapsed] = useState(false)
@@ -39,8 +28,6 @@ export default function Sidebar({ listItems }: sidebarProps) {
      useHotkeys([
           ['mod + j', () => toggleColorScheme()],
      ])
-
-
 
      return (
           <nav
@@ -86,7 +73,9 @@ export default function Sidebar({ listItems }: sidebarProps) {
 
                     <div className={clsx('flex items-center justify-between py-3 px-2', collapsed && 'hidden')}>
                          <div className='hidden lg:flex gap-2'>
-                              <Link href='/profile/36'><Avatar src='/images/avatar_test.jpg' /></Link>
+                              <Link href='/profile/36'>
+                                   <Avatar src='/images/avatar_test.jpg' />
+                              </Link>
                               <Link href='/profile/36' className='flex-1 w-[150px] overflow-hidden text-sm'>
                                    <p className='truncate whitespace-nowrap font-bold'>Bảo Trọng Nguyễn Huỳnh</p>
                                    <p className='truncate whitespace-nowrap opacity-80'>baotrong@gmail.com</p>

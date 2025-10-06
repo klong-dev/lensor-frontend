@@ -1,6 +1,6 @@
 'use client'
 
-import { NavbarLinkProps } from '@/types'
+import { NavbarLinkProps } from '@/interface/sidebar'
 import { Tooltip } from '@mantine/core'
 import clsx from 'clsx'
 import Link from 'next/link'

@@ -1,7 +1,7 @@
 'use client'
 
 import { Tabs } from '@mantine/core'
-import Post from './post'
+import PostSection from './post-section'
 
 export default function ProfileContent() {
      const listTabs = [
@@ -19,7 +19,7 @@ export default function ProfileContent() {
           },
      ]
      return (
-          <div className='h-30'>
+          <div className=''>
                <Tabs variant="outline" defaultValue={listTabs[0].value}>
                     <Tabs.List>
                          {listTabs.map((item, index) =>
@@ -30,7 +30,7 @@ export default function ProfileContent() {
                     </Tabs.List>
 
                     <Tabs.Panel value="post">
-                         <Post />
+                         <PostSection />
                     </Tabs.Panel>
 
                     <Tabs.Panel value="follower">

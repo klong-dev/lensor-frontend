@@ -1,6 +1,6 @@
 'use client'
 
-import { PostProps } from '@/types'
+import { PostProps } from '@/interface/post'
 import { Avatar, Button, Image, Menu, UnstyledButton } from '@mantine/core'
 import Link from 'next/link'
 import { BsThreeDots } from 'react-icons/bs'
