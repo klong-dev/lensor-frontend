@@ -1,17 +1,18 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { PostType } from '@/types/post'
 import clsx from 'clsx'
+import { Dot } from "lucide-react"
 import Image from "next/image"
 import Link from 'next/link'
 import { useState } from 'react'
 import { Button } from '../ui/button'
-import { Dot } from "lucide-react"
+import { Card } from "../ui/card"
 
 export default function Post({ dataPost }: { dataPost: PostType }) {
      const [expanded, setExpanded] = useState(false)
 
      return (
-          <div className='p-5'>
+          <div className='p-5 hover:backdrop-brightness-95 rounded-2xl duration-300'>
                <div className='flex items-center justify-between'>
                     <div className='flex items-center'>
                          <Avatar>
@@ -37,15 +38,15 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                     {dataPost?.content}
                </p>
 
-               <div className='w-full aspect-[3/2] flex justify-center items-center bg-[var(--color-box-inside)] rounded-2xl mt-3'>
+               <Card className='w-full aspect-[3/2] flex justify-center items-center mt-3'>
                     <Image
                          src={dataPost?.imageUrl ?? '/images/default-fallback-image.png'}
                          width={500}
                          height={500}
                          alt="Picture of the author"
-                         className='max-h-full max-w-full'
+                         className='max-h-full max-w-full object-contain'
                     />
-               </div>
+               </Card>
                <div className='flex gap-3 mt-4'>
                     <Button variant='default'>Vote</Button>
                     <Link href={`/forum/${dataPost?.id}`}>

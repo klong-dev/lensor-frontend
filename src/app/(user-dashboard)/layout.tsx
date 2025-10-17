@@ -15,7 +15,7 @@ export default function UserDashboardLayout({ children }: { children: React.Reac
                <AppSidebar />
                <SidebarInset>
                     <BreadcrumbHeader />
-                    <div>
+                    <div className="pt-16">
                          {children}
                     </div>
                </SidebarInset>

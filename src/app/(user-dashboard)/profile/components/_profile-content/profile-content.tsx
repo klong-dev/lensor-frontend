@@ -1,6 +1,6 @@
 'use client'
 
-import { Tabs } from '@mantine/core'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import PostSection from './post-section'
 
 export default function ProfileContent() {
@@ -20,26 +20,21 @@ export default function ProfileContent() {
      ]
      return (
           <div className=''>
-               <Tabs variant="outline" defaultValue={listTabs[0].value}>
-                    <Tabs.List>
-                         {listTabs.map((item, index) =>
-                              <Tabs.Tab value={item.value} key={index}>
-                                   {item.label}
-                              </Tabs.Tab>
-                         )}
-                    </Tabs.List>
-
-                    <Tabs.Panel value="post">
+               <Tabs defaultValue="posts">
+                    <TabsList>
+                         {listTabs.map((tab, index) => (
+                              <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>
+                         ))}
+                    </TabsList>
+                    <TabsContent value="posts">
                          <PostSection />
-                    </Tabs.Panel>
-
-                    <Tabs.Panel value="follower">
-                         SECTION 2
-                    </Tabs.Panel>
-
-                    <Tabs.Panel value="following">
-                         SECTION 3
-                    </Tabs.Panel>
+                    </TabsContent>
+                    <TabsContent value="follower">
+                         Tab2
+                    </TabsContent>
+                    <TabsContent value="following">
+                         Tab3
+                    </TabsContent>
                </Tabs>
           </div>
      )
