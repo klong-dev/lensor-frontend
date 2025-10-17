@@ -1,74 +1,78 @@
 import Sidebar from '@/components/layout/sidebar/sidebar'
+import { ROUTES } from '@/constants/path'
+import { useTranslations } from 'next-intl'
 import React from 'react'
 import { FaHome, FaLayerGroup, FaMoneyCheckAlt, FaShoppingCart, FaTools, FaUser } from 'react-icons/fa'
 import { FaCircleQuestion, FaMessage, FaShop } from 'react-icons/fa6'
 
 export default function UserDashboardLayout({ children }: { children: React.ReactNode }) {
+     const t = useTranslations('Sidebar')
+
      const sidebar = [
           {
-               title: 'MAIN MENU',
+               title: t('main-menu'),
                subs: [
                     {
-                         label: 'Forum',
+                         label: t('forum'),
                          icon: <FaHome />,
-                         href: '/forum'
+                         href: ROUTES.FORUM
                     },
                     {
-                         label: 'Profile',
+                         label: t('profile'),
                          icon: <FaUser />,
-                         href: '/profile/36'
+                         href: ROUTES.PROFILE('36')
                     },
                     {
-                         label: 'Create Portfolio',
+                         label: t('create-portfolio'),
                          icon: <FaLayerGroup />,
-                         href: '/portfolio'
+                         href: ROUTES.PORTFOLIO
                     },
                     {
-                         label: 'Message',
+                         label: t('message'),
                          icon: <FaMessage />,
-                         href: '/message'
+                         href: ROUTES.MESSAGE
                     },
                ]
           },
           {
-               title: 'MARKETPLACES',
+               title: t('marketplaces'),
                subs: [
                     {
-                         label: 'Marketplace',
+                         label: t('marketplace'),
                          icon: <FaShop />,
-                         href: '/marketplace'
+                         href: ROUTES.MARTKETPLACE
                     },
                     {
-                         label: 'Purchased Presets',
+                         label: t('purchased-presets'),
                          icon: <FaMoneyCheckAlt />,
-                         href: '/purchased-presets'
+                         href: ROUTES.PURCHASED_PRESET
                     },
                     {
-                         label: 'Cart',
+                         label: t('cart'),
                          icon: <FaShoppingCart />,
-                         href: '/cart'
+                         href: ROUTES.CART
                     },
                ]
           },
           {
-               title: 'SETTINGS',
+               title: t('settings'),
                subs: [
                     {
-                         label: 'Setting',
+                         label: t('setting'),
                          icon: <FaTools />,
-                         href: '/setting'
+                         href: ROUTES.SETTING
                     },
                     {
-                         label: 'Help',
+                         label: t('help'),
                          icon: <FaCircleQuestion />,
-                         href: '/help'
+                         href: ROUTES.HELP
                     },
                ]
           }
      ]
 
      return (
-          <div className='grid grid-cols-[auto_1fr]'>
+          <div className='grid grid-cols-[256px_1fr]'>
                <div>
                     <Sidebar listItems={sidebar} />
                </div>

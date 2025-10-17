@@ -10,7 +10,6 @@ import { useParams } from 'next/navigation'
 export default function ProfilePage() {
      const isOwnProfile = false
      const { id: userId } = useParams()
-     console.log(`ID TEST: ${userId}`)
 
      return (
           <div className='container mx-auto p-5'>

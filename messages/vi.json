@@ -1,8 +1,29 @@
 {
   "HomePage": {
-    "title": "Xin chào thế giới!"
+    "title": "Hello world!"
   },
   "LoginPage": {
     "button": "Đăng nhập"
+  },
+  "MainHeader": {
+    "feature": "Tính năng",
+    "pricing": "Giá",
+    "faq": "Hỏi đáp",
+    "login": "Đăng nhập"
+  },
+  "Sidebar": {
+    "marketplaces": "CHỢ GIAO DỊCH",
+    "settings": "CÀI ĐẶT",
+    "main-menu": "MENU CHÍNH",
+    "forum": "Diễn đàn",
+    "profile": "Hồ sơ cá nhân",
+    "create-portfolio": "Tạo hồ sơ đầu tư",
+    "message": "Tin nhắn",
+    "marketplace": "Chợ",
+    "purchased-presets": "Gói đã mua",
+    "cart": "Giỏ hàng",
+    "setting": "Cài đặt",
+    "help": "Trợ giúp",
+    "search": "Tìm kiếm"
   }
 }

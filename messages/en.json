@@ -10,5 +10,20 @@
     "pricing": "Pricing",
     "faq": "FAQ",
     "login": "Login"
+  },
+  "Sidebar": {
+    "marketplaces": "MARKETPLACES",
+    "settings": "SETTINGS",
+    "main-menu": "MAIN MENU",
+    "forum": "Forum",
+    "profile": "Profile",
+    "create-portfolio": "Create Porfolio",
+    "message": "Message",
+    "marketplace": "Marketplace",
+    "purchased-presets": "Purchased Presets",
+    "cart": "Cart",
+    "setting": "Setting",
+    "help": "Help",
+    "search": "Search"
   }
 }

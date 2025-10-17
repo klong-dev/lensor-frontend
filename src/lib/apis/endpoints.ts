@@ -8,5 +8,5 @@ export const createEndpoints = (resource: string) => {
 }
 
 export const endpoints = {
-     post: createEndpoints('post')
+     post: createEndpoints('posts')
 }

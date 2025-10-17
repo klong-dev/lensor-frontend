@@ -1,23 +1,16 @@
+"use client"
+
 import Post from '@/components/forum/post'
-import React from 'react'
-import dataPost from '@/data-test/forum.json'
+import { usePosts } from '@/lib/hooks/usePostHooks'
 
 export default function PostSection() {
-  const firstPost = dataPost.data[1]
+  const { data, isLoading } = usePosts()
 
   return (
-    <div>
-      <div className='border border-black/10 rounded-2xl '>
-        <Post
-          id={firstPost.id}
-          user={firstPost.user}
-          time={firstPost.createdAt}
-          title={firstPost.title}
-          content={firstPost.content}
-          imageUrl={firstPost.imageUrl}
-          commentCount={firstPost.commentCount}
-        />
-      </div>
+    <div className='border border-black/10 rounded-2xl '>
+      <Post
+        dataPost={data?.data[2]}
+      />
     </div>
   )
 }

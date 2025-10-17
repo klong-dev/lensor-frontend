@@ -1,8 +1,10 @@
-'use client'
+"use client"
 
-import { Avatar, Menu, Switch, TextInput, UnstyledButton, useMantineColorScheme } from '@mantine/core'
+import { SidebarProps } from '@/interface/sidebar'
+import { Avatar, Menu, Select, Switch, TextInput, UnstyledButton, useMantineColorScheme } from '@mantine/core'
 import { useDebouncedState, useHotkeys } from '@mantine/hooks'
 import clsx from 'clsx'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { BsThreeDots } from 'react-icons/bs'
@@ -10,9 +12,9 @@ import { CiSearch } from 'react-icons/ci'
 import { IoMdMoon, IoMdSunny } from 'react-icons/io'
 import { RiArrowLeftDoubleLine, RiArrowRightDoubleLine } from 'react-icons/ri'
 import NavbarLink from './components/navbar-link'
-import { SidebarProps } from '@/interface/sidebar'
 
 export default function Sidebar({ listItems }: SidebarProps) {
+     const t = useTranslations('Sidebar')
      const [searchValue, setSearchValue] = useDebouncedState('', 750)
      const { setColorScheme, colorScheme, toggleColorScheme } = useMantineColorScheme()
      const [collapsed, setCollapsed] = useState(false)
@@ -25,6 +27,10 @@ export default function Sidebar({ listItems }: SidebarProps) {
           setColorScheme(`${value ? 'dark' : 'light'}`)
      }
 
+     const onChangeLanguage = (value: string | null) => {
+
+     }
+
      useHotkeys([
           ['mod + j', () => toggleColorScheme()],
      ])
@@ -32,7 +38,7 @@ export default function Sidebar({ listItems }: SidebarProps) {
      return (
           <nav
                className={
-                    clsx('hidden lg:block h-screen sticky top-0 border-r border-black/10 dark:border-white/10 duration-300',
+                    clsx('hidden lg:block h-screen fixed top-0 border-r border-black/10 dark:border-white/10 duration-300',
                          collapsed ? 'w-15' : 'w-64'
                     )
                }>
@@ -49,7 +55,7 @@ export default function Sidebar({ listItems }: SidebarProps) {
 
                          <TextInput
                               radius='md'
-                              placeholder='Search'
+                              placeholder={t('search')}
                               leftSection={<CiSearch />}
                               className={clsx('my-2', collapsed && 'hidden')}
                               onChange={(e) => setSearchValue(e.currentTarget.value)}
@@ -98,6 +104,14 @@ export default function Sidebar({ listItems }: SidebarProps) {
                                              offLabel={<IoMdSunny />}
                                              onChange={e => onChangeTheme(e.currentTarget.checked)}
                                              defaultChecked={colorScheme === 'dark'}
+                                        />
+                                   </Menu.Item>
+                                   <Menu.Item closeMenuOnClick={false}>
+                                        <Select
+                                             label="Language"
+                                             placeholder="Language"
+                                             data={['EN', 'VI']}
+                                             onChange={onChangeLanguage}
                                         />
                                    </Menu.Item>
                               </Menu.Dropdown>
