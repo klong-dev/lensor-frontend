@@ -8,15 +8,21 @@ export default function ForumPage() {
      const { data: dataForum, isLoading } = usePosts()
 
      return (
-          <div className='w-150 my-5 mx-auto'>
-               {dataForum?.data?.map((post: PostType, index: string) =>
-                    <div key={index}>
-                         <Post
-                              dataPost={post}
-                         />
-                         {index + 1 < dataForum?.data.length && <hr className="solid" />}
-                    </div>
-               )}
+          <div className='grid grid-cols-3 container'>
+               <div className='col-span-2'>
+                    {isLoading
+                         ? <div>Loading....</div>
+                         : dataForum?.data?.map((post: PostType, index: string) =>
+                              <div key={index}>
+                                   <Post dataPost={post} />
+                                   {index + 1 < dataForum?.data.length && <hr className="solid" />}
+                              </div>
+                         )
+                    }
+               </div>
+               <div className='h-96 sticky top-16 p-4 z-20'>
+                    RIGHT SIDEBAR ON FORUM
+               </div>
           </div>
      )
 }
