@@ -1,16 +1,10 @@
-'use client'
-
 import React from 'react';
-import { Container } from '@mantine/core';
 import Link from 'next/link';
 import { LoginForm } from './login-form';
 
 export default function Page() {
   return (
-    <Container
-      fluid
-      size={'xl'}
-      className="flex justify-center items-center h-screen w-screen dark:bg-gradient-to-br from-[#27282A] to-black py-0 px-2 overflow-hidden">
+    <div className=" flex justify-center items-center h-screen w-screen dark:bg-gradient-to-br from-[#27282A] to-black py-0 px-2 overflow-hidden">
       <div className="flex flex-col md:flex-row gap-6 justify-center items-center shadow-purple-400 shadow-md h-[650px] w-[1200px] border-white-1 rounded-4xl overflow-hidden p-6 ">
         <div className="flex flex-col justify-center items-center w-full md:w-5/12 h-full rounded-4xl text-center py-8 md:py-0">
           <Link href='/' >
@@ -27,6 +21,6 @@ export default function Page() {
           </h2>
         </div>
       </div>
-    </Container >
+    </div >
   )
 }

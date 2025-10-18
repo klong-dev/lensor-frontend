@@ -150,7 +150,7 @@ export default function MarketplacePage() {
     return (
         <div className='min-h-screen'>
             <div className='container flex flex-col mx-auto  pt-13'>
-                <div className='sticky top-10 z-20 bg-background p-5 py-8 rounded-2xl opacity-98'>
+                <div className='sticky top-10 z-20  p-5 py-8 rounded-2xl backdrop-blur-2xl'>
                     <h1 className='font-extrabold text-4xl uppercase mb-2'>Your <span className='text-purple-500'>Marketplace</span> for Creativity</h1>
                     <p className='mb-10'>Buy, sell, and showcase stunning photos & professional presets in one place</p>
                     <SearchBar

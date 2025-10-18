@@ -1,47 +1,31 @@
 'use client'
 
-import {
-    Anchor,
-    Button,
-    Checkbox,
-    Divider,
-    Group,
-    Paper,
-    PaperProps,
-    PasswordInput,
-    Stack,
-    TextInput,
-} from '@mantine/core'
-import { useForm } from '@mantine/form'
-import { upperFirst, useToggle } from '@mantine/hooks'
-import { GrGoogle } from "react-icons/gr"
-import { FaFacebook } from "react-icons/fa"
-import { Flex } from '@mantine/core'
-import { FaGithub } from "react-icons/fa"
 import { authHelpers } from '@/lib/supabase'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { notifications } from '@mantine/notifications'
+import { Card } from '@/components/ui/card'
+import { Facebook, Github  } from 'lucide-react';
+import Image from 'next/image'
 
-export function LoginForm(props: PaperProps) {
+export function LoginForm(props: Record<string, never>) {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
-    const [type, toggle] = useToggle(['login', 'register'])
-    const form = useForm({
-        initialValues: {
-            email: '',
-            name: '',
-            password: '',
-            term: false,
-        },
+    // const [type, toggle] = useToggle(['login', 'register'])
+    // const form = useForm({
+    //     initialValues: {
+    //         email: '',
+    //         name: '',
+    //         password: '',
+    //         term: false,
+    //     },
 
-        validate: {
-            email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
-            password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
-            term: (val) => (type === 'register' && !val ? 'You must accept terms and conditions' : null)
-        },
-    });
+    //     validate: {
+    //         email: (val) => (/^\S+@\S+$/.test(val) ? null : 'Invalid email'),
+    //         password: (val) => (val.length <= 6 ? 'Password should include at least 6 characters' : null),
+    //         term: (val) => (type === 'register' && !val ? 'You must accept terms and conditions' : null)
+    //     },
+    // });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -50,67 +34,68 @@ export function LoginForm(props: PaperProps) {
 
         try {
             const { data, error: signInError } = await authHelpers.signInWithEmail(
-                form.values.email,
-                form.values.password
+                'email', 'pass'
+                // form.values.email,
+                // form.values.password
             )
 
             if (signInError) {
                 setError(signInError.message)
-                notifications.show({
-                    title: 'Error',
-                    message: error,
-                })
+                // notifications.show({
+                //     title: 'Error',
+                //     message: error,
+                // })
             } else if (data.user) {
                 router.push('/')
             }
         } catch (err) {
             setError('Đã xảy ra lỗi khi đăng nhập!')
-            notifications.show({
-                title: 'Error',
-                message: error,
-            })
+            // notifications.show({
+            //     title: 'Error',
+            //     message: error,
+            // })
         } finally {
             setLoading(false)
         }
     }
 
-    const handleRegister = async (e: React.FormEvent) => {
-        e.preventDefault()
+    // const handleRegister = async (e: React.FormEvent) => {
+    //     e.preventDefault()
 
-        if(!form.validate()) return
+    //     if(!form.validate()) return
 
-        setLoading(true)
-        setError('')
-        const email = form.values.email.toLowerCase().trim();
+    //     setLoading(true)
+    //     setError('')
+    //     const email = form.values.email.toLowerCase().trim();
 
-        try {
-            const { data, error: signInError } = await authHelpers.signUpWithEmail(
-                form.values.name,
-                email,
-                form.values.password
-            )
-            if (signInError) {
-                if (signInError.message.includes("invalid")) {
-                    setError("Email không hợp lệ hoặc đã tồn tại. Vui lòng dùng email khác.");
-                    notifications.show({
-                        title: 'Error',
-                        message: error,
-                    })
-                } else if (data.user) {
-                    console.log(data.user)
-                    router.push('/')
-                }
-            }
-        } catch (err) {
-            setError('Có lỗi khi đăng ký!')
-            notifications.show({
-                title: 'Error',
-                message: error,
-            })
-        } finally {
-            setLoading(false)
-        }
-    }
+    //     try {
+    //         const { data, error: signInError } = await authHelpers.signUpWithEmail(
+    //             form.values.name,
+    //             email,
+    //             form.values.password
+    //         )
+    //         if (signInError) {
+    //             if (signInError.message.includes("invalid")) {
+    //                 setError("Email không hợp lệ hoặc đã tồn tại. Vui lòng dùng email khác.");
+    //                 notifications.show({
+    //                     title: 'Error',
+    //                     message: error,
+    //                 })
+    //             } else if (data.user) {
+    //                 console.log(data.user)
+    //                 router.push('/')
+    //             }
+    //         }
+    //     } catch (err) {
+    //         setError('Có lỗi khi đăng ký!')
+    //         // notifications.show({
+    //         //     title: 'Error',
+    //         //     message: error,
+    //         // })
+    //     } finally {
+    //         setLoading(false)
+    //     }
+    // }
 
     const handleSocialLogin = async (provider: 'google' | 'facebook' | 'github') => {
         setLoading(true)
@@ -122,18 +107,18 @@ export function LoginForm(props: PaperProps) {
 
             if (oauthError) {
                 setError(oauthError.message)
-                notifications.show({
-                    title: 'Error',
-                    message: error,
-                })
+                // notifications.show({
+                //     title: 'Error',
+                //     message: error,
+                // })
             }
 
         } catch (err) {
             setError('Có lỗi xảy ra khi đăng nhập. Vui lòng thử lại.')
-            notifications.show({
-                title: 'Error',
-                message: error,
-            })
+            // notifications.show({
+            //     title: 'Error',
+            //     message: error,
+            // })
         } finally {
             setLoading(false)
         }
@@ -141,45 +126,36 @@ export function LoginForm(props: PaperProps) {
 
 
     return (
-        <Paper radius="md" p="xl" withBorder {...props} className='w-full py-12 shadow-lg bg-[var(--color-box-inside)]'>
-            <Flex
-                mih={60}
-                gap="md"
-                justify="center"
-                align="center"
-                direction="row"
-                wrap="wrap"
-                className="mb-2 "
-            >
+        <div className='w-full py-12 shadow-lg bg-[var(--color-box-inside)]'>
+            <div className='flex justify-center items-center  gap-6'>
                 <button
                     className='cursor-pointer bg-red-500 hover:bg-red-600 items-center justify-center w-12 h-12 flex rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-md'
                     onClick={() => handleSocialLogin('google')}
                 >
-                    <GrGoogle className="text-lg" />
+                    <Image 
+                        src='/icons8-google-32.png'
+                        alt='Login With Google'
+                        width={24}
+                        height={24}
+                    />
                 </button>
                 <button
                     className='cursor-pointer bg-blue-600 hover:bg-blue-700 items-center justify-center w-12 h-12 flex rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-md'
                     onClick={() => handleSocialLogin('facebook')}
                 >
-                    <FaFacebook className="text-lg" />
+                    <Facebook fill='white' size={22} />
                 </button>
                 <button
                     className='cursor-pointer bg-gray-800 hover:bg-gray-900 items-center justify-center w-12 h-12 flex rounded-lg text-white transition-all duration-300 hover:scale-105 hover:shadow-md'
                     onClick={() => handleSocialLogin('github')}
                 >
-                    <FaGithub className="text-lg" />
+                    <Github  fill='white' size={22} />
                 </button>
-            </Flex>
+            </div>
 
-            <Divider
-                label="Or continue with email"
-                labelPosition="center"
-                my="md"
-                color="gray.3"
-                size="xs"
-            />
+             <div className='border-t border-grey/10 my-3' />
 
-            <form
+            {/* <form
                 onSubmit={type === 'login' ? handleSubmit : handleRegister}
                 className='text-left space-y-4'
             >
@@ -257,7 +233,7 @@ export function LoginForm(props: PaperProps) {
                         {loading && type === 'login' ? 'Signing in...' : loading && type === 'register' ? 'Creating account...' : upperFirst(type)}
                     </Button>
                 </Group>
-            </form>
-        </Paper>
+            </form> */}
+        </div>
     )
 }
