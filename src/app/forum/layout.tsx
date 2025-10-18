@@ -11,9 +11,7 @@ export default function ForumLayout({ children }: { children: React.ReactNode })
                <SidebarProvider>
                     <ForumSidebarLeft />
                     <SidebarInset>
-                         <div className='max-w-[700px] mx-auto'>
-                              {children}
-                         </div>
+                         {children}
                     </SidebarInset>
                     <ForumSidebarRight />
                </SidebarProvider>

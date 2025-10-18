@@ -32,9 +32,9 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                     <div className='flex items-center'>
                          <Avatar>
                               <AvatarImage src="https://github.com/shadcn.png" />
-                              <AvatarFallback>CN</AvatarFallback>
+                              <AvatarFallback>NHBT</AvatarFallback>
                          </Avatar>
-                         <span className='font-bold ml-2 text-[var(--c-text-title)]'>{`123`}</span>
+                         <span className='font-bold ml-2 text-[var(--c-text-title)]'>{`Bảo Trọng`}</span>
                          <Dot />
                          <span className='text-[var(--color-text-muted)]'>{dataPost?.createdAt}</span>
                     </div>
