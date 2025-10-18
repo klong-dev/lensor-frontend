@@ -1,6 +1,6 @@
 "use client"
 
-import Post from '@/components/forum/post'
+import Post from '@/components/forum/post/post'
 import { usePosts } from '@/lib/hooks/usePostHooks'
 import { PostType } from '@/types/post'
 

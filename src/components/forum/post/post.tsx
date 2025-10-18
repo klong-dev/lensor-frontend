@@ -1,19 +1,33 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { BASE_URL } from "@/constants"
+import { ROUTES } from "@/constants/path"
 import { PostType } from '@/types/post'
 import clsx from 'clsx'
-import { Dot } from "lucide-react"
+import { Dot, Heart, MessageCircle, Share2 } from "lucide-react"
 import Image from "next/image"
-import Link from 'next/link'
 import { useState } from 'react'
-import { Button } from '../ui/button'
-import { Card } from "../ui/card"
-import { ROUTES } from "@/constants/path"
+import { Button } from '../../ui/button'
+import { Card } from "../../ui/card"
+import DialogComment from "./dialog-comment"
+import { DialogShare } from "./dialog-share"
 
 export default function Post({ dataPost }: { dataPost: PostType }) {
      const [expanded, setExpanded] = useState(false)
+     const [isVoted, setIsVoted] = useState(false)
+     const [voteCount, setVoteCount] = useState(12)
+     const [isFollowing, setIsFollowing] = useState(false)
+
+     const handleVotePost = () => {
+          setIsVoted(!isVoted)
+          setVoteCount(isVoted ? voteCount - 1 : voteCount + 1)
+     }
+
+     const handleFollow = () => {
+          setIsFollowing(!isFollowing)
+     }
 
      return (
-          <div className='p-5 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-1 rounded-2xl duration-300 my-3'>
+          <div className='p-5 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-0 rounded-2xl duration-300 my-3'>
                <div className='flex items-center justify-between'>
                     <div className='flex items-center'>
                          <Avatar>
@@ -25,8 +39,8 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                          <span className='text-[var(--color-text-muted)]'>{dataPost?.createdAt}</span>
                     </div>
                     <div className='flex items-center gap-3'>
-                         <Button>
-                              {true ? 'Follow' : 'Following'}
+                         <Button onClick={handleFollow} variant={isFollowing ? 'outline' : 'default'}>
+                              {isFollowing ? 'Following' : 'Follow'}
                          </Button>
                     </div>
                </div>
@@ -49,14 +63,23 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                          className="object-contain rounded-2xl"
                     />
                </Card>
-               <div className='flex gap-3 mt-4'>
-                    <Button variant='default'>Vote</Button>
-                    <Link href={`${ROUTES.FORUM}/${dataPost?.id}`}>
-                         <Button variant='default' >
-                              {dataPost?.commentCount}
+               <div className='flex gap-3 mt-2'>
+                    <Button variant='ghost' size='lg' onClick={handleVotePost} >
+                         <Heart className={clsx(isVoted && 'text-red-600')} />
+                         <span className={clsx(isVoted && 'text-red-600')}>{voteCount}</span>
+                    </Button>
+
+                    <DialogComment>
+                         <Button variant='ghost' size='lg' >
+                              <MessageCircle size={92} /> {dataPost?.commentCount}
                          </Button>
-                    </Link>
-                    <Button variant='default'>Share</Button>
+                    </DialogComment>
+
+                    <DialogShare linkShare={`${BASE_URL}${ROUTES.FORUM}/${dataPost?.id}`}>
+                         <Button variant='ghost' size='lg'>
+                              <Share2 />
+                         </Button>
+                    </DialogShare>
                </div>
           </div>
      )

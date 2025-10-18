@@ -6,8 +6,8 @@ import PostSection from './post-section'
 export default function ProfileContent() {
      const listTabs = [
           {
-               label: 'Post',
-               value: 'post'
+               label: 'Your post',
+               value: 'posts'
           },
           {
                label: 'Followers',
@@ -23,7 +23,7 @@ export default function ProfileContent() {
                <Tabs defaultValue="posts">
                     <TabsList>
                          {listTabs.map((tab, index) => (
-                              <TabsTrigger value={tab.value}>{tab.label}</TabsTrigger>
+                              <TabsTrigger key={index} value={tab.value}>{tab.label}</TabsTrigger>
                          ))}
                     </TabsList>
                     <TabsContent value="posts">
