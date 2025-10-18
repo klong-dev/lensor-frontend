@@ -1,6 +1,7 @@
 import React from 'react'
-import { Avatar, Divider } from '@mantine/core'
+
 import Link from 'next/link'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 export default function SuggestionList() {
   const demoUserData = [
@@ -68,8 +69,8 @@ export default function SuggestionList() {
   const defaultAvatar = '/images/avatar_test.jpg'
 
   return (
-    <div className='flex flex-col h-120 py-4 px-5'>
-      <h3 className=' font-bold text-2xl mb-4 ps-3'>You might know</h3>
+    <div className='flex flex-col h-120 py-4 px-5 pt-0'>
+      <h3 className=' font-bold text-2xl mb-8 ps-3'>You might know</h3>
       <div className='flex flex-col gap-0 overflow-y-scroll overflow-x-hidden
       [&::-webkit-scrollbar]:w-0
         hover:[&::-webkit-scrollbar]:w-1
@@ -81,17 +82,21 @@ export default function SuggestionList() {
         {demoUserData.map((user) => (
           <Link key={user.id} href='/'>
             <div className='flex justify-start items-center gap-3 hover:bg-[#45464A] transition-colors cursor-pointer p-2 rounded-xl me-2'>
-              <Avatar
+              {/* <Avatar
                 src={user.imageUrl || defaultAvatar}
                 alt={user.name}
                 size='md'
-              />
+              /> */}
+              <Avatar>
+                <AvatarImage src={user.imageUrl} />
+                <AvatarFallback>{defaultAvatar}</AvatarFallback>
+              </Avatar>
               <div className='flex flex-col justify-center items-start gap-0 flex-1 min-w-0'>
                 <h5 className='font-bold text-lg truncate w-full'>{user.name}</h5>
                 <h6 className='text-xs truncate w-full'>{user.email}</h6>
               </div>
             </div>
-            {user.id == demoUserData.length ? <Divider my="xs" color='transparent' /> : <Divider my="xs" />}
+            {user.id == demoUserData.length ? <div className='border-t border-transparent my-3' /> : <div className='border-t border-grey/10 my-3' />}
           </Link>
         ))}
       </div>

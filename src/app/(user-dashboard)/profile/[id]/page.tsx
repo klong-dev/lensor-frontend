@@ -18,7 +18,7 @@ export default function ProfilePage() {
                <Card className=''>
                     <div className='relative'>
                          <div className='relative group'>
-                              
+
                          </div>
                          <div className='flex items-end'>
                               <Avatar className='w-48 h-48'>
@@ -42,14 +42,17 @@ export default function ProfilePage() {
 
                <div className='grid grid-cols-4 items-start gap-5 mt-5'>
                     <Card className='sticky top-0'>
-                         fsd
                          {/* <About /> */}
+                         <About />
                     </Card>
                     <Card className='col-span-2 p-4'>
                          <ProfileContent />
                     </Card>
                     <div className='bg-[var(--color-box-inside)] rounded-md'>
                          {/* <SuggestionList /> */}
+                         <Card className='sticky top-0'>
+                              <SuggestionList />
+                         </Card>
                     </div>
                </div>
           </div>

@@ -1,10 +1,10 @@
 'use client'
 
-import { TextInput, TextInputProps } from '@mantine/core'
+import { Input } from "@/components/ui/input"
 import { useState } from 'react'
-import { CiSearch } from 'react-icons/ci'
 
-interface SearchBarProps extends Omit<TextInputProps, 'leftSection' | 'onSubmit'> {
+
+interface SearchBarProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onSubmit'> {
     onSearch?: (query: string) => void,
     onSubmit?: (query: string) => void,
     showSearchIcon?: boolean
@@ -32,13 +32,11 @@ export default function SearchBar({
 
     return (
         <form onSubmit={handleSubmit}>
-            <TextInput
+            <Input
                 value={query}
                 onChange={handleChange}
-                onSubmit={handleSubmit}
-                leftSection={showSearchIcon ? <CiSearch size={18} /> : undefined}
-                radius="md"
-                size="md"
+                type="string"
+                placeholder="Search..."
                 className="[&_input]:focus:border-purple-500 [&_input]:focus:font-medium"
                 {...props}
             />
