@@ -92,7 +92,7 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                                              <div className="w-full aspect-[3/2]">
                                                   <img
                                                        alt="Preview"
-                                                       className="absolute top-0 left-0 h-full w-full object-cover"
+                                                       className="absolute top-0 left-0 h-full w-full object-contain"
                                                        src={filePreview}
                                                   />
                                              </div>
