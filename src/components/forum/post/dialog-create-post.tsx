@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group"
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone'
+import { Spinner } from "@/components/ui/spinner"
 import React, { useState } from 'react'
 
 const customScrollbar = '[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full transition-all duration-300'
@@ -22,10 +23,22 @@ const customScrollbar = '[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]
 export default function DialogCreatePost({ children }: { children: React.ReactNode }) {
      const [files, setFiles] = useState<File[] | undefined>()
      const [filePreview, setFilePreview] = useState<string | undefined>()
+     const [isOpen, setIsOpen] = useState(false)
+     const [isLoading, setIsLoading] = useState(false)
 
      const handleClose = () => {
           setFiles(undefined)
           setFilePreview(undefined)
+     }
+
+     console.log(isOpen);
+
+     const handlePost = async () => {
+          const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+          setIsLoading(true)
+          await sleep(5000)
+          setIsOpen(false)
+          setIsLoading(false)
      }
 
      const handleDrop = (files: File[]) => {
@@ -43,12 +56,21 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
      }
 
      return (
-          <Dialog>
+          <Dialog open={isOpen} onOpenChange={setIsOpen}>
                <DialogTrigger asChild>
                     {children}
                </DialogTrigger>
                <DialogOverlay className="backdrop-blur-[2px]">
-                    <DialogContent className={`sm:max-w-[475px] max-h-[640px] overflow-y-scroll ${customScrollbar}`}>
+                    <DialogContent
+                         className={`sm:max-w-[475px] max-h-[640px] overflow-y-scroll ${customScrollbar}`}
+                         onInteractOutside={(e) => {
+                              if (isLoading) e.preventDefault()
+                         }}
+                         onEscapeKeyDown={(e) => {
+                              if (isLoading) e.preventDefault()
+                         }}
+                         showCloseButton={!isLoading}
+                    >
                          <DialogHeader>
                               <DialogTitle>Create your new post</DialogTitle>
                               <DialogDescription>
@@ -86,7 +108,7 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                               <DialogClose asChild>
                                    <Button variant="outline" onClick={handleClose}>Cancel</Button>
                               </DialogClose>
-                              <Button type="submit">Post</Button>
+                              <Button onClick={handlePost} disabled={isLoading}><Spinner className={isLoading ? '' : 'hidden'} />Post</Button>
                          </DialogFooter>
                     </DialogContent>
                </DialogOverlay>
