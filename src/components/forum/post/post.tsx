@@ -3,14 +3,15 @@ import { BASE_URL } from "@/constants"
 import { ROUTES } from "@/constants/path"
 import { PostType } from '@/types/post'
 import clsx from 'clsx'
-import { Dot, Heart, MessageCircle, Share2 } from "lucide-react"
+import { Dot, Ellipsis, Heart, MessageCircle, Share2 } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import { useState } from 'react'
 import { Button } from '../../ui/button'
 import { Card } from "../../ui/card"
 import DialogComment from "./dialog-comment"
 import { DialogShare } from "./dialog-share"
-import Link from "next/link"
+import DropdownMenuPost from "./dropdown-menu-post"
 
 export default function Post({ dataPost }: { dataPost: PostType }) {
      const [expanded, setExpanded] = useState(false)
@@ -25,6 +26,18 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
 
      const handleFollow = () => {
           setIsFollowing(!isFollowing)
+     }
+
+     const handleDeletePost = () => {
+          console.log(`Delete post ${dataPost.id}`)
+     }
+
+     const handleSavePost = () => {
+          console.log('Save post')
+     }
+
+     const handleReportPost = () => {
+          console.log('Report')
      }
 
      return (
@@ -45,6 +58,16 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                          <Button onClick={handleFollow} variant={isFollowing ? 'outline' : 'default'}>
                               {isFollowing ? 'Following' : 'Follow'}
                          </Button>
+                         <DropdownMenuPost
+                              handleDeletePost={handleDeletePost}
+                              handleReportPost={handleReportPost}
+                              handleSavePost={handleSavePost}
+                              handleViewDetail={handleDeletePost}
+                         >
+                              <Button variant='ghost'>
+                                   <Ellipsis />
+                              </Button>
+                         </DropdownMenuPost>
                     </div>
                </div>
 
