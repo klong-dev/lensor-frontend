@@ -18,8 +18,6 @@ import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/s
 import { Spinner } from "@/components/ui/spinner"
 import React, { useState } from 'react'
 
-const customScrollbar = '[&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 [&::-webkit-scrollbar-thumb]:rounded-full transition-all duration-300'
-
 export default function DialogCreatePost({ children }: { children: React.ReactNode }) {
      const [files, setFiles] = useState<File[] | undefined>()
      const [filePreview, setFilePreview] = useState<string | undefined>()
@@ -30,8 +28,6 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
           setFiles(undefined)
           setFilePreview(undefined)
      }
-
-     console.log(isOpen);
 
      const handlePost = async () => {
           const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
@@ -55,6 +51,10 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
           }
      }
 
+     const handleOnLoading = (e: CustomEvent | React.KeyboardEvent<Element> | KeyboardEvent) => {
+          if (isLoading) e.preventDefault()
+     }
+
      return (
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
                <DialogTrigger asChild>
@@ -62,13 +62,9 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                </DialogTrigger>
                <DialogOverlay className="backdrop-blur-[2px]">
                     <DialogContent
-                         className={`sm:max-w-[475px] max-h-[640px] overflow-y-scroll ${customScrollbar}`}
-                         onInteractOutside={(e) => {
-                              if (isLoading) e.preventDefault()
-                         }}
-                         onEscapeKeyDown={(e) => {
-                              if (isLoading) e.preventDefault()
-                         }}
+                         className='sm:max-w-[475px] max-h-[640px]'
+                         onInteractOutside={e => handleOnLoading(e)}
+                         onEscapeKeyDown={e => handleOnLoading(e)}
                          showCloseButton={!isLoading}
                     >
                          <DialogHeader>
@@ -96,7 +92,7 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                                              <div className="w-full aspect-[3/2]">
                                                   <img
                                                        alt="Preview"
-                                                       className="absolute top-0 left-0 h-full w-full object-cover"
+                                                       className="absolute top-0 left-0 h-full w-full object-contain"
                                                        src={filePreview}
                                                   />
                                              </div>
