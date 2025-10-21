@@ -1,16 +1,13 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import SearchBar from './components/search-bar'
-import { Star } from 'lucide-react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import Image from 'next/image'
-import { Card } from '@/components/ui/card';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import MarketplaceHeader from './components/MarketplaceHeader';
+import FilterSidebar from './components/FilterSidebar';
+import MarketplaceGrid from './components/MarketplaceGrid';
 
 export default function MarketplacePage() {
-    const [searchQuery, setSearchQuery] = useState('')
-    const [searchInput, setSearchInput] = useState('')
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchInput, setSearchInput] = useState('');
 
     const marketplaceItems = [
         {
@@ -126,114 +123,41 @@ export default function MarketplacePage() {
     ];
 
     const filteredItems = marketplaceItems.filter(item => {
-        const query = searchQuery.toLowerCase()
+        const query = searchQuery.toLowerCase();
         return (
             item.title.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query) ||
-            item.userName.toLowerCase().includes(query)
-        )
-    })
-
-    const handleSearch = (query: string) => {
-        setSearchInput(query)
-    }
+            item.description.toLowerCase().includes(query)
+        );
+    });
 
     useEffect(() => {
-        setTimeout(() => {
-            setSearchQuery(searchInput)
-        }, 500)
-    }, [searchInput])
-
-    const handleSubmit = (query: string) => {
-        setSearchInput(query)
-    }
+        const timeout = setTimeout(() => {
+            setSearchQuery(searchInput);
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, [searchInput]);
 
     return (
-        <div className='min-h-screen'>
-            <div className='container flex flex-col mx-auto  pt-13'>
-                <div className='sticky top-10 z-20  p-5 py-8 rounded-2xl backdrop-blur-2xl'>
-                    <h1 className='font-extrabold text-4xl uppercase mb-2'>Your <span className='text-purple-500'>Marketplace</span> for Creativity</h1>
-                    <p className='mb-10'>Buy, sell, and showcase stunning photos & professional presets in one place</p>
-                    <SearchBar
-                        placeholder="Search for presets..."
-                        onSearch={handleSearch}
-                        onSubmit={handleSubmit}
-                        className='mb-5'
+        <div className="min-h-screen">
+            <div className="container mx-auto py-10">
+                <MarketplaceHeader />
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <FilterSidebar
+                        searchInput={searchInput}
+                        onSearchChange={setSearchInput}
+                        searchQuery={searchQuery}
+                        resultsCount={filteredItems.length}
                     />
 
-                    {searchQuery && (
-                        <div>
-                            <p className='font-bold text-lg'>Found <span className='text-purple-500'>{filteredItems.length}</span> resul{filteredItems.length !== 1 ? 's' : ''} for &quot;<span className='text-purple-500'>{searchQuery}</span>&quot;</p>
-                        </div>
-                    )}
-                    <div className='border-t border-grey/10 my-3' />
-                </div>
-                <div className='p-5 bg-[var(--color-box-inside)] min-h-screen rounded-xl'>
-                    {searchQuery && filteredItems.length === 0 && (
-                        <div className='text-center py-10 text-gray-400'>
-                            <p className='text-lg mb-2'>No items found</p>
-                            <p>Try searching with different keywords</p>
-                        </div>
-                    )}
-
-                    <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                        {filteredItems.map((item) => (
-                            <Link href={`/marketplace/${item.id}`} key={item.id}>
-                                <Card
-                                    key={item.id}
-                                    className='bg-[var(--mantine-color-body)] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden h-fit cursor-pointer pt-0'
-                                >
-                                    <div className="relative w-full aspect-[3/2] flex justify-center items-center overflow-hidden bg-white rounded-2xl rounded-bl-none rounded-br-none">
-                                        <Image
-                                            src={item.image ?? '/camera1.jpg'}
-                                            alt={item.title}
-                                            fill
-                                            sizes="100%"
-                                            priority
-                                            className="object-contain hover:opacity-90 transition-all duration-300 rounded-2xl rounded-bl-none rounded-br-none"
-                                        />
-                                    </div>
-
-                                    <div className='p-4'>
-                                        <h3 className='text-xl font-semibold text-white mb-3 line-clamp-2'>
-                                            {item.title}
-                                        </h3>
-
-                                        <div className='flex items-center gap-2 mb-4'>
-                                            <Avatar>
-                                                <AvatarImage src={item.userAvatar} />
-                                                <AvatarFallback>{'/camera1.jpg'}</AvatarFallback>
-                                            </Avatar>
-                                            <span className='text-sm text-gray-300'>
-                                                {item.userName}
-                                            </span>
-                                        </div>
-
-                                        <div className='flex justify-between items-center'>
-                                            <div>
-                                                <p className='text-xs text-gray-400 mb-1'>
-                                                    Price
-                                                </p>
-                                                <p className='text-lg font-bold text-white'>
-                                                    {item.price}
-                                                </p>
-                                            </div>
-                                            <div className='text-right'>
-                                                <p className='text-xs text-gray-400 mb-1'>
-                                                    Rating
-                                                </p>
-                                                <p className='flex justify-end items-center gap-1 text-lg font-semibold'>
-                                                    {item.rating} <Star fill='yellow' stroke='none' color='yellow' />
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Card>
-                            </Link>
-                        ))}
+                    <div className="col-span-3">
+                        <MarketplaceGrid
+                            items={filteredItems}
+                            searchQuery={searchQuery}
+                        />
                     </div>
                 </div>
             </div>
         </div>
-    )
+    );
 }
