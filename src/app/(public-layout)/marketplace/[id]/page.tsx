@@ -3,6 +3,14 @@ import ImageGallery from './components/ImageGallery'
 import ProductInfo from './components/ProductInfo'
 import ProductDetailsTabs from './components/ProductDetailsTabs'
 import RelatedProducts from './components/RelatedProducts'
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 
 export default function ProductDetail() {
     const demoProduct = {
@@ -97,7 +105,7 @@ export default function ProductDetail() {
             name: "Moody Film Tones",
             price: 24.99,
             originalPrice: 39.99,
-            image: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=400&h=300&fit=crop",
+            image: "https://i.pinimg.com/736x/b9/6b/67/b96b678ca060a545fe78108db68da9cf.jpg",
             rating: 4.7,
             downloads: 1850
         },
@@ -106,7 +114,7 @@ export default function ProductDetail() {
             name: "Vintage Summer Vibes",
             price: 19.99,
             originalPrice: 29.99,
-            image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=400&h=300&fit=crop",
+            image: "https://i.pinimg.com/736x/3d/96/54/3d96548c8a3d31c0f0e88441c9c6f9de.jpg",
             rating: 4.9,
             downloads: 2340
         },
@@ -115,7 +123,7 @@ export default function ProductDetail() {
             name: "Dark & Moody Portrait",
             price: 34.99,
             originalPrice: 54.99,
-            image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=300&fit=crop",
+            image: "https://i.pinimg.com/736x/2e/9b/8d/2e9b8d1a1ba8e2df6e2275feff4b5052.jpg",
             rating: 4.6,
             downloads: 1620
         },
@@ -124,7 +132,7 @@ export default function ProductDetail() {
             name: "Bright & Airy Collection",
             price: 27.99,
             originalPrice: 44.99,
-            image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop",
+            image: "https://i.pinimg.com/1200x/dd/d1/57/ddd157d3da927f59baefed4b96cf9c0c.jpg",
             rating: 4.8,
             downloads: 2190
         }
@@ -132,7 +140,22 @@ export default function ProductDetail() {
 
     return (
         <div className='container py-8'>
-            <div className='grid grid-cols-14 gap-6'>
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/forum">Home</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/marketplace">Marketplace</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href={`/marketplace/${demoProduct.id}`}>{demoProduct.name}</BreadcrumbLink>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
+            <div className='mt-8 grid grid-cols-14 gap-6'>
                 {/* Image Gallery */}
                 <ImageGallery images={demoProduct.images} productName={demoProduct.name} />
 

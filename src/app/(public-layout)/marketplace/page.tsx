@@ -4,6 +4,14 @@ import React, { useEffect, useState } from 'react';
 import MarketplaceHeader from './components/MarketplaceHeader';
 import FilterSidebar from './components/FilterSidebar';
 import MarketplaceGrid from './components/MarketplaceGrid';
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 
 export default function MarketplacePage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -140,6 +148,17 @@ export default function MarketplacePage() {
     return (
         <div className="min-h-screen">
             <div className="container mx-auto py-10">
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/forum">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/marketplace">Marketplace</BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
                 <MarketplaceHeader />
 
                 <div className="grid grid-cols-1 md:grid-cols-14 gap-6">

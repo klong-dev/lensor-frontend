@@ -1,8 +1,6 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Card } from '@/components/ui/card';
 import { Star } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface MarketplaceItem {
     id: number;

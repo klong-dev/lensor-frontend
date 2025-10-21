@@ -7,7 +7,7 @@ export const ROUTES = {
      CURRENT_PROFILE: '/profile',
      PORTFOLIO: '/portfolio',
      MESSAGE: '/message',
-     MARKETPLACE: '/marketplace',
+     MARKETPLACE: '/marketplace-2',
      PURCHASED_PRESET: '/purchased-presets',
      CART: '/cart',
      SETTING: '/setting',

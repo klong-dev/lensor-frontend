@@ -30,13 +30,20 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
                         src={images[selectedImage]}
                         alt={productName}
                         position='left'
-                        className={`rounded-2xl object-cover transition-opacity duration-300 ease-in-out ${fade ? 'opacity-100' : 'opacity-0'}`}/>
+                        className={`rounded-2xl object-cover transition-opacity duration-300 ease-in-out ${fade ? 'opacity-100' : 'opacity-0'}`} />
                     <ImageComparisonImage
                         src={images[selectedImage]}
                         alt={productName}
                         position='right'
                         className={`rounded-2xl object-cover transition-opacity duration-300 ease-in-out ${fade ? 'opacity-100' : 'opacity-0'} filter brightness-75 contrast-125 saturate-150`} />
                     <ImageComparisonSlider className='bg-white w-[1px]' />
+                    
+                    <div className='absolute top-5 left-5 text-sm font-semibold text-white pointer-events-none' data-position="left">
+                        {productName}
+                    </div>
+                    <div className='absolute top-5 right-5 text-sm font-semibold text-white pointer-events-none' data-position="right">
+                        Normal
+                    </div>
                 </ImageComparison>
             </div>
 
