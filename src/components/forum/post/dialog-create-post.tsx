@@ -36,9 +36,8 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
      }
 
      const handlePost = async () => {
-          const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
           setIsLoading(true)
-          await sleep(5000)
+          console.log('Send to server: ', files)
           setIsOpen(false)
           setIsLoading(false)
      }
@@ -48,7 +47,6 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
           setIsLoading(true)
           if (files.length > 0) {
                try {
-                    // Promise.all() đợi tất cả Promises resolve song song
                     const resizedPreviews = await Promise.all(
                          files.map(file => resizeImage(file))
                     )
@@ -89,7 +87,8 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                               </InputGroup>
 
                               {!filePreview
-                                   ? <Dropzone
+                                   ?
+                                   <Dropzone
                                         accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
                                         onDrop={handleDrop}
                                         onError={console.error}
@@ -104,13 +103,16 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                                              </div>
                                         </DropzoneContent>
                                    </Dropzone>
-                                   : <CarouselPreview files={filePreview} handleClearImage={handleClearImage} />}
+                                   :
+                                   <CarouselPreview files={filePreview} handleClearImage={handleClearImage} />}
                          </div>
                          <DialogFooter>
                               <DialogClose asChild>
                                    <Button variant="outline" onClick={handleClose}>Cancel</Button>
                               </DialogClose>
-                              <Button onClick={handlePost} disabled={isLoading}><Spinner className={isLoading ? '' : 'hidden'} />Post</Button>
+                              <Button onClick={handlePost} disabled={isLoading}><Spinner className={isLoading ? '' : 'hidden'} />
+                                   Post
+                              </Button>
                          </DialogFooter>
                     </DialogContent>
                </DialogOverlay>
