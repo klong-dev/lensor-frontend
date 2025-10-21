@@ -16,17 +16,23 @@ import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group"
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone'
 import { Spinner } from "@/components/ui/spinner"
+import { resizeImage } from "@/utils/imageTools"
 import React, { useState } from 'react'
+import CarouselPreview from "./carousel-preview"
 
 export default function DialogCreatePost({ children }: { children: React.ReactNode }) {
      const [files, setFiles] = useState<File[] | undefined>()
-     const [filePreview, setFilePreview] = useState<string | undefined>()
+     const [filePreview, setFilePreview] = useState<string[] | undefined>()
      const [isOpen, setIsOpen] = useState(false)
      const [isLoading, setIsLoading] = useState(false)
 
-     const handleClose = () => {
-          setFiles(undefined)
+     const handleClearImage = () => {
           setFilePreview(undefined)
+          setFiles(undefined)
+     }
+
+     const handleClose = () => {
+          handleClearImage()
      }
 
      const handlePost = async () => {
@@ -37,18 +43,21 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
           setIsLoading(false)
      }
 
-     const handleDrop = (files: File[]) => {
-          console.log(files)
+     const handleDrop = async (files: File[]) => {
           setFiles(files)
+          setIsLoading(true)
           if (files.length > 0) {
-               const reader = new FileReader()
-               reader.onload = (e) => {
-                    if (typeof e.target?.result === 'string') {
-                         setFilePreview(e.target?.result)
-                    }
+               try {
+                    // Promise.all() đợi tất cả Promises resolve song song
+                    const resizedPreviews = await Promise.all(
+                         files.map(file => resizeImage(file))
+                    )
+                    setFilePreview(resizedPreviews)
+               } catch (error) {
+                    console.error('Error processing images:', error)
                }
-               reader.readAsDataURL(files[0])
           }
+          setIsLoading(false)
      }
 
      const handleOnLoading = (e: CustomEvent | React.KeyboardEvent<Element> | KeyboardEvent) => {
@@ -79,26 +88,23 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                                    <InputGroupTextarea className="h-30" placeholder="Your post description" />
                               </InputGroup>
 
-                              <Dropzone
-                                   accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
-                                   onDrop={handleDrop}
-                                   onError={console.error}
-                                   src={files}
-                                   className="w-full aspect-[3/2]"
-                              >
-                                   <DropzoneEmptyState />
-                                   <DropzoneContent>
-                                        {filePreview && (
-                                             <div className="w-full aspect-[3/2]">
-                                                  <img
-                                                       alt="Preview"
-                                                       className="absolute top-0 left-0 h-full w-full object-contain"
-                                                       src={filePreview}
-                                                  />
+                              {!filePreview
+                                   ? <Dropzone
+                                        accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
+                                        onDrop={handleDrop}
+                                        onError={console.error}
+                                        src={files}
+                                        className="w-full aspect-[3/2]"
+                                        maxFiles={5}
+                                   >
+                                        <DropzoneEmptyState />
+                                        <DropzoneContent>
+                                             <div className="w-full aspect-[3/2] flex justify-center items-center gap-2">
+                                                  <Spinner /> Uploading....
                                              </div>
-                                        )}
-                                   </DropzoneContent>
-                              </Dropzone>
+                                        </DropzoneContent>
+                                   </Dropzone>
+                                   : <CarouselPreview files={filePreview} handleClearImage={handleClearImage} />}
                          </div>
                          <DialogFooter>
                               <DialogClose asChild>

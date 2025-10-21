@@ -8,19 +8,16 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-interface MainHeaderProps {
-  isLogin: boolean
-}
-
 export default function MainHeader() {
   const t = useTranslations('MainHeader')
   const currentPath = usePathname()
+  const [isLogin, setIsLogin] = useState(true)
   console.log(currentPath)
 
   const navLinkItems = [
     { title: 'Forum', href: ROUTES.FORUM },
-    { title: 'Marketplace', href: ROUTES.MARTKETPLACE },
-    { title: 'Create portfolio', href: ROUTES.MARTKETPLACE }
+    { title: 'Marketplace', href: ROUTES.MARKETPLACE },
+    { title: 'Create portfolio', href: ROUTES.MARKETPLACE }
   ]
 
   return (
@@ -34,28 +31,30 @@ export default function MainHeader() {
             </Link>
           )}
         </div>
-        <div className='w-64 flex items-center gap-5'>
-          <div className='flex justify-end gap-5 hidden'>
-            <Button variant='secondary'>Register</Button>
-            <Button>Login</Button>
-          </div>
-
-          <div className='flex justify-end items-center gap-3'>
-            <div className='flex items-center'>
-              <Link href={ROUTES.CURRENT_PROFILE} className='max-w-32 overflow-hidden text-nowrap text-ellipsis'>Nguyễn Huỳnh Bảo Trọng</Link>
-              <DropdownMenuUser><Button variant='ghost' size='icon'><ChevronDown /></Button></DropdownMenuUser>
-            </div>
-            <Link href={ROUTES.CURRENT_PROFILE}>
-              <Avatar>
-                <AvatarImage src="https://github.com/shadcn.png" />
-                <AvatarFallback>BT</AvatarFallback>
-              </Avatar>
-            </Link>
-          </div>
-
-          <div className='flex'>
-            <Button variant='ghost' size='icon'><Link href={ROUTES.NOTIFICATION}><Bell /></Link></Button>
-          </div>
+        <div className='w-64 flex justify-end items-center gap-5'>
+          {!isLogin
+            ? <>
+              <Link href={ROUTES.LOGIN}><Button variant='secondary'>Register</Button></Link>
+              <Link href={ROUTES.LOGIN}><Button>Login</Button></Link>
+            </>
+            : <>
+              <div className='flex justify-end items-center gap-1'>
+                <div className='flex items-center'>
+                  <Link href={ROUTES.CURRENT_PROFILE} className='max-w-32 overflow-hidden text-nowrap text-ellipsis'>Nguyễn Huỳnh Bảo Trọng</Link>
+                  <DropdownMenuUser><Button variant='ghost' size='icon'><ChevronDown /></Button></DropdownMenuUser>
+                </div>
+                <Link href={ROUTES.CURRENT_PROFILE}>
+                  <Avatar>
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>BT</AvatarFallback>
+                  </Avatar>
+                </Link>
+              </div>
+              <div className='flex'>
+                <Button variant='ghost' size='icon'><Link href={ROUTES.NOTIFICATION}><Bell /></Link></Button>
+              </div>
+            </>
+          }
         </div>
       </div>
     </header>
@@ -73,6 +72,7 @@ import {
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { useTheme } from 'next-themes'
+import { useState } from 'react'
 
 function DropdownMenuUser({ children }: { children: React.ReactNode }) {
   const { setTheme, resolvedTheme } = useTheme()
