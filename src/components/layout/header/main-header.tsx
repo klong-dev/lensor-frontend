@@ -3,7 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/path'
-import { Bell, ChevronDown } from 'lucide-react'
+import { Bell, ChevronDown, ShoppingCart } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -51,6 +51,7 @@ export default function MainHeader() {
                 </Link>
               </div>
               <div className='flex'>
+                <Button variant='ghost' size='icon'><Link href={ROUTES.CART}><ShoppingCart /></Link></Button>
                 <Button variant='ghost' size='icon'><Link href={ROUTES.NOTIFICATION}><Bell /></Link></Button>
               </div>
             </>
@@ -92,6 +93,7 @@ function DropdownMenuUser({ children }: { children: React.ReactNode }) {
           <Switch id="dark-mode" onCheckedChange={handleChangeTheme} checked={resolvedTheme === 'dark'} />
           <Label htmlFor="dark-mode">Dark Mode</Label>
         </DropdownMenuItem>
+        <DropdownMenuItem>Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
