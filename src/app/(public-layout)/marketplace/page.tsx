@@ -1,0 +1,203 @@
+'use client'
+
+import React, { useEffect, useState } from 'react';
+import MarketplaceHeader from './components/MarketplaceHeader';
+import FilterSidebar from './components/FilterSidebar';
+import MarketplaceGrid from './components/MarketplaceGrid';
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+
+export default function MarketplacePage() {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchInput, setSearchInput] = useState('');
+
+    const marketplaceItems = [
+        {
+            id: 1,
+            title: "Urban Photography Preset",
+            description: "Professional preset pack for urban street photography with moody tones.",
+            price: "$15.99",
+            image: "https://i.pinimg.com/1200x/3e/d5/5b/3ed55b7a8edad9e811900cd55ca50f05.jpg",
+            author: {
+                name: "Alex Chen",
+                avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+            },
+            rating: 4.8
+        },
+        {
+            id: 2,
+            title: "Nature Portrait Collection",
+            description: "Beautiful nature portraits with natural lighting and vibrant colors.",
+            price: "$24.99",
+            image: "https://i.pinimg.com/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.jpg",
+            author: {
+                name: "Sarah Martinez",
+                avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+            },
+            rating: 4.9
+        },
+        {
+            id: 3,
+            title: "Vintage Film Presets",
+            description: "Classic film look presets for that authentic vintage aesthetic.",
+            price: "$12.99",
+            image: "https://i.pinimg.com/736x/3f/93/c6/3f93c61810a9a68442366031087841a9.jpg",
+            author: {
+                name: "Mike Johnson",
+                avatar: "https://randomuser.me/api/portraits/men/65.jpg"
+            },
+            rating: 4.7
+        },
+        {
+            id: 4,
+            title: "Happy Robot 032",
+            description: "Cute robot character for digital art projects.",
+            price: "$300.00",
+            image: "https://i.pinimg.com/1200x/7d/66/04/7d6604111a2fb44b73a4bc8b643e479d.jpg",
+            author: {
+                name: "BeKind2Robots",
+                avatar: "https://randomuser.me/api/portraits/men/12.jpg"
+            },
+            rating: 4.6
+        },
+        {
+            id: 5,
+            title: "Cinematic LUT Pack",
+            description: "Transform your videos with cinematic LUTs for professional-grade color grading.",
+            price: "$19.99",
+            image: "https://i.pinimg.com/1200x/95/5b/43/955b437d7a0a91f60b944abf6a99a544.jpg",
+            author: {
+                name: "Emma Watson",
+                avatar: "https://randomuser.me/api/portraits/women/68.jpg"
+            },
+            rating: 4.9
+        },
+        {
+            id: 6,
+            title: "Abstract 3D Models",
+            description: "Pack of 10 abstract 3D models perfect for motion design and concept art.",
+            price: "$45.00",
+            image: "https://i.pinimg.com/1200x/b4/fe/42/b4fe428c83502f66bbd2af43ae20b1dc.jpg",
+            author: {
+                name: "David Kim",
+                avatar: "https://randomuser.me/api/portraits/men/23.jpg"
+            },
+            rating: 4.8
+        },
+        {
+            id: 7,
+            title: "Moody Landscape Presets",
+            description: "Dark and dramatic tones for stunning landscape photography.",
+            price: "$17.99",
+            image: "https://i.pinimg.com/736x/fd/ac/3c/fdac3cc7c47d3fa7a0df6bce7be249eb.jpg",
+            author: {
+                name: "Liam Brown",
+                avatar: "https://randomuser.me/api/portraits/men/41.jpg"
+            },
+            rating: 4.7
+        },
+        {
+            id: 8,
+            title: "Minimal Portrait Pack",
+            description: "Clean and soft presets for minimalistic portrait photography.",
+            price: "$21.00",
+            image: "https://i.pinimg.com/736x/f7/80/44/f780449c1d678dcc7474cb20fb075ff8.jpg",
+            author: {
+                name: "Sophia Lee",
+                avatar: "https://randomuser.me/api/portraits/women/55.jpg"
+            },
+            rating: 4.8
+        },
+        {
+            id: 9,
+            title: "Golden Hour Magic",
+            description: "Warm presets to enhance golden hour and sunset photos.",
+            price: "$18.50",
+            image: "https://i.pinimg.com/1200x/29/fd/cc/29fdccf1df70d964d1b1be7ef163b594.jpg",
+            author: {
+                name: "Olivia Green",
+                avatar: "https://randomuser.me/api/portraits/women/33.jpg"
+            },
+            rating: 4.9
+        },
+        {
+            id: 10,
+            title: "Black & White Mastery",
+            description: "High-contrast black and white presets for timeless photography.",
+            price: "$14.00",
+            image: "https://i.pinimg.com/1200x/da/01/9c/da019c2984b8381140b07c17ca3fb353.jpg",
+            author: {
+                name: "Ethan White",
+                avatar: "https://randomuser.me/api/portraits/men/77.jpg"
+            },
+            rating: 4.6
+        },
+        {
+            id: 11,
+            title: "Travel Explorer Presets",
+            description: "Vibrant presets perfect for travel bloggers and explorers.",
+            price: "$22.00",
+            image: "https://i.pinimg.com/736x/39/b3/be/39b3be05e8e691e67032df91f831225e.jpg",
+            author: {
+                name: "Isabella Cruz",
+                avatar: "https://randomuser.me/api/portraits/women/21.jpg"
+            },
+            rating: 4.8
+        }
+    ];
+
+    const filteredItems = marketplaceItems.filter(item => {
+        const query = searchQuery.toLowerCase();
+        return (
+            item.title.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query)
+        );
+    });
+
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setSearchQuery(searchInput);
+        }, 500);
+        return () => clearTimeout(timeout);
+    }, [searchInput]);
+
+    return (
+        <div className="min-h-screen">
+            <div className="container mx-auto py-10">
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/forum">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/marketplace">Marketplace</BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+                <MarketplaceHeader />
+
+                <div className="grid grid-cols-1 md:grid-cols-14 gap-6">
+                    <FilterSidebar
+                        searchInput={searchInput}
+                        onSearchChange={setSearchInput}
+                        searchQuery={searchQuery}
+                        resultsCount={filteredItems.length}
+                    />
+
+                    <div className="col-span-11">
+                        <MarketplaceGrid
+                            items={filteredItems}
+                            searchQuery={searchQuery}
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
