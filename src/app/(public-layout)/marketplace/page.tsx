@@ -6,6 +6,7 @@ import { Star } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import Image from 'next/image'
 import { Card } from '@/components/ui/card';
+import Link from 'next/link';
 
 export default function MarketplacePage() {
     const [searchQuery, setSearchQuery] = useState('')
@@ -177,56 +178,58 @@ export default function MarketplacePage() {
 
                     <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
                         {filteredItems.map((item) => (
-                            <Card
-                                key={item.id}
-                                className='bg-[var(--mantine-color-body)] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden h-fit cursor-pointer pt-0'
-                            >
-                                <div className="relative w-full aspect-[3/2] flex justify-center items-center overflow-hidden bg-white rounded-2xl rounded-bl-none rounded-br-none">
-                                    <Image
-                                        src={item.image ?? '/camera1.jpg'}
-                                        alt={item.title}
-                                        fill
-                                        sizes="100%"
-                                        priority
-                                        className="object-contain hover:opacity-90 transition-all duration-300 rounded-2xl rounded-bl-none rounded-br-none"
-                                    />
-                                </div>
-
-                                <div className='p-4'>
-                                    <h3 className='text-xl font-semibold text-white mb-3 line-clamp-2'>
-                                        {item.title}
-                                    </h3>
-
-                                    <div className='flex items-center gap-2 mb-4'>
-                                        <Avatar>
-                                            <AvatarImage src={item.userAvatar} />
-                                            <AvatarFallback>{'/camera1.jpg'}</AvatarFallback>
-                                        </Avatar>
-                                        <span className='text-sm text-gray-300'>
-                                            {item.userName}
-                                        </span>
+                            <Link href={`/marketplace/${item.id}`} key={item.id}>
+                                <Card
+                                    key={item.id}
+                                    className='bg-[var(--mantine-color-body)] rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden h-fit cursor-pointer pt-0'
+                                >
+                                    <div className="relative w-full aspect-[3/2] flex justify-center items-center overflow-hidden bg-white rounded-2xl rounded-bl-none rounded-br-none">
+                                        <Image
+                                            src={item.image ?? '/camera1.jpg'}
+                                            alt={item.title}
+                                            fill
+                                            sizes="100%"
+                                            priority
+                                            className="object-contain hover:opacity-90 transition-all duration-300 rounded-2xl rounded-bl-none rounded-br-none"
+                                        />
                                     </div>
 
-                                    <div className='flex justify-between items-center'>
-                                        <div>
-                                            <p className='text-xs text-gray-400 mb-1'>
-                                                Price
-                                            </p>
-                                            <p className='text-lg font-bold text-white'>
-                                                {item.price}
-                                            </p>
+                                    <div className='p-4'>
+                                        <h3 className='text-xl font-semibold text-white mb-3 line-clamp-2'>
+                                            {item.title}
+                                        </h3>
+
+                                        <div className='flex items-center gap-2 mb-4'>
+                                            <Avatar>
+                                                <AvatarImage src={item.userAvatar} />
+                                                <AvatarFallback>{'/camera1.jpg'}</AvatarFallback>
+                                            </Avatar>
+                                            <span className='text-sm text-gray-300'>
+                                                {item.userName}
+                                            </span>
                                         </div>
-                                        <div className='text-right'>
-                                            <p className='text-xs text-gray-400 mb-1'>
-                                                Rating
-                                            </p>
-                                            <p className='flex justify-end items-center gap-1 text-lg font-semibold'>
-                                                {item.rating} <Star fill='yellow' stroke='none' color='yellow' />
-                                            </p>
+
+                                        <div className='flex justify-between items-center'>
+                                            <div>
+                                                <p className='text-xs text-gray-400 mb-1'>
+                                                    Price
+                                                </p>
+                                                <p className='text-lg font-bold text-white'>
+                                                    {item.price}
+                                                </p>
+                                            </div>
+                                            <div className='text-right'>
+                                                <p className='text-xs text-gray-400 mb-1'>
+                                                    Rating
+                                                </p>
+                                                <p className='flex justify-end items-center gap-1 text-lg font-semibold'>
+                                                    {item.rating} <Star fill='yellow' stroke='none' color='yellow' />
+                                                </p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Card>
+                                </Card>
+                            </Link>
                         ))}
                     </div>
                 </div>
