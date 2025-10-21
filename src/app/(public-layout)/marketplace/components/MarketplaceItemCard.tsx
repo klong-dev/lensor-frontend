@@ -22,18 +22,17 @@ interface MarketplaceItemCardProps {
 export default function MarketplaceItemCard({ item }: MarketplaceItemCardProps) {
     return (
         <Link href={`/marketplace/${item.id}`}>
-            <Card className="bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow h-min-[442px] h-full">
-                <div className="relative w-full aspect-[3/2]">
-                    <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        sizes="100%"
-                        priority
-                        className="object-cover hover:opacity-90 transition-opacity"
-                    />
-                </div>
-                <div className="p-4">
+
+            <div className="relative w-full aspect-square bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:opacity-80 transition-shadow h-min-[442px] h-full">
+                <Image
+                    src={item.image}
+                    alt={item.title}
+                    fill
+                    sizes="100%"
+                    priority
+                    className="object-cover hover:opacity-90 transition-opacity"
+                />
+                <div className="p-4 absolute inset-0 z-10 flex flex-col justify-end bg-gradient-to-t from-black to-transparent">
                     <h3 className="text-lg font-semibold mb-2 truncate">{item.title}</h3>
                     <p className="text-sm text-gray-400 mb-4 line-clamp-2">{item.description}</p>
                     <div className="flex items-center justify-between">
@@ -47,7 +46,8 @@ export default function MarketplaceItemCard({ item }: MarketplaceItemCardProps) 
                         </div>
                     </div>
                 </div>
-            </Card>
+            </div>
+
         </Link>
     );
 }

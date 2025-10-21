@@ -142,7 +142,7 @@ export default function MarketplacePage() {
             <div className="container mx-auto py-10">
                 <MarketplaceHeader />
 
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-14 gap-6">
                     <FilterSidebar
                         searchInput={searchInput}
                         onSearchChange={setSearchInput}
@@ -150,7 +150,7 @@ export default function MarketplacePage() {
                         resultsCount={filteredItems.length}
                     />
 
-                    <div className="col-span-3">
+                    <div className="col-span-11">
                         <MarketplaceGrid
                             items={filteredItems}
                             searchQuery={searchQuery}

@@ -18,7 +18,7 @@ interface FilterSidebarProps {
 
 export default function FilterSidebar({ searchInput, onSearchChange, searchQuery, resultsCount }: FilterSidebarProps) {
     return (
-        <div className="col-span-1 sticky top-20 self-start">
+        <div className="col-span-3 sticky top-20 self-start">
             <Card className="p-6 rounded-xl shadow-md border">
                 {/* Search Bar */}
                 <div className="mb-4">
@@ -27,7 +27,7 @@ export default function FilterSidebar({ searchInput, onSearchChange, searchQuery
                         value={searchInput}
                         onChange={(e) => onSearchChange(e.target.value)}
                         placeholder="Search presets..."
-                        className="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
+                        className="w-full text-sm p-3 rounded-lg border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all"
                     />
 
                     {searchQuery && (
