@@ -3,12 +3,10 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { useParams } from 'next/navigation'
+import { useUserStore } from '@/stores/user-store'
 import ProfileContent from './components/_profile-content/profile-content'
 import About from './components/about'
 import SuggestionList from './components/suggestion-list'
-import { authHelpers } from '@/lib/supabase'
-import { useUserStore } from '@/stores/user-store'
 
 export default function ProfilePage() {
      const isOwnProfile = false
