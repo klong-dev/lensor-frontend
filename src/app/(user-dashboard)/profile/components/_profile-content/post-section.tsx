@@ -4,7 +4,7 @@ import Post from '@/components/forum/post/post'
 import { usePosts } from '@/lib/hooks/usePostHooks'
 
 export default function PostSection() {
-  const { data, isLoading } = usePosts()
+  const { data } = usePosts()
 
   return (
     <div className='border border-black/10 rounded-2xl '>
