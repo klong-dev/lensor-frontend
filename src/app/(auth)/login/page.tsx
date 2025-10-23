@@ -6,112 +6,107 @@ import Image from 'next/image'
 
 export default function Page() {
   return (
-    <div className=" flex justify-center items-center h-screen w-screen dark:bg-gradient-to-br from-[#27282A] to-black py-0 px-2 overflow-hidden">
-      <div className="flex flex-col md:flex-row gap-6 justify-center items-center shadow-purple-400 shadow-md h-[650px] w-[1200px] border-white-1 rounded-4xl overflow-hidden p-6 ">
-        <div className="flex flex-col justify-center items-center w-full md:w-4/12 h-full rounded-4xl text-center py-8 md:py-0">
+    <div className="flex justify-center items-center h-screen w-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 py-0 px-2 overflow-hidden">
+      <div className="flex flex-col md:flex-row gap-6 justify-center items-center bg-black/40 backdrop-blur-xl border border-purple-500/30 shadow-2xl shadow-purple-500/20 h-[650px] w-[1200px] rounded-4xl overflow-hidden p-6">
+        <div className="flex flex-col justify-center items-center w-full md:w-5/12 h-full bg-gradient-to-br from-black to-transparent backdrop-blur-sm rounded-3xl border border-purple-500/20 text-center py-8 md:py-0 shadow-lg">
           <Link href='/' >
-            <h1 className='font-extrabold text-3xl md:text-4xl text-main-theme mb-4 md:mb-10 drop-shadow-md'>
+            <h1 className='font-extrabold text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-4 md:mb-10 drop-shadow-2xl'>
               Lensor
             </h1>
           </Link>
           <LoginForm />
         </div>
 
-        {/* <div className="w-full hidden md:w-7/12 h-full bg-[url('/camera1.jpg')] bg-cover bg-center rounded-4xl p-10 relative md:flex items-end">
-          <h2 className='uppercase font-extrabold opacity-40 text-5xl md:text-[51px] select-none text-white tracking-wide pb-4'>
-            Where vision <br />meets opportunity
-          </h2>
-        </div> */}
-        <div className='flex flex-col w-full md:w-8/12 gap-0 justify-center items-center h-full'>
-          <div className='w-full h-1/2 relative flex justify-center items-center'>
-            <InfiniteSlider speedOnHover={20} gap={24}>
+        <div className='flex flex-col w-full md:w-7/12 gap-2 justify-between items-center h-full'>
+          <div className='w-full h-1/2 relative flex justify-center items-center overflow-hidden'>
+            <InfiniteSlider speedOnHover={80}  gap={18}>
               <Image
-                src="https://i.pinimg.com/1200x/3e/d5/5b/3ed55b7a8edad9e811900cd55ca50f05.jpg"
+                src="https://i.pinimg.com/736x/0e/9b/8d/0e9b8d7be8ef4213d74afc9568668f4e.jpg"
                 alt="Urban Photography Preset"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.jpg"
+                src="https://i.pinimg.com/736x/bb/e3/fa/bbe3fa57c93e251a074ba91c07e88083.jpg"
                 alt="Nature Portrait Collection"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/736x/3f/93/c6/3f93c61810a9a68442366031087841a9.jpg"
+                src="https://i.pinimg.com/736x/5f/4a/f9/5f4af93d5dab52035c882bfb7c0cada9.jpg"
                 alt="Vintage Film Presets"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/7d/66/04/7d6604111a2fb44b73a4bc8b643e479d.jpg"
+                src="https://i.pinimg.com/736x/a6/03/fa/a603fa58ecfb8a6a71cba6daacadb821.jpg"
                 alt="Happy Robot 032"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/95/5b/43/955b437d7a0a91f60b944abf6a99a544.jpg"
+                src="https://i.pinimg.com/736x/40/00/b7/4000b7bf5aec646501ed7958e637f06f.jpg"
                 alt="Cinematic LUT Pack"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/b4/fe/42/b4fe428c83502f66bbd2af43ae20b1dc.jpg"
+                src="https://i.pinimg.com/736x/f3/b0/37/f3b0371f36abd9a5acdb26ba4b8ca456.jpg"
                 alt="Abstract 3D Models"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
             </InfiniteSlider>
           </div>
-          <div className='w-full h-1/2 relative'>
-            <InfiniteSlider speedOnHover={20} gap={24} reverse>
+          <div className='w-full h-1/2 relative flex justify-center items-center overflow-hidden'>
+            <InfiniteSlider speedOnHover={80} gap={18} reverse>
               <Image
-                src="https://i.pinimg.com/1200x/3e/d5/5b/3ed55b7a8edad9e811900cd55ca50f05.jpg"
+                src="https://i.pinimg.com/1200x/d8/ba/68/d8ba68dc0140e8a3778b3738b6d3f390.jpg"
                 alt="Urban Photography Preset"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.jpg"
+                src="https://i.pinimg.com/736x/14/2d/eb/142debd42b5aa5c3a49e853f34d824b9.jpg"
                 alt="Nature Portrait Collection"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/736x/3f/93/c6/3f93c61810a9a68442366031087841a9.jpg"
+                src="https://i.pinimg.com/736x/53/07/e5/5307e5c3386ce1f39eac02771e401b3e.jpg"
                 alt="Vintage Film Presets"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/7d/66/04/7d6604111a2fb44b73a4bc8b643e479d.jpg"
+                src="https://i.pinimg.com/736x/5c/7f/99/5c7f9934f4b91ed7e5a0b692c200b89b.jpg"
                 alt="Happy Robot 032"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/95/5b/43/955b437d7a0a91f60b944abf6a99a544.jpg"
+                src="https://i.pinimg.com/736x/74/35/66/7435667246898c42f1167195f46aa27f.jpg"
                 alt="Cinematic LUT Pack"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
               <Image
-                src="https://i.pinimg.com/1200x/b4/fe/42/b4fe428c83502f66bbd2af43ae20b1dc.jpg"
+                src="https://i.pinimg.com/736x/d5/e4/b8/d5e4b8b19367525324fd1c2e85d0441f.jpg"
                 alt="Abstract 3D Models"
-                height={300}
-                width={400}
-                className="object-cover rounded-2xl"
+                height={290}
+                width={350}
+                className="object-cover rounded-2xl h-[290px] w-[350px]"
               />
             </InfiniteSlider>
           </div>

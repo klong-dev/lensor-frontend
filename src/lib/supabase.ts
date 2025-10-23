@@ -30,13 +30,32 @@ export const authHelpers = {
     },
 
     signInWithOAuth: async (provider: 'google' | 'facebook' | 'github') => {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-            provider,
-            options: {
-                redirectTo: `${window.location.origin}/callback`
+        try {
+            const redirectUrl = `${window.location.origin}/callback`
+            console.log('Initiating OAuth with redirect:', redirectUrl)
+
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider,
+                options: {
+                    redirectTo: redirectUrl,
+                    skipBrowserRedirect: false,
+                }
+            })
+
+            if (error) {
+                console.error('OAuth error:', error)
+            } else {
+                console.log('OAuth initiated successfully:', data)
             }
-        })
-        return { data, error }
+
+            return { data, error }
+        } catch (err) {
+            console.error('Exception in signInWithOAuth:', err)
+            return {
+                data: { provider, url: '' },
+                error: new Error('Failed to initiate OAuth')
+            }
+        }
     },
 
 

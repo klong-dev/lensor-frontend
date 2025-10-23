@@ -9,6 +9,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { useUserStore } from '@/stores/user-store'
+import { ROUTES } from '@/constants/path'
 
 export function LoginForm(props: Record<string, never>) {
     const router = useRouter()
@@ -16,9 +17,14 @@ export function LoginForm(props: Record<string, never>) {
     const [error, setError] = useState('')
     const { user } = useUserStore()
 
-    useEffect(() => {
-        if (user) router.push('/')
-    }, [user, router])
+    // useEffect(() => {
+    //     if (user) {
+    //         setTimeout(() => {
+    //             toast.success('Login successfuly!')
+    //             router.replace(ROUTES.HOME)
+    //         }, 100)
+    //     }
+    // }, [user, router])
 
     // const [type, toggle] = useToggle(['login', 'register'])
     // const form = useForm({
@@ -105,14 +111,27 @@ export function LoginForm(props: Record<string, never>) {
         setError('')
 
         try {
-            const { error: oauthError } = await authHelpers.signInWithOAuth(provider)
+            const { data, error: oauthError } = await authHelpers.signInWithOAuth(provider)
 
             if (oauthError) {
                 setError(oauthError.message)
                 toast.error(oauthError.message)
                 setLoading(false)
+                return
             }
-            
+
+            // If no error and no redirect URL, something went wrong
+            if (!data?.url) {
+                console.error('No redirect URL returned from OAuth')
+                setError('Failed to initiate login. Please try again.')
+                toast.error('Failed to initiate login. Please try again.')
+                setLoading(false)
+                return
+            }
+
+            // OAuth redirect is happening, loading state will persist until redirect
+            console.log('Redirecting to OAuth provider:', data.url)
+
         } catch (err) {
             console.error('Error during social login:', err)
             setError('An error occurred during login. Please try again.')

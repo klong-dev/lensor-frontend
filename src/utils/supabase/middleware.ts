@@ -40,6 +40,7 @@ export async function updateSession(request: NextRequest) {
      if (
           !user &&
           !request.nextUrl.pathname.startsWith('/login') &&
+          !request.nextUrl.pathname.startsWith('/callback') &&
           !request.nextUrl.pathname.startsWith('/marketplace') &&
           !request.nextUrl.pathname.startsWith('/forum') &&
           !request.nextUrl.pathname.startsWith('/error')
