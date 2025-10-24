@@ -52,7 +52,7 @@ export function CartItem({
             <div className="flex-1 flex flex-col justify-between">
                 <div>
                     <h3 className="font-semibold text-base">{title}</h3>
-                    <p className="text-sm text-gray-600">by {author}</p>
+                    <p className="text-sm text-muted-foreground">by {author}</p>
                 </div>
 
                 <div className="flex items-center gap-3">

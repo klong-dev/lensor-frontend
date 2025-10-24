@@ -39,7 +39,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                                 unoptimized
                             />
                             <div className="p-4 absolute inset-0 z-10 flex flex-col justify-end bg-gradient-to-t from-black to-transparent">
-                                <h3 className="text-lg font-semibold mb-2 truncate">{product.name}</h3>
+                                <h3 className="text-lg text-white font-semibold mb-2 truncate">{product.name}</h3>
 
                                 {product.author && (
                                     <div className="flex items-center gap-2 mb-3">
@@ -49,22 +49,22 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                                                 {product.author.name.charAt(0).toUpperCase()}
                                             </AvatarFallback>
                                         </Avatar>
-                                        <span className="text-xs text-gray-300">{product.author.name}</span>
+                                        <span className="text-xs text-white">{product.author.name}</span>
                                     </div>
                                 )}
 
                                 <div className="flex items-end justify-between">
                                     <div>
-                                        <p className="text-xs text-gray-400">Price</p>
+                                        <p className="text-xs text-muted">Price</p>
                                         <div className='flex items-center gap-2'>
-                                            <span className="text-lg font-bold">${product.price}</span>
-                                            <span className='text-xs text-gray-400 line-through'>${product.originalPrice}</span>
+                                            <span className="text-lg text-white font-bold">${product.price}</span>
+                                            <span className='text-xs text-muted-foreground line-through'>${product.originalPrice}</span>
                                         </div>
                                     </div>
                                     <div className='flex items-center gap-1 mb-2'>
                                         <Star fill="yellow" stroke="none" color="yellow" className="w-4 h-4" />
-                                        <span className="text-sm font-semibold">{product.rating}</span>
-                                        <span className='text-xs text-gray-400'>({product.downloads})</span>
+                                        <span className="text-sm text-white font-semibold">{product.rating}</span>
+                                        <span className='text-xs text-white '>({product.downloads})</span>
                                     </div>
                                 </div>
                             </div>

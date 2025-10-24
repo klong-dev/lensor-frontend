@@ -4,9 +4,9 @@ import React, { useState } from 'react'
 import { ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { CartItem } from './components/CartItem'
-import { OrderSummary } from './components/OrderSummary'
-import { SpecialInstructions } from './components/SpecialInstructions'
+import { CartItem } from './components/cart-item'
+import { OrderSummary } from './components/order-summary'
+import { SpecialInstructions } from './components/special-instructions'
 import Link from 'next/link'
 
 interface CartItemType {
@@ -86,19 +86,18 @@ export default function Cart() {
   }
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const tax = subtotal * 0.08 // 8% tax
   const shipping = 15.00
 
   return (
     <div className="min-h-screen container px-6">
       <div className="max-w-7xl mx-auto px-4 py-8">
 
-          <Link href={'/marketplace'} className="mb-6">
-            <Button variant="ghost" className="mb-4 -ml-2">
-              <ChevronLeft className="h-4 w-4 mr-1" />
-              Continue Shopping
-            </Button>
-          </Link>
+        <Link href={'/marketplace'} className="mb-6">
+          <Button variant="ghost" className="mb-4 -ml-2">
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Continue Shopping
+          </Button>
+        </Link>
 
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
@@ -124,7 +123,7 @@ export default function Cart() {
               <CardContent>
                 {cartItems.length === 0 ? (
                   <div className="text-center py-12">
-                    <p className="text-gray-500">Your cart is empty</p>
+                    <p className="text-muted-foreground">Your cart is empty</p>
                   </div>
                 ) : (
                   <div>
@@ -143,12 +142,11 @@ export default function Cart() {
 
             <SpecialInstructions />
           </div>
-          
+
           <div className="lg:col-span-1">
             <div className="sticky top-20">
               <OrderSummary
                 subtotal={subtotal}
-                tax={tax}
                 shipping={shipping}
                 itemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
               />

@@ -1,16 +1,14 @@
-import React from 'react'
-import ImageGallery from './components/ImageGallery'
-import ProductInfo from './components/ProductInfo'
-import ProductDetailsTabs from './components/ProductDetailsTabs'
-import RelatedProducts from './components/RelatedProducts'
 import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
+    BreadcrumbSeparator
 } from "@/components/ui/breadcrumb"
+import ImageGallery from './components/image-gallery'
+import ProductDetailsTabs from './components/product-details-tabs'
+import ProductInfo from './components/product-info'
+import RelatedProducts from './components/related-products'
 
 export default function ProductDetail() {
     const demoProduct = {
@@ -159,7 +157,7 @@ export default function ProductDetail() {
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/forum">Home</BreadcrumbLink>
+                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
@@ -171,6 +169,7 @@ export default function ProductDetail() {
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
+            
             <div className='mt-8 grid grid-cols-14 gap-6'>
                 {/* Image Gallery */}
                 <ImageGallery images={demoProduct.images} productName={demoProduct.name} />

@@ -8,15 +8,24 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Button } from '@/components/ui/button';
 
 interface FilterSidebarProps {
     searchInput: string;
     onSearchChange: (value: string) => void;
     searchQuery: string;
     resultsCount: number;
+    filters: {
+        software: string;
+        price: string;
+        rating: string;
+    };
+    onFilterChange: (filters: { software: string; price: string; rating: string }) => void;
+    resetFilter: boolean;
+    onResetFilter: () => void;
 }
 
-export default function FilterSidebar({ searchInput, onSearchChange, searchQuery, resultsCount }: FilterSidebarProps) {
+export default function FilterSidebar({ searchInput, onSearchChange, searchQuery, resultsCount, filters, onFilterChange, resetFilter, onResetFilter }: FilterSidebarProps) {
     return (
         <div className="col-span-3 sticky top-20 self-start">
             <Card className="p-6 rounded-xl shadow-md border">
@@ -40,16 +49,18 @@ export default function FilterSidebar({ searchInput, onSearchChange, searchQuery
                     )}
                 </div>
 
-                {/* Filter Options */}
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                     <Filter className="w-5 h-5" />
                     Filter By
                 </h2>
 
                 <div className="space-y-4">
+
                     <div>
-                        <label className="block text-sm font-semibold mb-2">Compatibility</label>
-                        <Select>
+                        <label className="block text-sm font-semibold mb-2 text-muted-foreground">Compatibility</label>
+                        <Select
+                            value={filters.software}
+                            onValueChange={(value) => onFilterChange({ ...filters, software: value })}>
                             <SelectTrigger className="w-full h-11">
                                 <SelectValue placeholder="All" />
                             </SelectTrigger>
@@ -62,8 +73,11 @@ export default function FilterSidebar({ searchInput, onSearchChange, searchQuery
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold mb-2">Price Range</label>
-                        <Select>
+                        <label className="block text-sm font-semibold mb-2 text-muted-foreground">Price Range</label>
+                        <Select
+                            value={filters.price}
+                            onValueChange={(value) => onFilterChange({ ...filters, price: value })}
+                        >
                             <SelectTrigger className="w-full h-11">
                                 <SelectValue placeholder="All Prices" />
                             </SelectTrigger>
@@ -78,8 +92,11 @@ export default function FilterSidebar({ searchInput, onSearchChange, searchQuery
                     </div>
 
                     <div>
-                        <label className="block text-sm font-semibold mb-2">Rating</label>
-                        <Select>
+                        <label className="block text-sm font-semibold mb-2 text-muted-foreground">Rating</label>
+                        <Select
+                            value={filters.rating}
+                            onValueChange={(value) => onFilterChange({ ...filters, rating: value })}
+                        >
                             <SelectTrigger className="w-full h-11">
                                 <SelectValue placeholder="All Ratings" />
                             </SelectTrigger>
@@ -93,10 +110,16 @@ export default function FilterSidebar({ searchInput, onSearchChange, searchQuery
                     </div>
                 </div>
 
-                <button className='w-full mt-6 bg-primary text-primary-foreground py-3 rounded-lg font-semibold hover:bg-primary/90 transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2'>
+                {resetFilter &&
+                    <Button
+                        onClick={() => onResetFilter()}
+                    >
+                        Clear
+                    </Button>}
+                <Button>
                     <Filter className="w-5 h-5" />
                     Apply Filters
-                </button>
+                </Button>
             </Card>
         </div>
     );

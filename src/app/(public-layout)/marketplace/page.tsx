@@ -1,9 +1,9 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import MarketplaceHeader from './components/MarketplaceHeader';
-import FilterSidebar from './components/FilterSidebar';
-import MarketplaceGrid from './components/MarketplaceGrid';
+import MarketplaceHeader from './components/marketplace-header';
+import FilterSidebar from './components/filter-sidebar';
+import MarketplaceGrid from './components/marketplace-grid';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -15,6 +15,12 @@ import {
 export default function MarketplacePage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchInput, setSearchInput] = useState('');
+    const [filters, setFilters] = useState({
+        software: 'all',
+        price: 'all',
+        rating: 'all',
+    });
+    const [resetFilter, setResetFilter] = useState(false)
 
     const marketplaceItems = [
         {
@@ -27,7 +33,8 @@ export default function MarketplacePage() {
                 name: "Alex Chen",
                 avatar: "https://randomuser.me/api/portraits/men/32.jpg"
             },
-            rating: 4.8
+            rating: 3.8,
+            software: "lightroom"
         },
         {
             id: 2,
@@ -39,7 +46,8 @@ export default function MarketplacePage() {
                 name: "Sarah Martinez",
                 avatar: "https://randomuser.me/api/portraits/women/44.jpg"
             },
-            rating: 4.9
+            rating: 4.9,
+            software: "lightroom"
         },
         {
             id: 3,
@@ -51,7 +59,8 @@ export default function MarketplacePage() {
                 name: "Mike Johnson",
                 avatar: "https://randomuser.me/api/portraits/men/65.jpg"
             },
-            rating: 4.7
+            rating: 4.7,
+            software: "lightroom"
         },
         {
             id: 4,
@@ -63,7 +72,8 @@ export default function MarketplacePage() {
                 name: "BeKind2Robots",
                 avatar: "https://randomuser.me/api/portraits/men/12.jpg"
             },
-            rating: 4.6
+            rating: 4.6,
+            software: "photoshop"
         },
         {
             id: 5,
@@ -75,7 +85,8 @@ export default function MarketplacePage() {
                 name: "Emma Watson",
                 avatar: "https://randomuser.me/api/portraits/women/68.jpg"
             },
-            rating: 4.9
+            rating: 4.9,
+            software: "photoshop"
         },
         {
             id: 6,
@@ -87,7 +98,8 @@ export default function MarketplacePage() {
                 name: "David Kim",
                 avatar: "https://randomuser.me/api/portraits/men/23.jpg"
             },
-            rating: 4.8
+            rating: 4.8,
+            software: "photoshop"
         },
         {
             id: 7,
@@ -99,7 +111,8 @@ export default function MarketplacePage() {
                 name: "Liam Brown",
                 avatar: "https://randomuser.me/api/portraits/men/41.jpg"
             },
-            rating: 4.7
+            rating: 4.7,
+            software: "lightroom"
         },
         {
             id: 8,
@@ -111,7 +124,8 @@ export default function MarketplacePage() {
                 name: "Sophia Lee",
                 avatar: "https://randomuser.me/api/portraits/women/55.jpg"
             },
-            rating: 4.8
+            rating: 4.8,
+            software: "lightroom"
         },
         {
             id: 9,
@@ -123,7 +137,8 @@ export default function MarketplacePage() {
                 name: "Olivia Green",
                 avatar: "https://randomuser.me/api/portraits/women/33.jpg"
             },
-            rating: 4.9
+            rating: 4.9,
+            software: "lightroom"
         },
         {
             id: 10,
@@ -135,7 +150,8 @@ export default function MarketplacePage() {
                 name: "Ethan White",
                 avatar: "https://randomuser.me/api/portraits/men/77.jpg"
             },
-            rating: 4.6
+            rating: 4.6,
+            software: "lightroom"
         },
         {
             id: 11,
@@ -147,18 +163,58 @@ export default function MarketplacePage() {
                 name: "Isabella Cruz",
                 avatar: "https://randomuser.me/api/portraits/women/21.jpg"
             },
-            rating: 4.8
+            rating: 4.8,
+            software: "photoshop"
         }
     ];
 
     const filteredItems = marketplaceItems.filter(item => {
         const query = searchQuery.toLowerCase();
-        return (
+
+        const matchesSearch =
             item.title.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query)
-        );
+            item.description.toLowerCase().includes(query);
+
+        const matchesSoftware =
+            filters.software === 'all' || item.software === filters.software;
+
+        const matchesRating =
+            filters.rating === 'all' || item.rating >= parseFloat(filters.rating);
+
+        const priceValue = parseFloat(item.price.replace('$', ''));
+        let matchesPrice = true;
+        if (filters.price === 'under-15') matchesPrice = priceValue < 15;
+        else if (filters.price === '15-25') matchesPrice = priceValue >= 15 && priceValue <= 25;
+        else if (filters.price === '25-50') matchesPrice = priceValue > 25 && priceValue <= 50;
+        else if (filters.price === 'over-50') matchesPrice = priceValue > 50;
+        return matchesSearch && matchesSoftware && matchesPrice && matchesRating;
     });
 
+    const handleResetFilter = () => {
+        if (resetFilter) {
+            setSearchInput('')
+            setSearchQuery('')
+            setFilters({
+                software: 'all',
+                price: 'all',
+                rating: 'all'
+            })
+        }
+        setResetFilter(false)
+    }
+
+    useEffect(() => {
+        const isDefault =
+            searchInput === '' &&
+            searchQuery === '' &&
+            filters.software === 'all' &&
+            filters.price === 'all' &&
+            filters.rating === 'all';
+
+        setResetFilter(!isDefault);
+    }, [filters, searchInput, searchQuery])
+
+    //delay o day ne
     useEffect(() => {
         const timeout = setTimeout(() => {
             setSearchQuery(searchInput);
@@ -172,7 +228,7 @@ export default function MarketplacePage() {
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/forum">Home</BreadcrumbLink>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -188,6 +244,10 @@ export default function MarketplacePage() {
                         onSearchChange={setSearchInput}
                         searchQuery={searchQuery}
                         resultsCount={filteredItems.length}
+                        filters={filters}
+                        onFilterChange={setFilters}
+                        resetFilter={resetFilter}
+                        onResetFilter={handleResetFilter}
                     />
 
                     <div className="col-span-11">
