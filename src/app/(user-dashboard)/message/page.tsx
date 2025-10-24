@@ -1,7 +1,8 @@
 import React from 'react'
+import { MessageCircle } from 'lucide-react'
 
-export default function Message() {
+export default function MessagePage() {
   return (
-    <div>MESSAGE PAGE</div>
+    <></>
   )
 }
