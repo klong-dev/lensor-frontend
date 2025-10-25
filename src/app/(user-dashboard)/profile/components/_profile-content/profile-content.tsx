@@ -6,15 +6,15 @@ import PostSection from './post-section'
 export default function ProfileContent() {
      const listTabs = [
           {
-               label: 'Your post',
+               label: 'Your posts',
                value: 'posts'
           },
           {
-               label: 'Followers',
+               label: 'Saved posts',
                value: 'follower'
           },
           {
-               label: 'Following',
+               label: 'Loved posts',
                value: 'following'
           },
      ]

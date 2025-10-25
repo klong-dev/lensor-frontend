@@ -2,13 +2,14 @@
 
 import {
   AudioWaveform,
+  Bell,
   Command,
   GalleryVerticalEnd,
   Images,
   Mail,
   ShoppingCart,
   Store,
-  User
+  User,
 } from "lucide-react"
 import { usePathname } from "next/navigation"
 import * as React from "react"
@@ -59,6 +60,11 @@ const data = {
       name: "Message",
       url: ROUTES.MESSAGE,
       icon: Mail,
+    },
+    {
+      name: "Notification",
+      url: ROUTES.NOTIFICATION,
+      icon: Bell,
     },
     {
       name: "Cart",
