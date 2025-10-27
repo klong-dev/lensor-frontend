@@ -11,5 +11,6 @@ export type PostType = {
      content?: string,
      imageUrl?: string,
      commentCount: number,
+     voteCount: number,
      createdAt: string
 }
