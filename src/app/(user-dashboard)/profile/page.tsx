@@ -7,15 +7,12 @@ import { useUserStore } from '@/stores/user-store'
 import ProfileContent from './components/_profile-content/profile-content'
 import About from './components/about'
 import SuggestionList from './components/suggestion-list'
+import { authHelpers } from '@/lib/supabase'
 
 export default function ProfilePage() {
      const isOwnProfile = false
 
-     const { user, fetchUser } = useUserStore()
-
-     const handleRefresh = () => {
-          fetchUser()
-     }
+     const { user } = useUserStore()
 
      return (
           <div className='container mx-auto p-5'>

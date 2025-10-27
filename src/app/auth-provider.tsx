@@ -16,7 +16,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     fetchUser()
     authHelpers.onAuthStateChange((event) => {
-      console.log(event === EVENT.SIGNED_OUT)
       if (event === EVENT.SIGNED_OUT) {
         setUser(null)
       }
