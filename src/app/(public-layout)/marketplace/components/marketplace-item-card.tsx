@@ -2,23 +2,7 @@ import { Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-
-interface MarketplaceItem {
-    id: number;
-    title: string;
-    description: string;
-    price: string;
-    image: string;
-    author: {
-        name: string;
-        avatar: string;
-    };
-    rating: number;
-}
-
-interface MarketplaceItemCardProps {
-    item: MarketplaceItem;
-}
+import { MarketplaceItemCardProps } from '@/types/marketplace';
 
 export default function MarketplaceItemCard({ item }: MarketplaceItemCardProps) {
     return (
@@ -54,7 +38,7 @@ export default function MarketplaceItemCard({ item }: MarketplaceItemCardProps) 
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-xs text-muted">Price</p>
-                            <p className="text-lg text-white font-bold">{item.price}</p>
+                            <p className="text-lg text-white font-bold">${item.price}</p>
                         </div>
                         <div className="flex items-center gap-1">
                             <Star fill="yellow" stroke="none" color="yellow" />

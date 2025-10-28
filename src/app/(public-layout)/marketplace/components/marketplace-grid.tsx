@@ -4,24 +4,7 @@ import React, { useEffect, useState } from 'react';
 import MarketplaceItemCard from './marketplace-item-card';
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import MarketplaceSkeleton from './marketplace-skeleton';
-
-interface MarketplaceItem {
-    id: number;
-    title: string;
-    description: string;
-    price: string;
-    image: string;
-    author: {
-        name: string;
-        avatar: string;
-    };
-    rating: number;
-}
-
-interface MarketplaceGridProps {
-    items: MarketplaceItem[];
-    searchQuery: string;
-}
+import { MarketplaceGridProps } from '@/types/marketplace';
 
 export default function MarketplaceGrid({ items, searchQuery }: MarketplaceGridProps) {
     const [loading, setLoading] = useState(true)

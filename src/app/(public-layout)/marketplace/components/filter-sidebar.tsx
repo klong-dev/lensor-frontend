@@ -9,21 +9,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Button } from '@/components/ui/button';
-
-interface FilterSidebarProps {
-    searchInput: string;
-    onSearchChange: (value: string) => void;
-    searchQuery: string;
-    resultsCount: number;
-    filters: {
-        software: string;
-        price: string;
-        rating: string;
-    };
-    onFilterChange: (filters: { software: string; price: string; rating: string }) => void;
-    resetFilter: boolean;
-    onResetFilter: () => void;
-}
+import { FilterSidebarProps } from '@/types/marketplace';
 
 export default function FilterSidebar({ searchInput, onSearchChange, searchQuery, resultsCount, filters, onFilterChange, resetFilter, onResetFilter }: FilterSidebarProps) {
     return (
