@@ -15,7 +15,7 @@ import { PostType } from '@/types/post'
 export default function ForumPage() {
      const { data: dataForum, error, mutate, isValidating } = usePosts()
      const user = useUserStore(state => state.user)
-     console.log(user)
+     
      if (error) return <LostConnect refecth={mutate} />
 
      return (

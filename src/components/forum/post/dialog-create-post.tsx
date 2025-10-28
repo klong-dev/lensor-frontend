@@ -16,8 +16,11 @@ import { Input } from "@/components/ui/input"
 import { InputGroup, InputGroupTextarea } from "@/components/ui/input-group"
 import { Dropzone, DropzoneContent, DropzoneEmptyState } from '@/components/ui/shadcn-io/dropzone'
 import { Spinner } from "@/components/ui/spinner"
+import { postApi } from "@/lib/apis/postApi"
+import { usePosts } from "@/lib/hooks/usePostHooks"
 import { resizeImage } from "@/utils/imageTools"
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
+import { toast } from "sonner"
 import CarouselPreview from "./carousel-preview"
 
 export default function DialogCreatePost({ children }: { children: React.ReactNode }) {
@@ -25,6 +28,19 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
      const [filePreview, setFilePreview] = useState<string[] | undefined>()
      const [isOpen, setIsOpen] = useState(false)
      const [isLoading, setIsLoading] = useState(false)
+     const [title, setTitle] = useState('')
+     const [content, setContent] = useState('')
+     const [category, setCategory] = useState('general')
+
+     const { mutate } = usePosts()
+
+     const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
+          setTitle(e.target.value)
+     }
+
+     const handleChangeContent = (e: ChangeEvent<HTMLTextAreaElement>) => {
+          setContent(e.target.value)
+     }
 
      const handleClearImage = () => {
           setFilePreview(undefined)
@@ -33,13 +49,40 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
 
      const handleClose = () => {
           handleClearImage()
+          setTitle('')
+          setContent('')
+          setCategory('general')
      }
 
      const handlePost = async () => {
+          if (!title.trim()) {
+               toast.error('Please enter post title')
+               return
+          }
+
+          if (!files || files.length === 0) {
+               toast.error('Please select an image')
+               return
+          }
+
           setIsLoading(true)
-          console.log('Send to server: ', files)
-          setIsOpen(false)
-          setIsLoading(false)
+          try {
+               const formData = new FormData()
+               formData.append('title', title.trim())
+               formData.append('content', content.trim())
+               // formData.append('catagory', category)
+               formData.append('image', files[0])
+               await postApi.create(formData)
+               toast.success('Post created successfully!')
+               mutate()
+               setIsOpen(false)
+               handleClose()
+          } catch (error) {
+               console.error('Error creating post:', error)
+               toast.error('Failed to create post')
+          } finally {
+               setIsLoading(false)
+          }
      }
 
      const handleDrop = async (files: File[]) => {
@@ -77,13 +120,24 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                          <DialogHeader>
                               <DialogTitle>Create your new post</DialogTitle>
                               <DialogDescription>
-                                   Description
+                                   Share your moments with the community
                               </DialogDescription>
                          </DialogHeader>
                          <div className="grid gap-4">
-                              <Input placeholder="Title" />
+                              <Input
+                                   placeholder="Title"
+                                   value={title}
+                                   onChange={handleChangeTitle}
+                                   disabled={isLoading}
+                              />
                               <InputGroup>
-                                   <InputGroupTextarea className="h-30" placeholder="Your post description" />
+                                   <InputGroupTextarea
+                                        className="h-30"
+                                        placeholder="Your post description"
+                                        value={content}
+                                        onChange={handleChangeContent}
+                                        disabled={isLoading}
+                                   />
                               </InputGroup>
 
                               {!filePreview
@@ -108,9 +162,12 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                          </div>
                          <DialogFooter>
                               <DialogClose asChild>
-                                   <Button variant="outline" onClick={handleClose}>Cancel</Button>
+                                   <Button variant="outline" onClick={handleClose} disabled={isLoading}>
+                                        Cancel
+                                   </Button>
                               </DialogClose>
-                              <Button onClick={handlePost} disabled={isLoading}><Spinner className={isLoading ? '' : 'hidden'} />
+                              <Button onClick={handlePost} disabled={isLoading}>
+                                   {isLoading && <Spinner />}
                                    Post
                               </Button>
                          </DialogFooter>

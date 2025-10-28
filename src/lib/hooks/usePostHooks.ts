@@ -1,4 +1,4 @@
-import useSWR from "swr"
+import useSWR, { useSWRConfig } from "swr"
 import { endpoints } from "../apis/endpoints"
 import { postApi } from "../apis/postApi"
 
