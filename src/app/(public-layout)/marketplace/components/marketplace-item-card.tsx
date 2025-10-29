@@ -10,7 +10,7 @@ export default function MarketplaceItemCard({ item }: MarketplaceItemCardProps) 
 
             <div className="relative w-full aspect-square bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:opacity-80 transition-shadow h-min-[442px] h-full group">
                 <Image
-                    src={item.image}
+                    src={item.imagePairs[0].after}
                     alt={item.title}
                     fill
                     sizes="100%"
@@ -37,7 +37,7 @@ export default function MarketplaceItemCard({ item }: MarketplaceItemCardProps) 
 
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="text-xs text-muted">Price</p>
+                            <p className="text-xs text-white text-muted">Price</p>
                             <p className="text-lg text-white font-bold">${item.price}</p>
                         </div>
                         <div className="flex items-center gap-1">
