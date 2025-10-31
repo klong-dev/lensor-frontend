@@ -1,14 +1,8 @@
 'use client'
 
 import { Input } from "@/components/ui/input"
+import { SearchBarProps } from "@/types/marketplace"
 import { useState } from 'react'
-
-
-interface SearchBarProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onSubmit'> {
-    onSearch?: (query: string) => void,
-    onSubmit?: (query: string) => void,
-    showSearchIcon?: boolean
-}
 
 export default function SearchBar({
     onSearch,

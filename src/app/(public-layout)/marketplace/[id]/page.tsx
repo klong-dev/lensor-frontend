@@ -1,3 +1,5 @@
+'use client'
+
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -9,8 +11,12 @@ import ImageGallery from './components/image-gallery'
 import ProductDetailsTabs from './components/product-details-tabs'
 import ProductInfo from './components/product-info'
 import RelatedProducts from './components/related-products'
+import { ROUTES } from "@/constants/path"
+import ProductSkeleton from "./components/product-skeleton"
+import { useEffect, useState } from "react"
 
 export default function ProductDetail() {
+    const [loading, setLoading] = useState(true)
     const demoProduct = {
         id: "preset-001",
         name: "Cinematic Orange & Teal",
@@ -96,7 +102,6 @@ export default function ProductDetail() {
             }
         ]
     }
-
     const relatedProducts = [
         {
             id: "preset-002",
@@ -152,59 +157,74 @@ export default function ProductDetail() {
         }
     ]
 
+    useEffect(() => {
+        setLoading(true)
+        const timer = setTimeout(() => {
+            setLoading(false)
+        }, 500)
+
+        return () => clearTimeout(timer)
+    }, [])
     return (
         <div className='container py-8'>
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        <BreadcrumbLink href={ROUTES.HOME}>Home</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href="/marketplace">Marketplace</BreadcrumbLink>
+                        <BreadcrumbLink href={ROUTES.MARKETPLACE}>Marketplace</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href={`/marketplace/${demoProduct.id}`}>{demoProduct.name}</BreadcrumbLink>
+                        <BreadcrumbLink href={`${ROUTES.MARKETPLACE}/${demoProduct.id}`}>{demoProduct.name}</BreadcrumbLink>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
-            
-            <div className='mt-8 grid grid-cols-14 gap-6'>
-                {/* Image Gallery */}
-                <ImageGallery images={demoProduct.images} productName={demoProduct.name} />
 
-                {/* Product Info */}
-                <ProductInfo
-                    name={demoProduct.name}
-                    rating={demoProduct.rating}
-                    reviewCount={demoProduct.reviewCount}
-                    price={demoProduct.price}
-                    originalPrice={demoProduct.originalPrice}
-                    features={demoProduct.features}
-                    author={{
-                        name: demoProduct.author.name,
-                        avatar: demoProduct.author.avatar
-                    }}
-                />
-            </div>
+            {loading
+                ?
+                <ProductSkeleton />
+                :
+                <>
+                    <div className='mt-8 grid grid-cols-14 gap-6'>
+                        {/* Image Gallery */}
+                        <ImageGallery images={demoProduct.images} productName={demoProduct.name} />
 
-            {/* Product Details Tabs */}
-            <ProductDetailsTabs
-                description={demoProduct.description}
-                category={demoProduct.category}
-                fileFormat={demoProduct.fileFormat}
-                fileSize={demoProduct.fileSize}
-                includesCount={demoProduct.includesCount}
-                compatibility={demoProduct.compatibility}
-                warranty={demoProduct.warranty}
-                rating={demoProduct.rating}
-                reviewCount={demoProduct.reviewCount}
-                reviews={demoProduct.reviews}
-            />
+                        {/* Product Info */}
+                        <ProductInfo
+                            name={demoProduct.name}
+                            rating={demoProduct.rating}
+                            reviewCount={demoProduct.reviewCount}
+                            price={demoProduct.price}
+                            originalPrice={demoProduct.originalPrice}
+                            features={demoProduct.features}
+                            author={{
+                                name: demoProduct.author.name,
+                                avatar: demoProduct.author.avatar
+                            }}
+                        />
+                    </div>
 
-            {/* Related Products */}
-            <RelatedProducts products={relatedProducts} />
+
+                    <ProductDetailsTabs
+                        description={demoProduct.description}
+                        category={demoProduct.category}
+                        fileFormat={demoProduct.fileFormat}
+                        fileSize={demoProduct.fileSize}
+                        includesCount={demoProduct.includesCount}
+                        compatibility={demoProduct.compatibility}
+                        warranty={demoProduct.warranty}
+                        rating={demoProduct.rating}
+                        reviewCount={demoProduct.reviewCount}
+                        reviews={demoProduct.reviews}
+                    />
+
+
+                    <RelatedProducts products={relatedProducts} />
+                </>
+            }
         </div>
     )
 }

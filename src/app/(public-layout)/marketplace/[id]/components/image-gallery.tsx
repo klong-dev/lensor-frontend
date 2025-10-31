@@ -24,7 +24,7 @@ export default function ImageGallery({ images, productName }: ImageGalleryProps)
     return (
         <div className='col-span-9 flex flex-col gap-2'>
             {/* Main Image */}
-            <div className='relative aspect-video overflow-hidden'>
+            <div className='relative aspect-video'>
                 <ImageComparison className='aspect-16/10 w-full rounded-lg border border-zinc-200 dark:border-zinc-800' enableHover >
                     <ImageComparisonImage
                         src={images[selectedImage]}
