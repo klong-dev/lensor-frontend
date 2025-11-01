@@ -14,7 +14,9 @@ export default function PostDetail() {
           <div className='container md:px-40'>
                <Card className='p-10 pt-0 mt-5'>
                     <Post dataPost={data?.data} />
-                    <h1 className='scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight first:mt-0'>Comment</h1>
+                    <h1 className='scroll-m-20 border-b pb-2 text-xl font-semibold tracking-tight first:mt-0'>
+                         Comment
+                    </h1>
                     <Comment hasChild />
                     <Comment />
                </Card>

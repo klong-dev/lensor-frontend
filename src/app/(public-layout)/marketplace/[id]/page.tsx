@@ -22,7 +22,6 @@ export default function ProductDetail() {
     
     const [loading, setLoading] = useState(true)
     const { data: demoProduct } = useMarketplaceDetail(Array.isArray(id) ? id[0] : id || '')
-    console.log(demoProduct);
     
     const relatedProducts = [
         {
@@ -112,7 +111,7 @@ export default function ProductDetail() {
                 <>
                     <div className='mt-8 grid grid-cols-14 gap-6'>
                         {/* Image Gallery */}
-                        <ImageGallery images={demoProduct?.images} productName={demoProduct?.name} />
+                        <ImageGallery images={demoProduct?.imagePairs} productName={demoProduct?.name} />
 
                         {/* Product Info */}
                         <ProductInfo

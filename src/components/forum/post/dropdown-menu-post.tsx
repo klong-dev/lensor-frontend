@@ -1,13 +1,11 @@
-import React from 'react'
 import {
      DropdownMenu,
      DropdownMenuContent,
      DropdownMenuItem,
-     DropdownMenuLabel,
-     DropdownMenuSeparator,
-     DropdownMenuTrigger,
+     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { BookMarked, Eye, Flag, Trash2 } from "lucide-react"
+import React from 'react'
 
 interface DropdownMenuPostProps {
      children: React.ReactNode,
@@ -26,13 +24,20 @@ export default function DropdownMenuPost(props: DropdownMenuPostProps) {
                     <DropdownMenuItem onClick={props.handleViewDetail}>
                          <Eye /> View detail
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={props.handleReportPost}>
+                    <DropdownMenuItem
+                         onClick={props.handleReportPost}
+                         className={props.isOwner ? 'hidden' : ''}
+                    >
                          <Flag /> Report
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={props.handleSavePost}>
                          <BookMarked /> Save post
                     </DropdownMenuItem>
-                    <DropdownMenuItem variant="destructive" onClick={props.handleDeletePost} className={props.isOwner ? '' : 'hidden'}>
+                    <DropdownMenuItem
+                         variant="destructive"
+                         onClick={props.handleDeletePost}
+                         className={props.isOwner ? '' : 'hidden'}
+                    >
                          <Trash2 /> Delete post
                     </DropdownMenuItem>
                </DropdownMenuContent>

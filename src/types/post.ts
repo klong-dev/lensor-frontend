@@ -14,3 +14,14 @@ export type PostType = {
      voteCount: number,
      createdAt: string
 }
+
+export type CommentType = {
+     id: string,
+     user: {
+          id: string,
+          avatarUrl: string,
+          name: string
+     },
+     time: string,
+     content: string
+}

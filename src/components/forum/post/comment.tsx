@@ -8,7 +8,7 @@ export default function Comment({ isChild, hasChild }: { isChild?: boolean, hasC
                <div className={`flex gap-2 mt-4 ${isChild && 'pl-10'}`}>
                     <Avatar>
                          <AvatarImage src="https://github.com/shadcn.png" />
-                         <AvatarFallback>CN</AvatarFallback>
+                         <AvatarFallback><AvatarImage src="images/default-fallback-image" /></AvatarFallback>
                     </Avatar>
                     <div>
                          <div className="flex items-center gap-3">
