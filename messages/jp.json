@@ -1,0 +1,35 @@
+{
+  "HomePage": {
+    "title": "こんにちは、世界！"
+  },
+  "Button": {
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト",
+    "myAccount": "マイアカウント",
+    "profile": "プロフィール",
+    "darkMode": "ダークモード",
+    "languages": "言語"
+  },
+  "Header": {
+    "forum": "フォーラム",
+    "marketplace": "マーケットプレイス",
+    "createPortfolio": "ポートフォリオを作成"
+  },
+  "Sidebar": {
+    "publicSpaces": "パブリックスペース",
+    "settings": "設定",
+    "personalSpace": "個人スペース",
+    "forum": "フォーラム",
+    "profile": "プロフィール",
+    "notification": "通知",
+    "message": "メッセージ",
+    "marketplace": "マーケットプレイス",
+    "purchasedPresets": "購入済みプリセット",
+    "cart": "カート",
+    "wallet": "ウォレット",
+    "setting": "設定",
+    "help": "ヘルプ",
+    "search": "検索"
+  }
+}
