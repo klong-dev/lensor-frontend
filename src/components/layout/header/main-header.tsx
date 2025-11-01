@@ -72,12 +72,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
+import { APP_NAME, DEFAULT_LOCALE } from '@/constants'
 import { authHelpers } from '@/lib/supabase'
 import { useTheme } from 'next-themes'
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useEffect, useState } from 'react'
-import { APP_NAME } from '@/constants'
 import { toast } from 'sonner'
 
 function DropdownMenuUser({ children }: { children: React.ReactNode }) {
@@ -86,6 +86,10 @@ function DropdownMenuUser({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const tButton = useTranslations('Button')
   const tToastMsg = useTranslations("ToastMessage")
+
+  const handleChangeTheme = (value: boolean) => {
+    setTheme(value ? 'dark' : 'light')
+  }
 
   useEffect(() => {
     const cookieLocale = document.cookie
@@ -96,16 +100,11 @@ function DropdownMenuUser({ children }: { children: React.ReactNode }) {
     if (cookieLocale) {
       setLocale(cookieLocale)
     } else {
-      const browserLocale = navigator.language.slice(0, 2)
-      setLocale(browserLocale)
-      document.cookie = `${APP_NAME}_LOCALE=${browserLocale}`
+      setLocale(DEFAULT_LOCALE)
+      document.cookie = `${APP_NAME}_LOCALE=${DEFAULT_LOCALE}`
       router.refresh()
     }
   }, [router])
-
-  const handleChangeTheme = (value: boolean) => {
-    setTheme(value ? 'dark' : 'light')
-  }
 
   const handleChangeLanguage = (newLocale: string) => {
     setLocale(newLocale)

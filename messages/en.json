@@ -34,5 +34,10 @@
     "setting": "Setting",
     "help": "Help",
     "search": "Search"
-  }
+  },
+  "Auth": {},
+  "Forum": {},
+  "Message": {},
+  "Notification": {},
+  "Cart": {}
 }
