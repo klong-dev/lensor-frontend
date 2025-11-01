@@ -10,14 +10,15 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
 export default function MainHeader() {
-  const t = useTranslations('MainHeader')
+  const t = useTranslations('Header')
+  const tButton = useTranslations('Button')
   const currentPath = usePathname()
   const user = useUserStore(state => state.user)
 
   const navLinkItems = [
-    { title: 'Forum', href: ROUTES.FORUM },
-    { title: 'Marketplace', href: ROUTES.MARKETPLACE },
-    { title: 'Create portfolio', href: ROUTES.CREATE_PORTFOLIO }
+    { title: t('forum'), href: ROUTES.FORUM },
+    { title: t('marketplace'), href: ROUTES.MARKETPLACE },
+    { title: t('createPortfolio'), href: ROUTES.CREATE_PORTFOLIO }
   ]
 
   return (
@@ -34,8 +35,8 @@ export default function MainHeader() {
         <div className='w-64 flex justify-end items-center gap-5'>
           {!user
             ? <>
-              <Link href={ROUTES.LOGIN}><Button variant='secondary'>Register</Button></Link>
-              <Link href={ROUTES.LOGIN}><Button>Login</Button></Link>
+              <Link href={ROUTES.LOGIN}><Button variant='secondary'>{tButton('register')}</Button></Link>
+              <Link href={ROUTES.LOGIN}><Button>{tButton('login')}</Button></Link>
             </>
             : <>
               <div className='flex justify-end items-center gap-1'>
@@ -74,32 +75,88 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { authHelpers } from '@/lib/supabase'
 import { useTheme } from 'next-themes'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useEffect, useState } from 'react'
+import { APP_NAME } from '@/constants'
+import { toast } from 'sonner'
 
 function DropdownMenuUser({ children }: { children: React.ReactNode }) {
   const { setTheme, resolvedTheme } = useTheme()
+  const [locale, setLocale] = useState("")
   const router = useRouter()
+  const tButton = useTranslations('Button')
+  const tToastMsg = useTranslations("ToastMessage")
+
+  useEffect(() => {
+    const cookieLocale = document.cookie
+      .split("; ")
+      .find(row => row.startsWith(`${APP_NAME}_LOCALE=`))
+      ?.split("=")[1]
+
+    if (cookieLocale) {
+      setLocale(cookieLocale)
+    } else {
+      const browserLocale = navigator.language.slice(0, 2)
+      setLocale(browserLocale)
+      document.cookie = `${APP_NAME}_LOCALE=${browserLocale}`
+      router.refresh()
+    }
+  }, [router])
 
   const handleChangeTheme = (value: boolean) => {
     setTheme(value ? 'dark' : 'light')
   }
 
+  const handleChangeLanguage = (newLocale: string) => {
+    setLocale(newLocale)
+    document.cookie = `${APP_NAME}_LOCALE=${newLocale}`
+    router.refresh()
+  }
+
   const handleLogout = async () => {
     const res = await authHelpers.signOut()
-    if (!res.error) router.refresh()
+    if (!res.error) {
+      toast(tToastMsg("loggoutSuccess"))
+      router.refresh()
+    }
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{tButton('myAccount')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem><Link href={ROUTES.CURRENT_PROFILE}>Profile</Link></DropdownMenuItem>
-        <DropdownMenuItem onSelect={e => e.preventDefault()}>
-          <Switch id="dark-mode" onCheckedChange={handleChangeTheme} checked={resolvedTheme === 'dark'} />
-          <Label htmlFor="dark-mode">Dark Mode</Label>
+
+        <DropdownMenuItem>
+          <Link href={ROUTES.CURRENT_PROFILE}>{tButton('profile')}</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+
+        <DropdownMenuItem onSelect={e => e.preventDefault()}>
+          <Label htmlFor="dark-mode">{tButton('darkMode')}</Label>
+          <Switch id="dark-mode" onCheckedChange={handleChangeTheme} checked={resolvedTheme === 'dark'} />
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onSelect={e => e.preventDefault()}>
+          <Select onValueChange={handleChangeLanguage} defaultValue={locale}>
+            <SelectTrigger className="">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>{tButton('languages')}</SelectLabel>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="vi">Việt Nam</SelectItem>
+                <SelectItem value="jp">日本語</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={handleLogout}>
+          {tButton('logout')}
+        </DropdownMenuItem>
+
       </DropdownMenuContent>
     </DropdownMenu>
   )

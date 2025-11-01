@@ -1,27 +1,33 @@
 {
   "HomePage": {
-    "title": "Hello world!"
+    "title": "Xin chào thế giới!"
   },
-  "LoginPage": {
-    "button": "Đăng nhập"
+  "Button": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "myAccount": "Tài khoản của tôi",
+    "profile": "Hồ sơ cá nhân",
+    "darkMode": "Chế độ tối",
+    "languages": "Ngôn ngữ"
   },
-  "MainHeader": {
-    "feature": "Tính năng",
-    "pricing": "Giá",
-    "faq": "Hỏi đáp",
-    "login": "Đăng nhập"
+  "Header": {
+    "forum": "Diễn đàn",
+    "marketplace": "Chợ",
+    "createPortfolio": "Tạo danh mục đầu tư"
   },
   "Sidebar": {
-    "marketplaces": "CHỢ GIAO DỊCH",
+    "publicSpaces": "Không gian công cộng",
     "settings": "CÀI ĐẶT",
-    "main-menu": "MENU CHÍNH",
+    "personalSpace": "Không gian cá nhân",
     "forum": "Diễn đàn",
-    "profile": "Hồ sơ cá nhân",
-    "create-portfolio": "Tạo hồ sơ đầu tư",
+    "profile": "Hồ sơ",
+    "notification": "Thông báo",
     "message": "Tin nhắn",
     "marketplace": "Chợ",
-    "purchased-presets": "Gói đã mua",
+    "purchasedPresets": "Presets đã mua",
     "cart": "Giỏ hàng",
+    "wallet": "Ví",
     "setting": "Cài đặt",
     "help": "Trợ giúp",
     "search": "Tìm kiếm"

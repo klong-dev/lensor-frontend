@@ -2,26 +2,35 @@
   "HomePage": {
     "title": "Hello world!"
   },
-  "LoginPage": {
-    "button": "Login"
+  "Button": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "myAccount": "My Account",
+    "profile": "Profile",
+    "darkMode": "Dark Mode",
+    "languages": "Languages"
   },
-  "MainHeader": {
-    "feature": "Feature",
-    "pricing": "Pricing",
-    "faq": "FAQ",
-    "login": "Login"
+  "ToastMessage": {
+    "loggoutSuccess": "Logged out successfully"
+  },
+  "Header": {
+    "forum": "Forum",
+    "marketplace": "Marketplace",
+    "createPortfolio": "Create portfolio"
   },
   "Sidebar": {
-    "marketplaces": "MARKETPLACES",
+    "publicSpaces": "Public Spaces",
     "settings": "SETTINGS",
-    "main-menu": "MAIN MENU",
+    "personalSpace": "Personal Space",
     "forum": "Forum",
     "profile": "Profile",
-    "create-portfolio": "Create Porfolio",
+    "notification": "Notification",
     "message": "Message",
     "marketplace": "Marketplace",
-    "purchased-presets": "Purchased Presets",
+    "purchasedPresets": "Purchased Presets",
     "cart": "Cart",
+    "wallet": "Wallet",
     "setting": "Setting",
     "help": "Help",
     "search": "Search"

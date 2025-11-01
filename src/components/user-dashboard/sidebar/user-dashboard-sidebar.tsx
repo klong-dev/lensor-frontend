@@ -25,81 +25,84 @@ import {
   TicketCheck,
   User,
 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import { usePathname } from "next/navigation"
 import * as React from "react"
-
-const data = {
-  user: {
-    name: "Nguyễn Huỳnh Bảo Trọng",
-    email: "nhbaotrong@gmail.com",
-    avatar: "",
-  },
-  teams: [
-    {
-      name: "Lensor",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
-  navMains: [
-    {
-      name: "Profile",
-      url: ROUTES.CURRENT_PROFILE,
-      icon: User,
-    },
-    {
-      name: "Message",
-      url: ROUTES.MESSAGE,
-      icon: Mail,
-    },
-    {
-      name: "Notification",
-      url: ROUTES.NOTIFICATION,
-      icon: Bell,
-    },
-    {
-      name: "Cart",
-      url: ROUTES.CART,
-      icon: ShoppingCart,
-    },
-    {
-      name: "Wallet",
-      url: ROUTES.WALLET,
-      icon: CirclePoundSterling,
-    },
-    {
-      name: "Purchased Presets",
-      url: ROUTES.PURCHASED_PRESETS,
-      icon: TicketCheck,
-    },
-  ],
-  public: [
-    {
-      name: "Forum",
-      url: ROUTES.FORUM,
-      icon: Images,
-    },
-    {
-      name: "Marketplace",
-      url: ROUTES.MARKETPLACE,
-      icon: Store,
-    },
-  ],
-}
 
 export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const user = useUserStore(state => state.user)
+  const t = useTranslations('Sidebar')
+
+  const data = {
+    user: {
+      name: "Nguyễn Huỳnh Bảo Trọng",
+      email: "nhbaotrong@gmail.com",
+      avatar: "",
+    },
+    teams: [
+      {
+        name: "Lensor",
+        logo: GalleryVerticalEnd,
+        plan: "Enterprise",
+      },
+      {
+        name: "Acme Corp.",
+        logo: AudioWaveform,
+        plan: "Startup",
+      },
+      {
+        name: "Evil Corp.",
+        logo: Command,
+        plan: "Free",
+      },
+    ],
+    navMains: [
+      {
+        name: t('profile'),
+        url: ROUTES.CURRENT_PROFILE,
+        icon: User,
+      },
+      {
+        name: t('message'),
+        url: ROUTES.MESSAGE,
+        icon: Mail,
+      },
+      {
+        name: t('notification'),
+        url: ROUTES.NOTIFICATION,
+        icon: Bell,
+      },
+      {
+        name: t('cart'),
+        url: ROUTES.CART,
+        icon: ShoppingCart,
+      },
+      {
+        name: t("wallet"),
+        url: ROUTES.WALLET,
+        icon: CirclePoundSterling,
+      },
+      {
+        name: t("purchasedPresets"),
+        url: ROUTES.PURCHASED_PRESETS,
+        icon: TicketCheck,
+      },
+    ],
+    public: [
+      {
+        name: t('forum'),
+        url: ROUTES.FORUM,
+        icon: Images,
+      },
+      {
+        name: t('marketplace'),
+        url: ROUTES.MARKETPLACE,
+        icon: Store,
+      },
+    ],
+  }
+
 
   const navMainsWithActive = data.navMains.map(item => ({
     ...item,
@@ -117,8 +120,8 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain title="Personal Space" items={navMainsWithActive} />
-        <NavMain title="Public Spaces" items={publicWithActive} />
+        <NavMain title={t('personalSpace')} items={navMainsWithActive} />
+        <NavMain title={t('publicSpaces')} items={publicWithActive} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
