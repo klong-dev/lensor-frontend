@@ -1,59 +1,104 @@
-export interface ImagePair {
+export type ImagePair = {
   before: string
   after: string
 }
 
-export interface PresetFile {
+export type PresetFile = {
   url: string
   fileName: string
   fileSize?: number
   format: string
 }
 
-export interface MarketplaceItem {
-  id: number
+export type MarketplaceItem = {
+  id: string
   title: string
   description: string
   price: number
   salePrice?: number
-  imagePairs: ImagePair[],
-  thumbnail: string,
+  image?: string
+  imagePairs?: ImagePair[]
+  thumbnail: string
   author: {
     name: string
     avatar: string
   }
-  presetFile: PresetFile
+  presetFile?: PresetFile
   rating?: number
-  software?: string
+  category: string
 }
 
-export interface MarketplaceGridProps {
+export type MarketplaceGridProps = {
   items: MarketplaceItem[]
   searchQuery: string
 }
 
-export interface MarketplaceItemCardProps {
-  item: MarketplaceItem
+export type RelatedProductsType = {
+  items: MarketplaceItem[]
 }
 
-export interface FilterSidebarProps {
+export type MarketplaceDetail = {
+  id: string
+  name: string
+  description: string
+  price: number
+  originalPrice?: number
+  discount?: number
+  rating?: number
+  reviewCount?: number
+  downloads?: number
+  author: {
+    name: string
+    avatar: string
+    verified?: boolean
+    totalProducts?: number
+  }
+  imagePairs?: ImagePair[]
+  category: string
+  tags?: string[]
+  compatibility?: string[]
+  fileFormat?: string
+  fileSize?: string
+  includesCount?: number
+  features?: string[]
+  specifications?: {
+    adjustments?: string[]
+    bestFor?: string[]
+    difficulty?: string
+  }
+  createdAt?: string
+  updatedAt?: string
+  warranty?: {
+    duration?: string
+    coverage?: string
+    terms?: string[]
+  }
+  reviews?: Review[]
+}
+
+export type Review = {
+  id?: string
+  userId?: string
+  userName?: string
+  userAvatar?: string
+  rating?: number
+  comment?: string
+  createdAt?: string
+  helpful?: number
+}
+
+export type FilterSidebarProps = {
   searchInput: string
   onSearchChange: (value: string) => void
   searchQuery: string
   resultsCount: number
   filters: {
-    software: string
+    category: string
     price: string
     rating: string
   }
-  onFilterChange: (filters: { software: string; price: string; rating: string }) => void
+  onFilterChange: (filters: { category: string; price: string; rating: string }) => void
   resetFilter: boolean
   onResetFilter: () => void
-}
-
-export interface SearchBarProps
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onSubmit'> {
-  onSearch?: (query: string) => void
-  onSubmit?: (query: string) => void
-  showSearchIcon?: boolean
+  categories: string[]
 }
