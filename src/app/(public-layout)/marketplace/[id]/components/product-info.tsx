@@ -1,21 +1,17 @@
-import { CreditCard, ShoppingCart } from 'lucide-react'
+import { CreditCard, ShoppingCart, Star } from 'lucide-react'
 import React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { MarketplaceDetail } from '@/types/marketplace'
 
-interface ProductInfoProps {
-    name: string
-    rating: number
-    reviewCount: number
-    price: number
-    originalPrice: number
-    features: string[]
-    author?: {
-        name: string
-        avatar?: string
-    }
-}
-
-export default function ProductInfo({ name, rating, reviewCount, price, originalPrice, features, author }: ProductInfoProps) {
+export default function ProductInfo({
+    name,
+    rating,
+    reviewCount,
+    price,
+    originalPrice,
+    features,
+    author }:
+    MarketplaceDetail) {
     return (
         <div className='col-span-5 flex flex-col gap-6'>
 
@@ -24,11 +20,11 @@ export default function ProductInfo({ name, rating, reviewCount, price, original
             {author && (
                 <div className='flex items-center gap-3'>
                     <Avatar className='size-8'>
-                        <AvatarImage src={author.avatar} alt={author.name} />
-                        <AvatarFallback>{author.name.charAt(0).toUpperCase()}</AvatarFallback>
+                        <AvatarImage src={author?.avatar} alt={author?.name} />
+                        <AvatarFallback>{author?.name?.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <p className='font-semibold'>{author.name}</p>
+                        <p className='font-semibold'>{author?.name}</p>
                     </div>
                 </div>
             )}
@@ -36,9 +32,12 @@ export default function ProductInfo({ name, rating, reviewCount, price, original
             <div className='flex items-center gap-2'>
                 <div className='flex text-yellow-500'>
                     {[...Array(5)].map((_, i) => (
-                        <span key={i} className='text-xl'>
-                            {i < Math.floor(rating) ? '★' : i < rating ? '⯨' : '☆'}
-                        </span>
+                        <Star
+                            key={i}
+                            className='w-5 h-5'
+                            fill={i < Math.floor(rating || 0) ? 'currentColor' : 'none'}
+                            stroke="currentColor"
+                        />
                     ))}
                 </div>
                 <span className='font-medium'>{rating}</span>
@@ -46,15 +45,15 @@ export default function ProductInfo({ name, rating, reviewCount, price, original
             </div>
 
             <div className='flex items-center gap-3'>
-                <span className='text-3xl font-bold'>${price.toFixed(2)}</span>
-                <span className='text-xl text-muted-foreground line-through'>${originalPrice.toFixed(2)}</span>
+                <span className='text-3xl font-bold'>${price?.toFixed(2)}</span>
+                <span className='text-xl text-muted-foreground line-through'>${originalPrice?.toFixed(2)}</span>
             </div>
 
             <div className='border-t pt-6'>
                 <div className='mb-4'>
                     <label className='text-sm font-medium mb-2 block'>Features:</label>
                     <div className='flex flex-wrap gap-2'>
-                        {features.map((feature, index) => (
+                        {features?.map((feature, index) => (
                             <button
                                 key={index}
                                 className='px-4 py-2 border rounded-md text-sm hover:bg-accent transition-colors'
