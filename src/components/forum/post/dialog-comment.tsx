@@ -12,16 +12,21 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { Send } from "lucide-react"
 import React from 'react'
 import Comment from "./comment"
+import { useTranslations } from "next-intl"
+import { useUserStore } from "@/stores/user-store"
 
 export default function DialogComment({ children }: { children: React.ReactNode }) {
+     const t = useTranslations('Forum')
+     const user = useUserStore(state => state.user)
+
      return (
           <Dialog>
                <DialogTrigger asChild>{children}</DialogTrigger>
                <DialogContent className="h-[95%] !max-w-[750px]">
                     <DialogHeader className="shrink-0">
-                         <DialogTitle>Comment (25)</DialogTitle>
+                         <DialogTitle>{t('comment')} (25)</DialogTitle>
                          <DialogDescription>
-                              Share your comment
+                              {t('shareYourComment')}
                          </DialogDescription>
 
                     </DialogHeader>
@@ -42,10 +47,10 @@ export default function DialogComment({ children }: { children: React.ReactNode 
                          <Comment />
                     </div>
                     <InputGroup className="h-12">
-                         <InputGroupInput placeholder="Search..." />
+                         <InputGroupInput placeholder={`${t('search')}...`} />
                          <InputGroupAddon>
                               <Avatar>
-                                   <AvatarImage src="https://github.com/shadcn.png" />
+                                   <AvatarImage src={user?.user_metadata.avatar_url} />
                                    <AvatarFallback>CN</AvatarFallback>
                               </Avatar>
                          </InputGroupAddon>

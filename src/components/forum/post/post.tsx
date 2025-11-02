@@ -16,8 +16,11 @@ import { Card } from "../../ui/card"
 import DialogComment from "./dialog-comment"
 import { DialogShare } from "./dialog-share"
 import DropdownMenuPost from "./dropdown-menu-post"
+import { useTranslations } from "next-intl"
 
 export default function Post({ dataPost }: { dataPost: PostType }) {
+     const t = useTranslations("Forum")
+     const tButton = useTranslations('Button')
      const [expanded, setExpanded] = useState(false)
      const [isVoted, setIsVoted] = useState(false)
      const [voteCount, setVoteCount] = useState(12)
@@ -76,7 +79,7 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                               onClick={handleFollow}
                               variant={dataPost?.user.isFollowed ? 'outline' : 'default'}
                          >
-                              {dataPost?.user.isFollowed ? 'Following' : 'Follow'}
+                              {dataPost?.user.isFollowed ? tButton('following') : tButton('follow')}
                          </Button>
                          <DropdownMenuPost
                               handleDeletePost={handleDeletePost}
@@ -116,7 +119,7 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                     ) : (
                          <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
                               <ImageIcon size={48} />
-                              <p className="text-sm">Image not available</p>
+                              <p className="text-sm">{t('imageErrorText')}</p>
                          </div>
                     )}
                </Card>

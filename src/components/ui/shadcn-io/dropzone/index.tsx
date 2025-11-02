@@ -7,6 +7,7 @@ import type { DropEvent, DropzoneOptions, FileRejection } from 'react-dropzone';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 type DropzoneContextType = {
   src?: File[];
@@ -158,6 +159,7 @@ export const DropzoneEmptyState = ({
   children,
   className,
 }: DropzoneEmptyStateProps) => {
+  const t = useTranslations("Forum")
   const { src, accept, maxSize, minSize, maxFiles } = useDropzoneContext();
 
   if (src) {
@@ -171,7 +173,7 @@ export const DropzoneEmptyState = ({
   let caption = '';
 
   if (accept) {
-    caption += 'Accepts image (JPEG, PNG)';
+    caption += `${t('acceptsImage')} (JPEG, PNG)`;
     // caption += new Intl.ListFormat('en').format(Object.keys(accept));
   }
 
@@ -189,10 +191,10 @@ export const DropzoneEmptyState = ({
         <UploadIcon size={16} />
       </div>
       <p className="my-2 w-full truncate text-wrap font-medium text-sm">
-        Upload {maxFiles === 1 ? 'a file' : 'files'}
+        {t('upload')} {maxFiles === 1 ? t('aFile') : t('files')}
       </p>
       <p className="w-full truncate text-wrap text-muted-foreground text-xs">
-        Drop or click to upload your image
+        {t('dropFileDescription')}
       </p>
       {caption && (
         <p className="text-wrap text-muted-foreground text-xs">{caption}</p>

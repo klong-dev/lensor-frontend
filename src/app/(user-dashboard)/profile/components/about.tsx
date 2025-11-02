@@ -1,10 +1,9 @@
 import React from 'react'
-import { UserRound, Cake, MapPin, Mail } from 'lucide-react';
-import { useUserStore } from '@/stores/user-store';
+import { UserRound, Cake, MapPin, Mail } from 'lucide-react'
+import { useUserStore } from '@/stores/user-store'
 
 export default function About() {
   const user = useUserStore(state => state.user)
-  console.log(user);
 
   return (
     <div className='flex flex-col h-auto py-4 px-8 pt-0'>

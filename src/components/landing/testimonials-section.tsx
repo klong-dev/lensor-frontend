@@ -1,42 +1,38 @@
 import { Star, Quote } from "lucide-react"
 
-export default function TestimonialsSection() {
-     const testimonials = [
-          {
-               name: "Sarah Johnson",
-               role: "Wedding Photographer",
-               avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-               rating: 5,
-               text: "Lensor transformed my online presence. Within a month, I doubled my bookings and finally have a portfolio that truly represents my style."
-          },
-          {
-               name: "Michael Chen",
-               role: "Travel Photographer",
-               avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-               rating: 5,
-               text: "The best investment I've made for my photography business. The marketplace feature alone has paid for my subscription 10x over."
-          },
-          {
-               name: "Emma Rodriguez",
-               role: "Portrait Photographer",
-               avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-               rating: 5,
-               text: "I love how easy it is to update my portfolio. No coding knowledge needed, and the templates are absolutely stunning!"
-          }
-     ]
+export interface Testimonial {
+     name: string
+     role: string
+     avatar: string
+     rating: number
+     text: string
+}
 
+interface TestimonialsSectionProps {
+     title: string
+     titleHighlight: string
+     description: string
+     testimonials: Testimonial[]
+}
+
+export default function TestimonialsSection({
+     title,
+     titleHighlight,
+     description,
+     testimonials
+}: TestimonialsSectionProps) {
      return (
           <section className="py-20 lg:py-32 bg-neutral-900">
                <div className="container mx-auto px-4">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-                              Loved by{" "}
+                              {title}{" "}
                               <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                                   Creators
+                                   {titleHighlight}
                               </span>
                          </h2>
                          <p className="text-xl text-gray-400">
-                              See what photographers are saying about Lensor
+                              {description}
                          </p>
                     </div>
 

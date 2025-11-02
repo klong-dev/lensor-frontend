@@ -2,58 +2,40 @@ import { ExternalLink } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 
-export default function ShowcaseSection() {
-     const showcaseItems = [
-          {
-               title: "Wedding Photography",
-               photographer: "Sarah Johnson",
-               image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-               category: "Wedding"
-          },
-          {
-               title: "Travel & Landscape",
-               photographer: "Michael Chen",
-               image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
-               category: "Travel"
-          },
-          {
-               title: "Portrait Studio",
-               photographer: "Emma Rodriguez",
-               image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
-               category: "Portrait"
-          },
-          {
-               title: "Fashion Editorial",
-               photographer: "Alex Turner",
-               image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80",
-               category: "Fashion"
-          },
-          {
-               title: "Wildlife Photography",
-               photographer: "David Miller",
-               image: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=800&q=80",
-               category: "Wildlife"
-          },
-          {
-               title: "Architecture",
-               photographer: "Lisa Anderson",
-               image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&q=80",
-               category: "Architecture"
-          }
-     ]
+export interface ShowcaseItem {
+     title: string
+     photographer: string
+     image: string
+     category: string
+}
 
+interface ShowcaseSectionProps {
+     title: string
+     titleHighlight: string
+     description: string
+     showcaseItems: ShowcaseItem[]
+     viewMore: string
+}
+
+export default function ShowcaseSection({
+     title,
+     titleHighlight,
+     description,
+     showcaseItems,
+     viewMore
+}: ShowcaseSectionProps) {
      return (
           <section className="py-20 lg:py-32 bg-neutral-950">
                <div className="container mx-auto px-4">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-                              Beautiful Portfolios by{" "}
+                              {title}{" "}
                               <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                                   Real Creators
+                                   {titleHighlight}
                               </span>
                          </h2>
                          <p className="text-xl text-gray-400">
-                              Get inspired by stunning portfolios built with Lensor
+                              {description}
                          </p>
                     </div>
 
@@ -92,7 +74,7 @@ export default function ShowcaseSection() {
                     <div className="text-center mt-12">
                          <Link href="#">
                               <button className="px-8 py-3 border border-gray-700 text-white rounded-lg font-medium hover:border-purple-500/50 transition-all inline-flex items-center gap-2">
-                                   View More Examples
+                                   {viewMore}
                                    <ExternalLink className="w-4 h-4" />
                               </button>
                          </Link>

@@ -81,8 +81,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 function DropdownMenuUser({ children }: { children: React.ReactNode }) {
-  const { setTheme, resolvedTheme } = useTheme()
   const [locale, setLocale] = useState("")
+  const { setTheme, resolvedTheme } = useTheme()
   const router = useRouter()
   const tButton = useTranslations('Button')
   const tToastMsg = useTranslations("ToastMessage")
