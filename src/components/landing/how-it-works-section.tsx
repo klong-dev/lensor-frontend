@@ -1,45 +1,46 @@
-import { MousePointerClick, Palette, Rocket, TrendingUp } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { LucideIcon } from "lucide-react"
 
-export default function HowItWorksSection() {
-     const steps = [
-          {
-               icon: MousePointerClick,
-               number: "01",
-               title: "Choose Your Template",
-               description: "Select from our collection of stunning, professionally designed templates tailored for photographers."
-          },
-          {
-               icon: Palette,
-               number: "02",
-               title: "Customize Everything",
-               description: "Make it yours with our intuitive drag-and-drop editor. No coding skills required."
-          },
-          {
-               icon: Rocket,
-               number: "03",
-               title: "Launch Your Site",
-               description: "Go live in minutes with your custom domain or our free subdomain. It's that simple."
-          },
-          {
-               icon: TrendingUp,
-               number: "04",
-               title: "Grow Your Business",
-               description: "Start selling your work, connect with clients, and watch your photography business thrive."
-          }
-     ]
+export interface Step {
+     icon: LucideIcon
+     number: string
+     title: string
+     description: string
+}
 
+interface HowItWorksSectionProps {
+     title: string
+     titleHighlight: string
+     description: string
+     steps: Step[]
+     readyToStart: string
+     createPortfolio: string
+     watchDemo: string
+}
+
+export default function HowItWorksSection({
+     title,
+     titleHighlight,
+     description,
+     steps,
+     readyToStart,
+     createPortfolio,
+     watchDemo
+}: HowItWorksSectionProps) {
      return (
           <section className="py-20 lg:py-32 bg-neutral-900">
                <div className="container mx-auto px-4">
                     <div className="text-center max-w-3xl mx-auto mb-16">
                          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-                              How It{" "}
-                              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-                                   Works
-                              </span>
+                              {title}{" "}
+                              {titleHighlight && (
+                                   <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                                        {titleHighlight}
+                                   </span>
+                              )}
                          </h2>
                          <p className="text-xl text-gray-400">
-                              Get your professional portfolio online in 4 simple steps
+                              {description}
                          </p>
                     </div>
 
@@ -72,14 +73,14 @@ export default function HowItWorksSection() {
 
                     {/* Bottom CTA */}
                     <div className="text-center mt-16">
-                         <p className="text-gray-400 mb-6">Ready to get started?</p>
+                         <p className="text-gray-400 mb-6">{readyToStart}</p>
                          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                              <button className="px-8 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all">
-                                   Create Your Portfolio
-                              </button>
-                              <button className="px-8 py-3 border border-gray-700 text-white rounded-lg font-medium hover:border-purple-500/50 transition-all">
-                                   Watch Demo
-                              </button>
+                              <Button className="px-8 py-3 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+                                   {createPortfolio}
+                              </Button>
+                              <Button variant="outline" className="px-8 py-3 border border-gray-700 text-white rounded-lg font-medium hover:border-purple-500/50 transition-all">
+                                   {watchDemo}
+                              </Button>
                          </div>
                     </div>
                </div>

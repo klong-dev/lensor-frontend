@@ -5,6 +5,7 @@ import {
      DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { BookMarked, Eye, Flag, Trash2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import React from 'react'
 
 interface DropdownMenuPostProps {
@@ -17,28 +18,34 @@ interface DropdownMenuPostProps {
 }
 
 export default function DropdownMenuPost(props: DropdownMenuPostProps) {
+     const tButton = useTranslations('Button')
+
      return (
           <DropdownMenu>
                <DropdownMenuTrigger asChild>{props.children}</DropdownMenuTrigger>
                <DropdownMenuContent>
                     <DropdownMenuItem onClick={props.handleViewDetail}>
-                         <Eye /> View detail
+                         <Eye /> 
+                         {tButton('viewDetail')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                          onClick={props.handleReportPost}
                          className={props.isOwner ? 'hidden' : ''}
                     >
-                         <Flag /> Report
+                         <Flag /> 
+                         {tButton('report')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={props.handleSavePost}>
-                         <BookMarked /> Save post
+                         <BookMarked /> 
+                         {tButton('savePost')}
                     </DropdownMenuItem>
                     <DropdownMenuItem
                          variant="destructive"
                          onClick={props.handleDeletePost}
                          className={props.isOwner ? '' : 'hidden'}
                     >
-                         <Trash2 /> Delete post
+                         <Trash2 /> 
+                         {tButton('deletePost')}
                     </DropdownMenuItem>
                </DropdownMenuContent>
           </DropdownMenu>

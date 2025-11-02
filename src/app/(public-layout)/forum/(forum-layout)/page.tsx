@@ -11,8 +11,11 @@ import { Input } from '@/components/ui/input'
 import { usePosts } from '@/lib/hooks/usePostHooks'
 import { useUserStore } from '@/stores/user-store'
 import { PostType } from '@/types/post'
+import { useTranslations } from 'next-intl'
 
 export default function ForumPage() {
+     const t = useTranslations('Forum')
+     const tButton = useTranslations("Button")
      const { data: dataForum, error, mutate, isValidating } = usePosts()
      const user = useUserStore(state => state.user)
      
@@ -27,8 +30,8 @@ export default function ForumPage() {
                                    <AvatarImage src={user?.user_metadata.avatar_url} />
                                    <AvatarFallback>{user?.user_metadata.name}</AvatarFallback>
                               </Avatar>
-                              <Input disabled type="text" placeholder="Let's share what going on your mind...." />
-                              <Button>Create Post</Button>
+                              <Input disabled type="text" placeholder={t('placeholderInputCreatePost')} />
+                              <Button>{tButton('createPost')}</Button>
                          </Card>
                     </DialogCreatePost>
                </div>

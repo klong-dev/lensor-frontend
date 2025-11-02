@@ -19,11 +19,14 @@ import { Spinner } from "@/components/ui/spinner"
 import { postApi } from "@/lib/apis/postApi"
 import { usePosts } from "@/lib/hooks/usePostHooks"
 import { resizeImage } from "@/utils/imageTools"
+import { useTranslations } from "next-intl"
 import React, { ChangeEvent, useState } from 'react'
 import { toast } from "sonner"
 import CarouselPreview from "./carousel-preview"
 
 export default function DialogCreatePost({ children }: { children: React.ReactNode }) {
+     const t = useTranslations("Forum")
+     const tButton = useTranslations("Button")
      const [files, setFiles] = useState<File[] | undefined>()
      const [filePreview, setFilePreview] = useState<string[] | undefined>()
      const [isOpen, setIsOpen] = useState(false)
@@ -56,12 +59,12 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
 
      const handlePost = async () => {
           if (!title.trim()) {
-               toast.error('Please enter post title')
+               toast.error(t('missingTitleToast'))
                return
           }
 
           if (!files || files.length === 0) {
-               toast.error('Please select an image')
+               toast.error(t('missingImageToast'))
                return
           }
 
@@ -73,13 +76,13 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                // formData.append('catagory', category)
                formData.append('image', files[0])
                await postApi.create(formData)
-               toast.success('Post created successfully!')
+               toast.success(t('postSuccessToast'))
                mutate()
                setIsOpen(false)
                handleClose()
           } catch (error) {
                console.error('Error creating post:', error)
-               toast.error('Failed to create post')
+               toast.error(t('postFailToast'))
           } finally {
                setIsLoading(false)
           }
@@ -118,14 +121,14 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                          showCloseButton={!isLoading}
                     >
                          <DialogHeader>
-                              <DialogTitle>Create your new post</DialogTitle>
+                              <DialogTitle>{t('dialogCreateTitle')}</DialogTitle>
                               <DialogDescription>
-                                   Share your moments with the community
+                                   {t('dialogCreateDescription')}
                               </DialogDescription>
                          </DialogHeader>
                          <div className="grid gap-4">
                               <Input
-                                   placeholder="Title"
+                                   placeholder={t('titleInputPlaceholder')}
                                    value={title}
                                    onChange={handleChangeTitle}
                                    disabled={isLoading}
@@ -133,7 +136,7 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                               <InputGroup>
                                    <InputGroupTextarea
                                         className="h-30"
-                                        placeholder="Your post description"
+                                        placeholder={t('descriptionInputPlaceholder')}
                                         value={content}
                                         onChange={handleChangeContent}
                                         disabled={isLoading}
@@ -153,7 +156,7 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                                         <DropzoneEmptyState />
                                         <DropzoneContent>
                                              <div className="w-full aspect-[3/2] flex justify-center items-center gap-2">
-                                                  <Spinner /> Uploading....
+                                                  <Spinner /> {t('uploading')}....
                                              </div>
                                         </DropzoneContent>
                                    </Dropzone>
@@ -163,12 +166,12 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
                          <DialogFooter>
                               <DialogClose asChild>
                                    <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-                                        Cancel
+                                        {tButton('cancel')}
                                    </Button>
                               </DialogClose>
                               <Button onClick={handlePost} disabled={isLoading}>
                                    {isLoading && <Spinner />}
-                                   Post
+                                   {tButton('post')}
                               </Button>
                          </DialogFooter>
                     </DialogContent>
