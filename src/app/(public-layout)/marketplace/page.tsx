@@ -32,44 +32,38 @@ export default function MarketplacePage() {
         ? Array.from(new Set(marketplaceItems.data.map((item: MarketplaceItem) => item.category)))
         : [];
 
-    const validItems = useMemo(() => {
-        if (!marketplaceItems?.data) return []
+    const validItems = marketplaceItems?.data?.filter((item: MarketplaceItem) => {
+        const hasValidThumbnail = item?.thumbnail &&
+            typeof item.thumbnail === 'string' &&
+            item.thumbnail.trim() !== '';
 
-        return marketplaceItems.data.filter((item: MarketplaceItem) => {
+        const hasValidImage = item?.image &&
+            typeof item.image === 'string' &&
+            item.image.trim() !== '';
 
-            const hasValidThumbnail = item?.thumbnail &&
-                typeof item.thumbnail === 'string' &&
-                item.thumbnail.trim() !== '';
+        return hasValidThumbnail && hasValidImage;
+    }) || []
 
-            const hasValidImage = item?.image &&
-                typeof item.image === 'string' &&
-                item.image.trim() !== '';
 
-            return hasValidThumbnail && hasValidImage;
-        });
-    }, [marketplaceItems?.data]);
+    const filteredItems = validItems?.filter((item: MarketplaceItem) => {
+        const query = searchQuery.toLowerCase();
 
-    const filteredItems = useMemo(() => {
-        return validItems?.filter((item: MarketplaceItem) => {
-            const query = searchQuery.toLowerCase();
+        const matchesSearch =
+            item.title.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query);
 
-            const matchesSearch =
-                item.title.toLowerCase().includes(query) ||
-                item.description.toLowerCase().includes(query);
+        const matchesCategory = filters.category === 'all' || item.category === filters.category;
 
-            const matchesCategory = filters.category === 'all' || item.category === filters.category;
+        const matchesRating = filters.rating === 'all' || (item.rating !== undefined && item.rating >= parseFloat(filters.rating));
 
-            const matchesRating = filters.rating === 'all' || (item.rating !== undefined && item.rating >= parseFloat(filters.rating));
-
-            const priceValue = item.price
-            let matchesPrice = true;
-            if (filters.price === 'under-15') matchesPrice = priceValue < 15;
-            else if (filters.price === '15-25') matchesPrice = priceValue >= 15 && priceValue <= 25;
-            else if (filters.price === '25-50') matchesPrice = priceValue > 25 && priceValue <= 50;
-            else if (filters.price === 'over-50') matchesPrice = priceValue > 50;
-            return matchesSearch && matchesCategory && matchesPrice && matchesRating;
-        });
-    }, [validItems, searchQuery, filters]);
+        const priceValue = item.price
+        let matchesPrice = true;
+        if (filters.price === 'under-15') matchesPrice = priceValue < 15;
+        else if (filters.price === '15-25') matchesPrice = priceValue >= 15 && priceValue <= 25;
+        else if (filters.price === '25-50') matchesPrice = priceValue > 25 && priceValue <= 50;
+        else if (filters.price === 'over-50') matchesPrice = priceValue > 50;
+        return matchesSearch && matchesCategory && matchesPrice && matchesRating;
+    });
 
     const handleResetFilter = () => {
         if (resetFilter) {
