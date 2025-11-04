@@ -37,7 +37,7 @@ export default function ProductDetail() {
 
 
     return (
-        <div className='container py-3'>
+        <div className='container pt-4 pb-8'>
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -73,7 +73,7 @@ export default function ProductDetail() {
                 </div>
             ) : (
                 <>
-                    <div className='mt-8 grid grid-cols-14 gap-6'>
+                    <div className='mt-3 grid grid-cols-14 gap-6'>
                         <ImageGallery imagePairs={item?.imagePairs} name={item?.name} />
 
                         <ProductInfo {...item} />

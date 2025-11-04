@@ -88,10 +88,6 @@ export type Review = {
 }
 
 export type FilterSidebarProps = {
-  searchInput: string
-  onSearchChange: (value: string) => void
-  searchQuery: string
-  resultsCount: number
   filters: {
     category: string
     price: string
