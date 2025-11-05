@@ -14,5 +14,7 @@ export const ROUTES = {
      NOTIFICATION: '/notification',
      CREATE_PORTFOLIO: '/create-portfolio',
      PURCHASED_PRESETS: '/purchased-presets',
-     WALLET: '/wallet'
+     WALLET: '/wallet',
+     PRODUCT_MANAGEMENT: '/product-management',
+     STATISTICS: '/statistics'
 }

@@ -15,15 +15,17 @@ import { useUserStore } from "@/stores/user-store"
 import {
   AudioWaveform,
   Bell,
+  ChartLine,
   CirclePoundSterling,
   Command,
   GalleryVerticalEnd,
   Images,
   Mail,
+  Package,
   ShoppingCart,
   Store,
   TicketCheck,
-  User,
+  User
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { usePathname } from "next/navigation"
@@ -101,6 +103,18 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
         icon: Store,
       },
     ],
+    yourBooth: [
+      {
+        name: 'Revenue Statistics',
+        url: ROUTES.STATISTICS,
+        icon: ChartLine,
+      },
+      {
+        name: 'Product Management',
+        url: ROUTES.PRODUCT_MANAGEMENT,
+        icon: Package,
+      },
+    ],
   }
 
 
@@ -114,6 +128,11 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
     isActive: pathname === item.url || pathname.startsWith(item.url + '/')
   }))
 
+  const yourBoothWithActive = data.yourBooth.map(item => ({
+    ...item,
+    isActive: pathname === item.url || pathname.startsWith(item.url + '/')
+  }))
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -122,6 +141,7 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
       <SidebarContent>
         <NavMain title={t('personalSpace')} items={navMainsWithActive} />
         <NavMain title={t('publicSpaces')} items={publicWithActive} />
+        <NavMain title={'Your Booth'} items={yourBoothWithActive} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />
