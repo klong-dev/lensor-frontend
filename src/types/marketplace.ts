@@ -98,3 +98,18 @@ export type FilterSidebarProps = {
   onResetFilter: () => void
   categories: string[]
 }
+
+export type PurchasedPreset = {
+  id: string
+  title: string
+  description: string
+  thumbnail: string
+  price: number
+  category: string
+  author: {
+    name: string
+    avatar?: string
+  }
+  rating?: number
+  purchasedDate: string
+}

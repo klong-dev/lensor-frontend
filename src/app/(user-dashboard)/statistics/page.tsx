@@ -16,8 +16,6 @@ import {
      ChartTooltip,
      ChartTooltipContent,
 } from "@/components/ui/chart"
-import { DataTable } from "@/components/ui/data-table-advanced"
-import { statisticsColumns, StatisticData } from "./columns"
 
 export const description = "An interactive bar chart"
 
@@ -102,17 +100,6 @@ const chartData = [
      { date: "2024-06-17", desktop: 475, mobile: 520 },
      { date: "2024-06-18", desktop: 107, mobile: 170 },
      { date: "2024-06-19", desktop: 341, mobile: 290 },
-     { date: "2024-06-20", desktop: 408, mobile: 450 },
-     { date: "2024-06-21", desktop: 169, mobile: 210 },
-     { date: "2024-06-22", desktop: 317, mobile: 270 },
-     { date: "2024-06-23", desktop: 480, mobile: 530 },
-     { date: "2024-06-24", desktop: 132, mobile: 180 },
-     { date: "2024-06-25", desktop: 141, mobile: 190 },
-     { date: "2024-06-26", desktop: 434, mobile: 380 },
-     { date: "2024-06-27", desktop: 448, mobile: 490 },
-     { date: "2024-06-28", desktop: 149, mobile: 200 },
-     { date: "2024-06-29", desktop: 103, mobile: 160 },
-     { date: "2024-06-30", desktop: 446, mobile: 400 },
 ]
 
 const chartConfig = {
@@ -129,38 +116,9 @@ const chartConfig = {
      },
 } satisfies ChartConfig
 
-// Helper function to transform chart data to table data
-function transformToTableData(data: Array<{ date: string; desktop: number; mobile: number }>): StatisticData[] {
-     return data.map((item, index) => {
-          const total = item.desktop + item.mobile
-          const prevTotal = index > 0
-               ? data[index - 1].desktop + data[index - 1].mobile
-               : total
-
-          const growthPercent = prevTotal > 0
-               ? (((total - prevTotal) / prevTotal) * 100).toFixed(1)
-               : "0.0"
-
-          const growth = prevTotal === total
-               ? "0.0%"
-               : total > prevTotal
-                    ? `+${growthPercent}%`
-                    : `${growthPercent}%`
-
-          return {
-               date: item.date,
-               desktop: item.desktop,
-               mobile: item.mobile,
-               total,
-               growth,
-          }
-     })
-}
-
 export default function StatisticsPage() {
      const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("desktop")
 
-     // Calculate totals for chart summary
      const total = React.useMemo(
           () => ({
                desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
@@ -169,12 +127,8 @@ export default function StatisticsPage() {
           []
      )
 
-     // Transform data for table
-     const tableData = React.useMemo(() => transformToTableData(chartData), [])
-
      return (
           <div className="p-5 space-y-5">
-               {/* Chart Card */}
                <Card className="py-0">
                     <CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row">
                          <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:!py-6">
@@ -252,18 +206,6 @@ export default function StatisticsPage() {
                          </ChartContainer>
                     </CardContent>
                </Card>
-
-               {/* Data Table Card */}
-               <div className="bg-accent w-full p-5 rounded-2xl shadow-2xl border">
-                    <h1 className="text-2xl font-bold mb-4">Detailed Statistics</h1>
-                    <DataTable
-                         columns={statisticsColumns}
-                         data={tableData}
-                         searchKey="date"
-                         searchPlaceholder="Filter by date..."
-                         pageSize={10}
-                    />
-               </div>
           </div>
      )
 }
