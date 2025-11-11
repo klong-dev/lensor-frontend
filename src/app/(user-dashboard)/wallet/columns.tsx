@@ -16,12 +16,20 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 // Type definition - easy to sync with API
 export type Transaction = {
      id: string
-     amount: number
-     status: "pending" | "processing" | "success" | "failed"
-     email: string
+     userId: string
+     orderId: string
+     paymentMethod: string
+     transactionType: string
+     amount: string
+     currency: string
+     status: string
+     transactionId: string
      description: string
-     type: string
-     date: string
+     metadata: any
+     balanceBefore: string
+     balanceAfter: string
+     createdAt: string
+     updatedAt: string
 }
 
 // Column definitions - easy to customize
@@ -49,15 +57,17 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           enableHiding: false,
      },
      {
-          accessorKey: "id",
-          header: "ID",
-          cell: ({ row }) => <div className="font-medium">{row.getValue("id")}</div>,
+          accessorKey: "transactionId",
+          header: "Transaction ID",
+          cell: ({ row }) => (
+               <div className="font-medium">{row.getValue("transactionId") || "N/A"}</div>
+          ),
      },
      {
-          accessorKey: "type",
+          accessorKey: "transactionType",
           header: "Type",
           cell: ({ row }) => (
-               <div className="capitalize font-medium">{row.getValue("type")}</div>
+               <div className="capitalize font-medium">{row.getValue("transactionType")}</div>
           ),
      },
      {
@@ -67,13 +77,13 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
                const status = row.getValue("status") as string
                return (
                     <div
-                         className={`capitalize font-medium ${status === "success"
-                                   ? "text-green-600"
-                                   : status === "failed"
-                                        ? "text-red-600"
-                                        : status === "processing"
-                                             ? "text-blue-600"
-                                             : "text-yellow-600"
+                         className={`capitalize font-medium ${status === "completed"
+                              ? "text-green-600"
+                              : status === "failed"
+                                   ? "text-red-600"
+                                   : status === "processing"
+                                        ? "text-blue-600"
+                                        : "text-yellow-600"
                               }`}
                     >
                          {status}
@@ -82,17 +92,19 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           },
      },
      {
-          accessorKey: "email",
+          accessorKey: "paymentMethod",
           header: ({ column }) => (
                <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                >
-                    Email
+                    Payment Method
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                </Button>
           ),
-          cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+          cell: ({ row }) => (
+               <div className="uppercase font-medium">{row.getValue("paymentMethod")}</div>
+          ),
      },
      {
           accessorKey: "description",
@@ -112,18 +124,18 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           header: () => <div className="text-right">Amount</div>,
           cell: ({ row }) => {
                const amount = parseFloat(row.getValue("amount"))
-               const formatted = new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-               }).format(amount)
+               const formatted = amount.toLocaleString("vi-VN")
 
-               return <div className="text-right font-bold">{formatted}</div>
+               return <div className="text-right font-bold">{formatted} ₫</div>
           },
      },
      {
-          accessorKey: "date",
+          accessorKey: "createdAt",
           header: "Date",
-          cell: ({ row }) => <div>{row.getValue("date")}</div>,
+          cell: ({ row }) => {
+               const date = new Date(row.getValue("createdAt"))
+               return <div>{date.toLocaleString("vi-VN")}</div>
+          },
      },
      {
           id: "actions",

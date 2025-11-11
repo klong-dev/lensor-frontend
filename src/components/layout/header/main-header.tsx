@@ -4,16 +4,28 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/path'
 import { useUserStore } from '@/stores/user-store'
-import { Bell, ChevronDown, ShoppingCart } from 'lucide-react'
+import { useWalletStore } from '@/stores/wallet-store'
+import { Bell, ChevronDown, ShoppingCart, Wallet } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function MainHeader() {
   const t = useTranslations('Header')
   const tButton = useTranslations('Button')
   const currentPath = usePathname()
   const user = useUserStore(state => state.user)
+  const { walletData, fetchWallet } = useWalletStore()
+
+  useEffect(() => {
+    if (user) {
+      fetchWallet()
+    }
+  }, [user, fetchWallet])
+
+  const balance = walletData?.balance || 0
+  const formattedBalance = balance.toLocaleString('vi-VN')
 
   const navLinkItems = [
     { title: t('forum'), href: ROUTES.FORUM },
@@ -39,6 +51,12 @@ export default function MainHeader() {
               <Link href={ROUTES.LOGIN}><Button>{tButton('login')}</Button></Link>
             </>
             : <>
+              <Link href={ROUTES.WALLET}>
+                <Button variant='outline' size='sm' className='gap-1.5'>
+                  <Wallet className='h-4 w-4' />
+                  <span className='font-semibold'>{formattedBalance} ₫</span>
+                </Button>
+              </Link>
               <div className='flex justify-end items-center gap-1'>
                 <div className='flex items-center'>
                   <Link href={ROUTES.CURRENT_PROFILE} className='max-w-32 overflow-hidden text-nowrap text-ellipsis'>{user?.user_metadata.name}</Link>
@@ -77,7 +95,7 @@ import { Switch } from '@/components/ui/switch'
 import { APP_NAME, DEFAULT_LOCALE } from '@/constants'
 import { authHelpers } from '@/lib/supabase'
 import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 
 function DropdownMenuUser({ children }: { children: React.ReactNode }) {

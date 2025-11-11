@@ -11,5 +11,18 @@ export const endpoints = {
      post: createEndpoints('posts'),
      marketplace: createEndpoints('marketplaces'),
      product: createEndpoints('products'),
-     forum: createEndpoints('forums')
+     forum: createEndpoints('forums'),
+     comment: {
+          byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/comments`
+     },
+     like: {
+          byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/like`
+     },
+     payment: {
+          paypal: `${API_PREFIX}/payment/paypal/create`,
+          vnpay: `${API_PREFIX}/payment/vnpay/create`,
+          vnpayCallback: `${API_PREFIX}/payment/vnpay-return`
+     },
+     wallet: `${API_PREFIX}/wallet`,
+     paymentHistory: `${API_PREFIX}/payment-history`
 }

@@ -14,3 +14,27 @@ export const usePostDetail = (id: string) => {
      )
      return { data, error, isLoading, mutate }
 }
+
+export const useCreateComment = () => {
+     const { mutate } = useSWRConfig()
+
+     const createComment = async (postId: string, content: string, parentId: string | null = null) => {
+          try {
+               const result = await postApi.createComment(postId, { content, parentId })
+               await mutate(endpoints.comment.byPostId(postId))
+               return result
+          } catch (error) {
+               throw error
+          }
+     }
+
+     return { createComment }
+}
+
+export const useComments = (postId: string) => {
+     const { data, error, isLoading, mutate } = useSWR(
+          endpoints.comment.byPostId(postId),
+          () => postApi.getComments(postId)
+     )
+     return { data, error, isLoading, mutate }
+}

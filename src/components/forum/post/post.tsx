@@ -22,16 +22,31 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
      const t = useTranslations("Forum")
      const tButton = useTranslations('Button')
      const [expanded, setExpanded] = useState(false)
-     const [isVoted, setIsVoted] = useState(false)
-     const [voteCount, setVoteCount] = useState(12)
-     const [isFollowing, setIsFollowing] = useState(false)
+     const [isVoted, setIsVoted] = useState(dataPost?.isLiked || false)
+     const [voteCount, setVoteCount] = useState(dataPost?.voteCount || 0)
+     const [isFollowing, setIsFollowing] = useState(dataPost?.user.isFollowed || false)
      const [imageError, setImageError] = useState(false)
      const { mutate } = usePosts()
      const user = useUserStore(state => state.user)
 
-     const handleVotePost = () => {
-          setIsVoted(!isVoted)
-          setVoteCount(isVoted ? voteCount - 1 : voteCount + 1)
+     const handleVotePost = async () => {
+          const previousState = isVoted
+          const previousCount = voteCount
+
+          try {
+               setIsVoted(!isVoted)
+               setVoteCount(isVoted ? voteCount - 1 : voteCount + 1)
+
+               if (isVoted) {
+                    await postApi.unlikePost(dataPost.id)
+               } else {
+                    await postApi.likePost(dataPost.id)
+               }
+          } catch (error) {
+               setIsVoted(previousState)
+               setVoteCount(previousCount)
+               toast.error('Failed to update like status')
+          }
      }
 
      const handleFollow = () => {
@@ -106,7 +121,7 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                <Card className='relative w-full aspect-[3/2] flex justify-center items-center mt-3 bg-muted/30'>
                     {dataPost?.imageUrl && !imageError ? (
                          <Image
-                              src={`${BASE_URL}${dataPost?.imageUrl}`}
+                              src={`${BASE_URL}${dataPost?.thumbnailUrl || dataPost?.imageUrl}`}
                               fill
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               alt={dataPost?.title || "Post image"}
@@ -124,13 +139,44 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                     )}
                </Card>
 
+               {dataPost?.imageMetadata && (
+                    <div className="mt-3 text-sm text-muted-foreground space-y-1">
+                         {dataPost.imageMetadata.cameraModel && (
+                              <p className="flex items-center gap-2">
+                                   <span className="font-semibold">Camera:</span>
+                                   <span>{dataPost.imageMetadata.cameraMake} {dataPost.imageMetadata.cameraModel}</span>
+                              </p>
+                         )}
+                         {dataPost.imageMetadata.lensModel && (
+                              <p className="flex items-center gap-2">
+                                   <span className="font-semibold">Lens:</span>
+                                   <span>{dataPost.imageMetadata.lensModel}</span>
+                              </p>
+                         )}
+                         <div className="flex items-center gap-4 flex-wrap">
+                              {dataPost.imageMetadata.focalLength && (
+                                   <span>{dataPost.imageMetadata.focalLength}</span>
+                              )}
+                              {dataPost.imageMetadata.aperture && (
+                                   <span>{dataPost.imageMetadata.aperture}</span>
+                              )}
+                              {dataPost.imageMetadata.shutterSpeed && (
+                                   <span>{dataPost.imageMetadata.shutterSpeed}</span>
+                              )}
+                              {dataPost.imageMetadata.iso && (
+                                   <span>ISO {dataPost.imageMetadata.iso}</span>
+                              )}
+                         </div>
+                    </div>
+               )}
+
                <div className='flex gap-3 mt-2'>
-                    <Button variant='ghost' size='lg' onClick={handleVotePost} >
-                         <Heart className={clsx(isVoted && 'text-red-600')} />
+                    <Button variant='ghost' size='lg' onClick={handleVotePost}>
+                         <Heart className={clsx(isVoted && 'fill-red-600 text-red-600')} />
                          <span className={clsx(isVoted && 'text-red-600')}>{dataPost?.voteCount}</span>
                     </Button>
 
-                    <DialogComment>
+                    <DialogComment postId={dataPost?.id}>
                          <Button variant='ghost' size='lg' >
                               <MessageCircle size={92} /> {dataPost?.commentCount}
                          </Button>
