@@ -103,16 +103,25 @@ export default function CreateForm() {
 
     const handlePriceChange = (value: string) => {
         try {
-            const numericValue = value.replace(/\D/g, "");
-
-            if (value && !/^\d*$/.test(value)) {
+            if (value && !/^[\d.]*$/.test(value)) {
                 setPriceError('Please enter a valid number')
-                setDisplayPrice(value)
                 return
             }
 
+            const numericValue = value.replace(/\D/g, "");
+
+            if (numericValue === '') {
+                setPrice('')
+                setDisplayPrice('')
+                setPriceError('')
+                return
+            }
+
+            const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
             setPrice(numericValue)
-            setDisplayPrice(value)
+            setDisplayPrice(formattedValue)
+            setPriceError('')
             validatePrice(numericValue, originalPrice)
         } catch (error) {
             console.error('Error parsing price:', error)
@@ -122,16 +131,25 @@ export default function CreateForm() {
 
     const handleOriginalPriceChange = (value: string) => {
         try {
-            const numericValue = value.replace(/\D/g, "");
-
-            if (value && !/^\d*$/.test(value)) {
+            if (value && !/^[\d.]*$/.test(value)) {
                 setOriginalPriceError('Please enter a valid number for original price')
-                setDisplayOriginalPrice(value)
                 return
             }
 
+            const numericValue = value.replace(/\D/g, "");
+
+            if (numericValue === '') {
+                setOriginalPrice('')
+                setDisplayOriginalPrice('')
+                setOriginalPriceError('')
+                return
+            }
+
+            const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+
             setOriginalPrice(numericValue)
-            setDisplayOriginalPrice(value)
+            setDisplayOriginalPrice(formattedValue)
+            setOriginalPriceError('')
             validatePrice(price, numericValue)
         } catch (error) {
             console.error('Error parsing original price:', error)
@@ -317,24 +335,6 @@ export default function CreateForm() {
 
                                     <div className="grid grid-cols-2 gap-4">
                                         <Field>
-                                            <FieldLabel htmlFor="product-price">
-                                                Price (VND)
-                                            </FieldLabel>
-                                            <Input
-                                                id="product-price"
-                                                placeholder="e.g. 250000 or 250.000"
-                                                type="text"
-                                                required
-                                                value={displayPrice}
-                                                onChange={e => handlePriceChange(e.target.value)}
-                                                className={priceError ? 'border-red-500' : ''}
-                                            />
-                                            {priceError && (
-                                                <p className="text-sm text-red-500 mt-1">{priceError}</p>
-                                            )}
-                                        </Field>
-
-                                        <Field>
                                             <FieldLabel htmlFor="product-originalPrice">
                                                 Original Price (Optional)
                                             </FieldLabel>
@@ -351,6 +351,24 @@ export default function CreateForm() {
                                             <FieldDescription>
                                                 Discount will be calculated automatically
                                             </FieldDescription>
+                                        </Field>
+
+                                        <Field>
+                                            <FieldLabel htmlFor="product-price">
+                                                Price (VND)
+                                            </FieldLabel>
+                                            <Input
+                                                id="product-price"
+                                                placeholder="e.g. 250000 or 250.000"
+                                                type="text"
+                                                required
+                                                value={displayPrice}
+                                                onChange={e => handlePriceChange(e.target.value)}
+                                                className={priceError ? 'border-red-500' : ''}
+                                            />
+                                            {priceError && (
+                                                <p className="text-sm text-red-500 mt-1">{priceError}</p>
+                                            )}
                                         </Field>
                                     </div>
                                 </FieldSet>
