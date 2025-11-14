@@ -27,26 +27,33 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
                const token = session?.access_token
 
                if (!token) {
-                    console.log('No token, skipping socket connection')
+                    console.log('❌ Socket: No token found')
                     return
                }
+
+               console.log('🔌 Socket: Initializing connection...')
 
                const socketInstance = io(SOCKET_URL, {
                     auth: { token }
                })
 
                socketInstance.on('connect', () => {
-                    console.log('Socket connected')
+                    console.log('✅ Socket: Connected successfully', socketInstance.id)
                     setIsConnected(true)
                })
 
                socketInstance.on('disconnect', () => {
-                    console.log('Socket disconnected')
+                    console.log('❌ Socket: Disconnected')
                     setIsConnected(false)
                })
 
                socketInstance.on('connect_error', (error) => {
-                    console.error('Socket connection error:', error)
+                    console.error('❌ Socket: Connection error:', error.message)
+               })
+
+               // Debug: Lắng nghe tất cả events
+               socketInstance.onAny((eventName, ...args) => {
+                    console.log('📨 Socket Event:', eventName, args)
                })
 
                setSocket(socketInstance)

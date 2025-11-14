@@ -24,71 +24,65 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
      const [input, setInput] = useState('')
      const scrollRef = useRef<HTMLDivElement>(null)
 
-     // Lấy thông tin user đối diện từ store (data đã có sẵn từ sidebar)
      const otherUser = selectedConversation?.participants?.find((p: any) => p.id !== currentUser?.id)
 
-     // Load tin nhắn từ API
      useEffect(() => {
           if (messagesData?.data) {
                setMessages(messagesData.data)
           }
      }, [messagesData])
 
-     // Kết nối socket
      useEffect(() => {
           if (!socket || !isConnected || !roomId || !currentUser?.id) return
 
-          // Vào phòng
+          console.log('Socket: Joining room', roomId)
           socket.emit('joinRoom', { roomId, userId: currentUser.id })
 
-          // Lắng nghe tin nhắn mới
-          socket.on('newMessage', (newMsg: any) => {
+          const handleNewMessage = (newMsg: any) => {
+               console.log('Socket: Received new message', newMsg)
+
                setMessages(prev => {
-                    // Tránh duplicate
-                    const exists = prev.some(m => m.id === newMsg.id)
-                    if (exists) return prev
+                    const filtered = prev.filter(m => !m.id.startsWith('temp-'))
 
-                    return [...prev, newMsg]
+                    // if (filtered.some(m => m.id === newMsg.id)) return prev
+
+                    return [...filtered, newMsg]
                })
-          })
+          }
 
-          // Cleanup: Rời phòng khi unmount
+          socket.on('newMessage', handleNewMessage)
+
           return () => {
                socket.emit('leaveRoom', { roomId, userId: currentUser.id })
-               socket.off('newMessage')
+               socket.off('newMessage', handleNewMessage)
           }
      }, [socket, isConnected, roomId, currentUser?.id])
 
-     // Auto scroll xuống cuối khi có tin nhắn mới
      useEffect(() => {
           scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
      }, [messages])
 
-     // Gửi tin nhắn
      const sendMessage = () => {
           if (!input.trim() || !socket || !currentUser?.id) return
 
-          const tempMessage = {
+          const content = input.trim()
+
+          setMessages(prev => [...prev, {
                id: `temp-${Date.now()}`,
                userId: currentUser.id,
-               content: input.trim(),
+               content: content,
                createdAt: new Date().toISOString(),
-          }
+          }])
 
-          // Thêm tin nhắn vào UI ngay lập tức (optimistic update)
-          setMessages(prev => [...prev, tempMessage])
-
-          // Gửi qua socket
           socket.emit('sendMessage', {
                userId: currentUser.id,
-               roomId,
-               content: input.trim()
+               roomId: roomId,
+               content: content
           })
 
           setInput('')
      }
 
-     // Loading state
      if (!selectedConversation) {
           return (
                <div className="flex flex-col h-full">
