@@ -16,15 +16,13 @@ import {
 import { FilterSidebarProps } from '@/types/marketplace';
 import { Filter } from 'lucide-react';
 
-export default function FilterSidebar({filters, onFilterChange, resetFilter, onResetFilter, categories }: FilterSidebarProps) {
+export default function FilterSidebar({ filters, onFilterChange, resetFilter, onResetFilter, categories }: FilterSidebarProps) {
     return (
         <div className="w-[10%] shrink-0">
             <Popover>
-                <PopoverTrigger className='w-full'>
-                    <Button variant={'secondary'}className='w-full'>
-                        <Filter className="w-5 h-5" />
-                        Filters
-                    </Button>
+                <PopoverTrigger className='flex justify-center items-center gap-2 w-full border-1 border-accent bg-primary p-2 rounded-md hover:opacity-80 text-white transition-all'>
+                    <Filter className="w-5 h-5" />
+                    <p>Filters</p>
                 </PopoverTrigger>
                 <PopoverContent className="p-6 rounded-xl shadow-md border">
                     <div className="space-y-4">
@@ -58,10 +56,10 @@ export default function FilterSidebar({filters, onFilterChange, resetFilter, onR
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">All Prices</SelectItem>
-                                    <SelectItem value="under-15">Under $15</SelectItem>
-                                    <SelectItem value="15-25">$15 - $25</SelectItem>
-                                    <SelectItem value="25-50">$25 - $50</SelectItem>
-                                    <SelectItem value="over-50">Over $50</SelectItem>
+                                    <SelectItem value="under-50000">Under 50.000 ₫</SelectItem>
+                                    <SelectItem value="50000-200000">50.000 - 200.000 ₫</SelectItem>
+                                    <SelectItem value="200000-500000">200.000 - 500.000 ₫</SelectItem>
+                                    <SelectItem value="over-500000">Over 500.000 ₫</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

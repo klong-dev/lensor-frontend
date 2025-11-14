@@ -8,15 +8,14 @@ import {
     BreadcrumbList,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Input } from "@/components/ui/input";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import { ROUTES } from '@/constants/path';
 import { useMarketplace } from '@/lib/hooks/useMarketplaceHooks';
 import { MarketplaceItem } from "@/types/marketplace";
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import FilterSidebar from './components/filter-sidebar';
 import MarketplaceItemCard from "./components/marketplace-item-card";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
 
 export default function MarketplacePage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -27,6 +26,8 @@ export default function MarketplacePage() {
         rating: 'all',
     });
     const [resetFilter, setResetFilter] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemPerPage = 12
 
     const { data: marketplaceItems, isLoading } = useMarketplace()
 
@@ -60,12 +61,19 @@ export default function MarketplacePage() {
 
         const priceValue = item.price
         let matchesPrice = true;
-        if (filters.price === 'under-15') matchesPrice = priceValue < 15;
-        else if (filters.price === '15-25') matchesPrice = priceValue >= 15 && priceValue <= 25;
-        else if (filters.price === '25-50') matchesPrice = priceValue > 25 && priceValue <= 50;
-        else if (filters.price === 'over-50') matchesPrice = priceValue > 50;
+        if (filters.price === 'under-50000') matchesPrice = priceValue < 50000;
+        else if (filters.price === '50000-200000') matchesPrice = priceValue >= 50000 && priceValue <= 200000;
+        else if (filters.price === '200000-500000') matchesPrice = priceValue > 200000 && priceValue <= 500000;
+        else if (filters.price === 'over-500000') matchesPrice = priceValue > 500000;
         return matchesSearch && matchesCategory && matchesPrice && matchesRating;
     });
+
+
+    const totalPages = Math.ceil(filteredItems.length / itemPerPage)
+    const startIndex = (currentPage - 1) * itemPerPage
+    const endIndex = startIndex + itemPerPage
+    const paginationItems = filteredItems.slice(startIndex, endIndex)
+
 
     const handleResetFilter = () => {
         if (resetFilter) {
@@ -97,6 +105,10 @@ export default function MarketplacePage() {
         }, 500);
         return () => clearTimeout(timeout);
     }, [searchInput]);
+
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [filters, searchQuery])
 
     return (
         <div className="min-h-screen">
@@ -156,7 +168,7 @@ export default function MarketplacePage() {
                         :
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {filteredItems?.map((item: MarketplaceItem) => (
+                            {paginationItems?.map((item: MarketplaceItem) => (
                                 <MarketplaceItemCard {...item} key={item.id} />
                             ))}
                         </div>
@@ -164,29 +176,89 @@ export default function MarketplacePage() {
                     <Pagination>
                         <PaginationContent>
                             <PaginationItem>
-                                <PaginationPrevious href="#" />
+                                <PaginationPrevious
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        if (currentPage > 1) setCurrentPage(currentPage - 1)
+                                    }}
+                                />
                             </PaginationItem>
+
                             <PaginationItem>
-                                <PaginationLink href="#">1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#" isActive>
-                                    2
+                                <PaginationLink
+                                    href="#"
+                                    isActive={currentPage === 1}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setCurrentPage(1)
+                                    }}
+                                >
+                                    1
                                 </PaginationLink>
                             </PaginationItem>
+
+                            {currentPage > 3 && (
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
+                            )}
+
+                            {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                .filter(
+                                    (page) =>
+                                        page !== 1 &&
+                                        page !== totalPages &&
+                                        page >= currentPage - 1 &&
+                                        page <= currentPage + 1
+                                )
+                                .map((page) => (
+                                    <PaginationItem key={page}>
+                                        <PaginationLink
+                                            href="#"
+                                            isActive={page === currentPage}
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                setCurrentPage(page)
+                                            }}
+                                        >
+                                            {page}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
+
+                            {currentPage < totalPages - 2 && (
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
+                            )}
+
+                            {totalPages > 1 && (
+                                <PaginationItem>
+                                    <PaginationLink
+                                        href="#"
+                                        isActive={currentPage === totalPages}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            setCurrentPage(totalPages)
+                                        }}
+                                    >
+                                        {totalPages}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )}
+
                             <PaginationItem>
-                                <PaginationLink href="#">3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationEllipsis />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext href="#" />
+                                <PaginationNext
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                                    }}
+                                />
                             </PaginationItem>
                         </PaginationContent>
                     </Pagination>
-
-
                 </div >
             </div>
         </div>

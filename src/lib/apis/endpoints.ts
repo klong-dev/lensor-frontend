@@ -24,5 +24,10 @@ export const endpoints = {
           vnpayCallback: `${API_PREFIX}/payment/vnpay-return`
      },
      wallet: `${API_PREFIX}/wallet`,
-     paymentHistory: `${API_PREFIX}/payment-history`
+     paymentHistory: `${API_PREFIX}/payment-history`,
+     cart: createEndpoints('cart'),
+     review: {
+          byProductId: (productId: string) => `${API_PREFIX}/products/${productId}/reviews`,
+          byId: (productId: string, reviewId: string) => `${API_PREFIX}/products/${productId}/reviews/${reviewId}`
+     }
 }
