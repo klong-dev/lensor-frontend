@@ -24,5 +24,25 @@ export const postApi = {
      delete: async (id: string) => {
           const res = await apiClient.delete(endpoints.post.byId(id))
           return res.data
+     },
+
+     createComment: async (postId: string, payload: { content: string, parentId: string | null }) => {
+          const res = await apiClient.post(endpoints.comment.byPostId(postId), payload)
+          return res.data
+     },
+
+     getComments: async (postId: string) => {
+          const res = await apiClient.get(endpoints.comment.byPostId(postId))
+          return res.data
+     },
+
+     likePost: async (postId: string) => {
+          const res = await apiClient.post(endpoints.like.byPostId(postId))
+          return res.data
+     },
+
+     unlikePost: async (postId: string) => {
+          const res = await apiClient.delete(endpoints.like.byPostId(postId))
+          return res.data
      }
 }

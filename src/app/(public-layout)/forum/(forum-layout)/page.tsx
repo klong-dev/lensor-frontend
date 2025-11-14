@@ -22,7 +22,7 @@ export default function ForumPage() {
      if (error) return <LostConnect refecth={mutate} />
 
      return (
-          <div className='max-w-[720px] mx-auto'>
+          <div className='w-[720px] mx-auto'>
                <div className='p-5'>
                     <DialogCreatePost>
                          <Card className='flex flex-row justify-center px-3 gap-3 py-3'>

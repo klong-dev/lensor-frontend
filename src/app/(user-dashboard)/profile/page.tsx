@@ -83,7 +83,7 @@ export default function ProfilePage() {
                          <About />
                     </Card>
                     <Card className='col-span-2 p-4'>
-                         <ProfileContent />
+                         {/* <ProfileContent /> */}
                     </Card>
                     <div className='bg-[var(--color-box-inside)] rounded-md'>
                          <Card className='sticky top-0'>
