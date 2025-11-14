@@ -44,5 +44,25 @@ export const postApi = {
      unlikePost: async (postId: string) => {
           const res = await apiClient.delete(endpoints.like.byPostId(postId))
           return res.data
+     },
+
+     savePost: async (postId: string) => {
+          const res = await apiClient.post(endpoints.savedPost.byId(postId))
+          return res.data
+     },
+
+     unsavePost: async (postId: string) => {
+          const res = await apiClient.delete(endpoints.savedPost.byId(postId))
+          return res.data
+     },
+
+     checkIsSaved: async (postId: string) => {
+          const res = await apiClient.get(endpoints.savedPost.isSaved(postId))
+          return res.data
+     },
+
+     getSavedPosts: async (limit: number = 20, offset: number = 0) => {
+          const res = await apiClient.get(endpoints.savedPost.all(limit, offset))
+          return res.data
      }
 }

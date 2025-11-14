@@ -19,7 +19,7 @@ export default function ProfilePage() {
                <Card className='overflow-hidden pt-0'>
                     <div className='relative h-64 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900'>
                          <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent' />
-                              {/* <Button
+                         {/* <Button
                                    variant='secondary'
                                    size='sm'
                                    className='absolute top-4 right-4 bg-background/80 backdrop-blur-sm hover:bg-background/90'
@@ -83,7 +83,7 @@ export default function ProfilePage() {
                          <About />
                     </Card>
                     <Card className='col-span-2 p-4'>
-                         {/* <ProfileContent /> */}
+                         <ProfileContent />
                     </Card>
                     <div className='bg-[var(--color-box-inside)] rounded-md'>
                          <Card className='sticky top-0'>

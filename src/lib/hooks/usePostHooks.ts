@@ -38,3 +38,19 @@ export const useComments = (postId: string) => {
      )
      return { data, error, isLoading, mutate }
 }
+
+export const useSavedPosts = (limit: number = 20, offset: number = 0) => {
+     const { data, error, isLoading, mutate } = useSWR(
+          endpoints.savedPost.all(limit, offset),
+          () => postApi.getSavedPosts(limit, offset)
+     )
+     return { data, error, isLoading, mutate }
+}
+
+export const useCheckSavedPost = (postId: string) => {
+     const { data, error, isLoading, mutate } = useSWR(
+          postId ? endpoints.savedPost.isSaved(postId) : null,
+          () => postApi.checkIsSaved(postId)
+     )
+     return { data, error, isLoading, mutate }
+}

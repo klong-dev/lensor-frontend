@@ -6,9 +6,10 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { Search } from 'lucide-react'
 import { useMessage } from '@/lib/hooks/useMessageHooks'
 import { DataMessageProps } from '@/types/message'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useUserStore } from '@/stores/user-store'
+import { useSocket } from '@/contexts/socket-context'
 
 export const mockMessages = [
      {
@@ -75,21 +76,58 @@ export const mockMessages = [
 
 export default function ChatSidebar() {
      const user = useUserStore(state => state.user)
+     const { socket } = useSocket()
      const { data: dataMessage } = useMessage()
      const [searchQuery, setSearchQuery] = useState('')
+     const [conversations, setConversations] = useState<DataMessageProps[]>([])
 
-     // Filter messages based on search query
+     // Update conversations khi có data từ API
+     useEffect(() => {
+          if (dataMessage?.data) {
+               setConversations(dataMessage.data)
+          }
+     }, [dataMessage])
+
+     // Lắng nghe tin nhắn mới để update lastMessage
+     useEffect(() => {
+          if (!socket) return
+
+          const handleNewMessage = (newMsg: any) => {
+               setConversations(prev => {
+                    return prev.map(conv => {
+                         if (conv.id === newMsg.roomId) {
+                              return {
+                                   ...conv,
+                                   lastMessage: {
+                                        content: newMsg.content,
+                                        createdAt: newMsg.createdAt,
+                                        userId: newMsg.userId
+                                   },
+                                   updatedAt: newMsg.createdAt
+                              }
+                         }
+                         return conv
+                    })
+               })
+          }
+
+          socket.on('newMessage', handleNewMessage)
+
+          return () => {
+               socket.off('newMessage', handleNewMessage)
+          }
+     }, [socket])
+
+     // Filter conversations
      const filteredMessages = useMemo(() => {
-          if (!dataMessage?.data) return []
-          if (!searchQuery.trim()) return dataMessage.data
+          if (!conversations.length) return []
+          if (!searchQuery.trim()) return conversations
 
-          return dataMessage.data.filter((conversation: DataMessageProps) => {
-               const oppositeUser = conversation.participants.find(
-                    (p) => p.id !== user?.id
-               )
-               return oppositeUser?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+          return conversations.filter((conv: DataMessageProps) => {
+               const otherUser = conv.participants.find((p) => p.id !== user?.id)
+               return otherUser?.name?.toLowerCase().includes(searchQuery.toLowerCase())
           })
-     }, [dataMessage?.data, searchQuery, user?.id])
+     }, [conversations, searchQuery, user?.id])
 
      const isLoading = !dataMessage
 
@@ -133,8 +171,8 @@ export default function ChatSidebar() {
                               </p>
                          </div>
                     ) : (
-                         filteredMessages.map((item: DataMessageProps, index: string) => (
-                              <ChatItem data={item} key={index} />
+                         filteredMessages.map((item: DataMessageProps, index: number) => (
+                              <ChatItem data={item} key={item.id || index} />
                          ))
                     )}
                </div>

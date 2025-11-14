@@ -16,5 +16,6 @@ export const ROUTES = {
      PURCHASED_PRESETS: '/purchased-presets',
      WALLET: '/wallet',
      PRODUCT_MANAGEMENT: '/product-management',
-     STATISTICS: '/statistics'
+     STATISTICS: '/statistics',
+     SOLD_ORDERS: '/sold-orders'
 }

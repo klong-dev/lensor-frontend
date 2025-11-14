@@ -9,12 +9,16 @@ import { BanknoteArrowDown, Eye, EyeOff, Plus } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { transactionColumns } from "./columns"
 import { Transaction } from '@/types/wallet'
+import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
+import { ROUTES } from '@/constants/path'
 
 export default function Wallet() {
      const [hideBallance, setHideBallance] = useState(true)
      const { data: walletData, isLoading } = useWallet()
      const { data: historyData, isLoading: historyLoading } = usePaymentHistory(1, 20)
      const { walletData: storeWalletData, setWalletData } = useWalletStore()
+     const router = useRouter()
 
      useEffect(() => {
           if (walletData?.data) {
@@ -27,7 +31,13 @@ export default function Wallet() {
      const transactions: Transaction[] = historyData?.data || []
 
      const handleWithdraw = async () => {
-
+          toast.info('System does not support user withdrawals yet. If you are a seller, please go to Sold Orders to withdraw funds from your completed sales.', {
+               duration: 6000,
+               action: {
+                    label: 'Go to Sold Orders',
+                    onClick: () => router.push(ROUTES.SOLD_ORDERS)
+               }
+          })
      }
 
      return (
@@ -42,7 +52,7 @@ export default function Wallet() {
                                    </span>
                               ) : (
                                    <span className='text-5xl font-bold tracking-tight text-balance pb-0.5 select-none'>
-                                             {hideBallance ? '*******' : balance.toLocaleString('vi-VN')} ₫
+                                        {hideBallance ? '*******' : balance.toLocaleString('vi-VN')} ₫
                                    </span>
                               )}
                               <div className='cursor-pointer' onClick={() => setHideBallance(!hideBallance)}>

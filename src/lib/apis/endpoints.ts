@@ -35,5 +35,14 @@ export const endpoints = {
      review: {
           byProductId: (productId: string) => `${API_PREFIX}/products/${productId}/reviews`,
           byId: (productId: string, reviewId: string) => `${API_PREFIX}/products/${productId}/reviews/${reviewId}`
+     },
+     savedPost: {
+          all: (limit: number = 20, offset: number = 0) => `${API_PREFIX}/saved-posts?limit=${limit}&offset=${offset}`,
+          byId: (postId: string) => `${API_PREFIX}/saved-posts/${postId}`,
+          isSaved: (postId: string) => `${API_PREFIX}/saved-posts/${postId}/is-saved`
+     },
+     order: {
+          sold: `${API_PREFIX}/orders/sold`,
+          withdraw: (orderId: string) => `${API_PREFIX}/orders/${orderId}/withdraw`
      }
 }

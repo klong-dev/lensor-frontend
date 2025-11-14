@@ -2,14 +2,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BASE_URL } from "@/constants"
 import { ROUTES } from "@/constants/path"
 import { postApi } from "@/lib/apis/postApi"
-import { usePosts } from "@/lib/hooks/usePostHooks"
+import { usePosts, useCheckSavedPost } from "@/lib/hooks/usePostHooks"
 import { useUserStore } from "@/stores/user-store"
 import { PostType } from '@/types/post'
 import clsx from 'clsx'
 import { Dot, Ellipsis, Heart, ImageIcon, MessageCircle, Share2 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
-import { useState } from 'react'
+import { useRouter } from "next/navigation"
+import { useState, useEffect } from 'react'
 import { toast } from "sonner"
 import { Button } from '../../ui/button'
 import { Card } from "../../ui/card"
@@ -18,17 +19,28 @@ import { DialogShare } from "./dialog-share"
 import DropdownMenuPost from "./dropdown-menu-post"
 import { useTranslations } from "next-intl"
 
-export default function Post({ dataPost }: { dataPost: PostType }) {
+export default function Post({ dataPost, isDetailView = false }: { dataPost: PostType, isDetailView?: boolean }) {
      const t = useTranslations("Forum")
      const tButton = useTranslations('Button')
+     const router = useRouter()
      const [expanded, setExpanded] = useState(false)
      const [isVoted, setIsVoted] = useState(dataPost?.isLiked || false)
      const [voteCount, setVoteCount] = useState(dataPost?.voteCount || 0)
      const [commentCount, setCommentCount] = useState(dataPost?.commentCount || 0)
      const [isFollowing, setIsFollowing] = useState(dataPost?.user.isFollowed || false)
      const [imageError, setImageError] = useState(false)
+     const [isSaved, setIsSaved] = useState(false)
      const { mutate } = usePosts()
      const user = useUserStore(state => state.user)
+     const { data: savedData, mutate: mutateSaved } = useCheckSavedPost(dataPost?.id)
+
+     useEffect(() => {
+          if (savedData?.data?.isSaved !== undefined) {
+               setIsSaved(savedData.data.isSaved)
+          }
+     }, [savedData])
+
+     if (!dataPost) return null
 
      const handleUpdateCommentCount = () => {
           setCommentCount(commentCount + 1)
@@ -69,12 +81,32 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
           }
      }
 
-     const handleSavePost = () => {
-          console.log('Save post')
+     const handleSavePost = async () => {
+          const previousState = isSaved
+
+          try {
+               setIsSaved(!isSaved)
+
+               if (isSaved) {
+                    await postApi.unsavePost(dataPost.id)
+                    toast.success('Post unsaved')
+               } else {
+                    await postApi.savePost(dataPost.id)
+                    toast.success('Post saved')
+               }
+               await mutateSaved()
+          } catch (error) {
+               setIsSaved(previousState)
+               toast.error('Failed to update save status')
+          }
      }
 
      const handleReportPost = () => {
           console.log('Report')
+     }
+
+     const handleViewDetail = () => {
+          router.push(ROUTES.FORUM + '/' + dataPost.id)
      }
 
      return (
@@ -105,7 +137,8 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                               handleDeletePost={handleDeletePost}
                               handleReportPost={handleReportPost}
                               handleSavePost={handleSavePost}
-                              handleViewDetail={handleDeletePost}
+                              handleViewDetail={handleViewDetail}
+                              isSaved={isSaved}
                               isOwner={dataPost?.user.id === user?.id}
                          >
                               <Button variant='ghost'>
