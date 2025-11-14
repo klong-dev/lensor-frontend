@@ -83,7 +83,7 @@ export type Review = {
   userAvatar?: string
   rating: number
   comment: string
-  createdAt: string
+  date: string
   helpful?: number
 }
 

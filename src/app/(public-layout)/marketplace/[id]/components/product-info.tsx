@@ -97,17 +97,8 @@ export default function ProductInfo({
                     className='flex-1 bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2'
                     disabled={isSubmitting}
                 >
-                    {isSubmitting ?
-                        <>
-                            <ShoppingCart className='w-5 h-5' />
-                            Adding
-                        </>
-                        :
-                        <>
-                            <ShoppingCart className='w-5 h-5' />
-                            Add to Cart
-                        </>
-                    }
+                    <ShoppingCart className='w-5 h-5' />
+                    {isSubmitting ? 'Adding' : 'Add to Cart'}
                 </Button>
             </div>
             <div className='text-sm text-muted-foreground'>

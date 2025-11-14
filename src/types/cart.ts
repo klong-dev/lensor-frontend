@@ -23,10 +23,13 @@ export type CartItemData = {
         price: string
         originalPrice?: string
         userId?: string
+        owner?: {
+            id: string
+            name: string
+        }
     }
     image?: string
     title?: string
-    author?: string
     originalPrice?: string
 }
 

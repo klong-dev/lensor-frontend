@@ -2,15 +2,52 @@
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { orderApi } from '@/lib/apis/orderApi'
 import { CreditCard, Download, Shield } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface OrderSummaryProps {
     subtotal: number
     itemCount: number
+    onCheckoutSuccess?: () => void
 }
 
-export function OrderSummary({ subtotal, itemCount }: OrderSummaryProps) {
+export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess }: OrderSummaryProps) {
     const total = subtotal
+    const router = useRouter()
+    const [isCheckingOut, setIsCheckingOut] = useState(false)
+
+    const handleCheckout = async () => {
+        if (itemCount === 0) {
+            toast.error('Your cart is empty')
+            return
+        }
+
+        setIsCheckingOut(true)
+        try {
+            const response = await orderApi.checkout()
+
+            if (response.data) {
+                toast.success('Order placed successfully!')
+                if (onCheckoutSuccess) {
+                    await onCheckoutSuccess()
+                }
+                router.push('/purchased-presets')
+            } else {
+                toast.error(response.message || 'Checkout failed')
+            }
+        } catch (error) {
+            console.error('Checkout failed:', error)
+            const errorMessage = error instanceof Error
+                ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || error.message
+                : 'Failed to complete checkout. Please check your wallet balance.'
+            toast.error(errorMessage)
+        } finally {
+            setIsCheckingOut(false)
+        }
+    }
 
     return (
         <div className="space-y-6">
@@ -33,9 +70,14 @@ export function OrderSummary({ subtotal, itemCount }: OrderSummaryProps) {
                         </div>
                     </div>
 
-                    <Button className="w-full" size="lg">
+                    <Button
+                        className="w-full"
+                        size="lg"
+                        onClick={handleCheckout}
+                        disabled={isCheckingOut || itemCount === 0}
+                    >
                         <CreditCard className="mr-2 h-4 w-4" />
-                        Proceed to Checkout
+                        {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
                     </Button>
                 </CardContent>
             </Card>

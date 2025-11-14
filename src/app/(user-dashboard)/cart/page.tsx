@@ -12,7 +12,6 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { CartItem } from './components/cart-item'
 import { OrderSummary } from './components/order-summary'
-import { SpecialInstructions } from './components/special-instructions'
 
 export default function Cart() {
   const { data: cartData, isLoading, error, mutate } = useCart()
@@ -138,7 +137,7 @@ export default function Cart() {
                           productId={item.product?.id || ''}
                           image={imageUrl}
                           title={item.product?.title || item.title || 'Untitled'}
-                          author={item.product?.userId || item.author || 'Unknown'}
+                          author={item.product?.owner?.name || 'Unknown'}
                           price={parseFloat(item.product?.price || item.price)}
                           originalPrice={item.product?.originalPrice ? parseFloat(item.product.originalPrice) : undefined}
                           quantity={item.quantity}
@@ -152,8 +151,6 @@ export default function Cart() {
                 )}
               </CardContent>
             </Card>
-
-            <SpecialInstructions />
           </div>
 
           <div className="lg:col-span-1">
@@ -161,6 +158,7 @@ export default function Cart() {
               <OrderSummary
                 subtotal={subtotal}
                 itemCount={cartItems.reduce((sum: number, item: CartItemData) => sum + item.quantity, 0)}
+                onCheckoutSuccess={mutate}
               />
             </div>
           </div>

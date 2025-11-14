@@ -240,7 +240,7 @@ export default function ProductDetailsTabs({
                                                                     ))}
                                                                 </div>
                                                                 <span className='text-sm text-muted-foreground'>
-                                                                    {review?.createdAt ? new Date(review?.createdAt).toLocaleDateString('en-US', {
+                                                                    {review?.date ? new Date(review?.date).toLocaleDateString('en-US', {
                                                                         year: 'numeric',
                                                                         month: 'short',
                                                                         day: 'numeric'
