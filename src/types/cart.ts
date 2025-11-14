@@ -7,31 +7,56 @@ export type CartItemProps = {
     authorId: string
     price: number
     originalPrice?: number
-    quantity: number
-    onQuantityChange: (id: string, quantity: number) => void
+    category?: string
+    fileFormat?: string
+    fileSize?: string
     onRemove: (id: string) => void
     disabled?: boolean
 }
 
 export type CartItemData = {
     id: string
+    userId: string
+    productId: string
     quantity: number
     price: string
+    createdAt: string
+    updatedAt: string
     product?: {
         id: string
+        userId: string
         title: string
-        thumbnail: string
+        description?: string
         price: string
         originalPrice?: string
-        userId?: string
+        discount?: number
+        image?: string
+        thumbnail: string
+        imagePairs?: string
+        presetFiles?: string
+        imageMetadata?: Record<string, unknown>
+        rating: string
+        reviewCount: number
+        sellCount: number
+        downloads: number
+        category: string
+        tags?: string
+        compatibility?: string
+        fileFormat: string
+        fileSize: string
+        includesCount?: number
+        features?: string
+        specifications?: string
+        warranty?: string
+        createdAt: string
+        updatedAt: string
+        deletedAt?: string | null
         owner?: {
             id: string
             name: string
+            avatar?: string
         }
     }
-    image?: string
-    title?: string
-    originalPrice?: string
 }
 
 export type CartResponse = {

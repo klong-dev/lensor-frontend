@@ -1,16 +1,26 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
 import { BASE_URL } from '@/constants';
 import { ROUTES } from '@/constants/path';
+import { useCart } from '@/lib/hooks/useCartHooks';
 import { MarketplaceItem } from '@/types/marketplace';
-import { Star } from 'lucide-react';
+import { CartItemData } from '@/types/cart';
+import { Star, ShoppingCart } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 export default function MarketplaceItemCard(item: MarketplaceItem) {
     const [imageError, setImageError] = useState(false);
     const [avatarError, setAvatarError] = useState(false);
     const router = useRouter();
+    const { data: cartData } = useCart();
+
+    // Check if this product is in cart
+    const isInCart = useMemo(() => {
+        if (!cartData?.items || !item?.id) return false;
+        return cartData.items.some((cartItem: CartItemData) => cartItem.productId === item.id);
+    }, [cartData?.items, item?.id]);
 
     const getImageSrc = () => {
         if (imageError) return '/images/default-fallback-image.png';
@@ -50,6 +60,13 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
             onClick={handleCardClick}
             className="relative w-full aspect-square bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:opacity-80 transition-shadow h-min-[442px] h-full group cursor-pointer"
         >
+            {isInCart && (
+                <Badge className="absolute top-3 right-3 z-30 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1">
+                    <ShoppingCart className="w-3 h-3" />
+                    In Cart
+                </Badge>
+            )}
+
             <Image
                 src={getImageSrc()}
                 alt={item?.title || 'Product image'}

@@ -4,10 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { ROUTES } from '@/constants/path'
 import { cartApi } from '@/lib/apis/cartApi'
+import { useCart } from '@/lib/hooks/useCartHooks'
 import { MarketplaceDetail } from '@/types/marketplace'
-import { ShoppingCart, Star } from 'lucide-react'
+import { CartItemData } from '@/types/cart'
+import { ShoppingCart, Star, CheckCircle2 } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { toast } from 'sonner'
 
 export default function ProductInfo({
@@ -21,8 +23,19 @@ export default function ProductInfo({
     author }:
     MarketplaceDetail) {
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const { data: cartData, mutate: mutateCart } = useCart()
+
+    const isInCart = useMemo(() => {
+        if (!cartData?.items || !id) return false
+        return cartData.items.some((item: CartItemData) => item.productId === id)
+    }, [cartData?.items, id])
 
     const handleAddToCart = async () => {
+        if (isInCart) {
+            toast.info('This product is already in your cart')
+            return
+        }
+
         setIsSubmitting(true)
         try {
             const res = await cartApi.addItem({
@@ -31,6 +44,7 @@ export default function ProductInfo({
             })
             if (res) {
                 toast.success('Product added successfully!')
+                mutateCart()
             }
         } catch (error) {
             console.error('Error adding product:', error)
@@ -93,15 +107,38 @@ export default function ProductInfo({
                     </div>
                 </div>
             </div>
+            {isInCart && (
+                <div className='flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg'>
+                    <CheckCircle2 className='w-5 h-5 text-green-600 dark:text-green-500' />
+                    <div className='flex-1'>
+                        <p className='text-sm font-medium text-green-900 dark:text-green-100'>Already in your cart</p>
+                        <p className='text-xs text-green-700 dark:text-green-300'>This preset is ready for checkout</p>
+                    </div>
+                    <Link href={ROUTES.CART}>
+                        <Button variant='outline' size='sm' className='border-green-300 dark:border-green-700'>
+                            View Cart
+                        </Button>
+                    </Link>
+                </div>
+            )}
             <div className='flex gap-3'>
                 <Button
                     onClick={handleAddToCart}
                     size={'lg'}
-                    className='flex-1 bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2'
-                    disabled={isSubmitting}
+                    className='flex-1 bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50'
+                    disabled={isSubmitting || isInCart}
                 >
-                    <ShoppingCart className='w-5 h-5' />
-                    {isSubmitting ? 'Adding' : 'Add to Cart'}
+                    {isInCart ? (
+                        <>
+                            <CheckCircle2 className='w-5 h-5' />
+                            In Cart
+                        </>
+                    ) : (
+                        <>
+                            <ShoppingCart className='w-5 h-5' />
+                            {isSubmitting ? 'Adding...' : 'Add to Cart'}
+                        </>
+                    )}
                 </Button>
             </div>
         </div>

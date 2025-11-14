@@ -1,7 +1,6 @@
-import { OrderProductsDetailResponse, OrderResponse, OrdersResponse } from "@/types/order"
+import { OrderProductsDetailResponse, OrderResponse, OrdersResponse, SoldOrdersResponse, WithdrawOrderResponse } from "@/types/order"
 import { apiClient } from "./client"
 import { endpoints } from "./endpoints"
-import { SoldOrdersResponse, WithdrawOrderPayload, WithdrawOrderResponse } from "@/types/order"
 
 export const orderApi = {
     checkout: async () => {

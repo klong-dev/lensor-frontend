@@ -17,20 +17,6 @@ export default function Cart() {
   const { data: cartData, isLoading, error, mutate } = useCart()
   const [isUpdating, setIsUpdating] = useState(false)
 
-  const handleQuantityChange = async (cartItemId: string, newQuantity: number) => {
-    setIsUpdating(true)
-    try {
-      await cartApi.updateCartItem(cartItemId, newQuantity)
-      mutate()
-      toast.success('Cart updated successfully')
-    } catch (error) {
-      console.error('Failed to update cart item:', error)
-      toast.error('Failed to update cart item')
-    } finally {
-      setIsUpdating(false)
-    }
-  }
-
   const handleRemoveItem = async (cartItemId: string) => {
     setIsUpdating(true)
     try {
@@ -125,9 +111,9 @@ export default function Cart() {
                     <p className="text-muted-foreground">Your cart is empty</p>
                   </div>
                 ) : (
-                  <div>
+                  <div className="space-y-4">
                     {cartItems.map((item: CartItemData) => {
-                      const imagePath = item.product?.thumbnail || item.image || ''
+                      const imagePath = item.product?.thumbnail || ''
                       const imageUrl = imagePath.startsWith('http') ? imagePath : `${BASE_URL}${imagePath}`
 
                       return (
@@ -136,13 +122,14 @@ export default function Cart() {
                           id={item.id}
                           productId={item.product?.id || ''}
                           image={imageUrl}
-                          title={item.product?.title || item.title || 'Untitled'}
+                          title={item.product?.title || 'Untitled'}
                           author={item.product?.owner?.name || 'Unknown'}
                           authorId={item?.product?.owner?.id || 'Unknown'}
                           price={parseFloat(item.product?.price || item.price)}
                           originalPrice={item.product?.originalPrice ? parseFloat(item.product.originalPrice) : undefined}
-                          quantity={item.quantity}
-                          onQuantityChange={handleQuantityChange}
+                          category={item.product?.category}
+                          fileFormat={item.product?.fileFormat}
+                          fileSize={item.product?.fileSize}
                           onRemove={handleRemoveItem}
                           disabled={isUpdating}
                         />
