@@ -41,5 +41,10 @@ export const endpoints = {
           checkout: `${API_PREFIX}/orders/checkout`,
           byId: (orderId: string) => `${API_PREFIX}/orders/${orderId}`,
           products: (orderId: string) => `${API_PREFIX}/orders/${orderId}/products`
+     },
+     reports: {
+          all: `${API_PREFIX}/reports`,
+          create: `${API_PREFIX}/reports`,
+          byId: (reportId: string) => `${API_PREFIX}/reports/${reportId}`
      }
 }

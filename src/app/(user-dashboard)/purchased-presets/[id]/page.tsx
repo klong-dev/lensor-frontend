@@ -7,6 +7,7 @@ import { useOrderProducts } from "@/lib/hooks/useOrderHooks"
 import { ArrowLeft, Calendar, Package, Loader2 } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import OrderProductsList from "./components/order-products-list"
+import ReportDialog from "../components/report-dialog"
 
 export default function OrderDetailPage() {
     const params = useParams()
@@ -67,7 +68,7 @@ export default function OrderDetailPage() {
                 >
                     <ArrowLeft className="h-5 w-5" />
                 </Button>
-                <div>
+                <div className="flex-1">
                     <h1 className="text-3xl font-bold">Order Details</h1>
                     <p className="text-muted-foreground mt-1">
                         Order #{orderId.slice(0, 8)}
@@ -76,14 +77,22 @@ export default function OrderDetailPage() {
             </div>
 
             <Card className="p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div>
-                        <div className="text-sm text-muted-foreground mb-1">Status</div>
+                <div className="flex justify-between items-start">
+                    <div className="flex items-center gap-3">
+                        <div className="text-sm text-muted-foreground">Status</div>
                         <Badge className={getStatusColor(orderData.status)}>
                             {orderData.status}
                         </Badge>
                     </div>
+                    {orderData.status === 'completed' && (
+                        <ReportDialog
+                            orderId={orderId}
+                            products={orderData.products}
+                        />
+                    )}
+                </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                         <div className="text-sm text-muted-foreground mb-1">Total Amount</div>
                         <div className="text-xl font-bold">
