@@ -1,7 +1,14 @@
+'use client'
+
 import { ScrollArea } from '@/components/ui/scroll-area'
 import ChatItem from './chat-item'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { Search } from 'lucide-react'
+import { useMessage } from '@/lib/hooks/useMessageHooks'
+import { DataMessageProps } from '@/types/message'
+import { useState, useMemo } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useUserStore } from '@/stores/user-store'
 
 export const mockMessages = [
      {
@@ -67,22 +74,69 @@ export const mockMessages = [
 ];
 
 export default function ChatSidebar() {
+     const user = useUserStore(state => state.user)
+     const { data: dataMessage } = useMessage()
+     const [searchQuery, setSearchQuery] = useState('')
+
+     // Filter messages based on search query
+     const filteredMessages = useMemo(() => {
+          if (!dataMessage?.data) return []
+          if (!searchQuery.trim()) return dataMessage.data
+
+          return dataMessage.data.filter((conversation: DataMessageProps) => {
+               const oppositeUser = conversation.participants.find(
+                    (p) => p.id !== user?.id
+               )
+               return oppositeUser?.name?.toLowerCase().includes(searchQuery.toLowerCase())
+          })
+     }, [dataMessage?.data, searchQuery, user?.id])
+
+     const isLoading = !dataMessage
+
      return (
-          <ScrollArea className='w-[310px] border-r-2'>
-               <div className='p-4 sticky top-0 z-10 backdrop-blur-2xl'>
+          <ScrollArea className='border-r-2'>
+               <div className='p-4 sticky top-0 z-10 backdrop-blur-2xl bg-background/80'>
                     <h1 className='py-3 scroll-m-20 text-2xl font-semibold tracking-tight'>Messages</h1>
                     <InputGroup>
-                         <InputGroupInput placeholder="Search..." />
+                         <InputGroupInput
+                              placeholder="Search conversations..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                         />
                          <InputGroupAddon>
                               <Search />
                          </InputGroupAddon>
-                         <InputGroupAddon align="inline-end">12 results</InputGroupAddon>
+                         {searchQuery && (
+                              <InputGroupAddon align="inline-end">
+                                   {filteredMessages.length} {filteredMessages.length === 1 ? 'result' : 'results'}
+                              </InputGroupAddon>
+                         )}
                     </InputGroup>
                </div>
                <div className='pr-2'>
-                    {mockMessages?.map((item, index) => (
-                         <ChatItem data={item} key={index} />
-                    ))}
+                    {isLoading ? (
+                         <div className='space-y-2 p-4'>
+                              {[...Array(5)].map((_, i) => (
+                                   <div key={i} className='flex items-center gap-3 p-2'>
+                                        <Skeleton className='w-10 h-10 rounded-full' />
+                                        <div className='flex-1 space-y-2'>
+                                             <Skeleton className='h-4 w-32' />
+                                             <Skeleton className='h-3 w-48' />
+                                        </div>
+                                   </div>
+                              ))}
+                         </div>
+                    ) : filteredMessages.length === 0 ? (
+                         <div className='flex flex-col items-center justify-center py-8 text-muted-foreground'>
+                              <p className='text-sm'>
+                                   {searchQuery ? 'No results found' : 'No conversations yet'}
+                              </p>
+                         </div>
+                    ) : (
+                         filteredMessages.map((item: DataMessageProps, index: string) => (
+                              <ChatItem data={item} key={index} />
+                         ))
+                    )}
                </div>
           </ScrollArea>
      )

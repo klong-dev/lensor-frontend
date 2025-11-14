@@ -24,5 +24,11 @@ export const endpoints = {
           vnpayCallback: `${API_PREFIX}/payment/vnpay-return`
      },
      wallet: `${API_PREFIX}/wallet`,
-     paymentHistory: `${API_PREFIX}/payment-history`
+     paymentHistory: `${API_PREFIX}/payment-history`,
+     message: {
+          all: `${API_PREFIX}/chat/rooms`,
+          detail: (roomId: string) => `${API_PREFIX}/chat/rooms/${roomId}`,
+          allMessage: (roomId: string, limit: number = 50) => `${API_PREFIX}/chat/rooms/${roomId}/messages?limit=${limit}`,
+          createDirect: (otherUserId: string) => `${API_PREFIX}/chat/direct/${otherUserId}`
+     }
 }

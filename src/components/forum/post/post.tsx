@@ -24,10 +24,15 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
      const [expanded, setExpanded] = useState(false)
      const [isVoted, setIsVoted] = useState(dataPost?.isLiked || false)
      const [voteCount, setVoteCount] = useState(dataPost?.voteCount || 0)
+     const [commentCount, setCommentCount] = useState(dataPost?.commentCount || 0)
      const [isFollowing, setIsFollowing] = useState(dataPost?.user.isFollowed || false)
      const [imageError, setImageError] = useState(false)
      const { mutate } = usePosts()
      const user = useUserStore(state => state.user)
+
+     const handleUpdateCommentCount = () => {
+          setCommentCount(commentCount + 1)
+     }
 
      const handleVotePost = async () => {
           const previousState = isVoted
@@ -121,7 +126,7 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                <Card className='relative w-full aspect-[3/2] flex justify-center items-center mt-3 bg-muted/30'>
                     {dataPost?.imageUrl && !imageError ? (
                          <Image
-                              src={`${BASE_URL}${dataPost?.thumbnailUrl || dataPost?.imageUrl}`}
+                              src={`${BASE_URL}${dataPost?.imageUrl}`}
                               fill
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               alt={dataPost?.title || "Post image"}
@@ -173,12 +178,12 @@ export default function Post({ dataPost }: { dataPost: PostType }) {
                <div className='flex gap-3 mt-2'>
                     <Button variant='ghost' size='lg' onClick={handleVotePost}>
                          <Heart className={clsx(isVoted && 'fill-red-600 text-red-600')} />
-                         <span className={clsx(isVoted && 'text-red-600')}>{dataPost?.voteCount}</span>
+                         <span className={clsx(isVoted && 'text-red-600')}>{voteCount}</span>
                     </Button>
 
-                    <DialogComment postId={dataPost?.id}>
+                    <DialogComment postId={dataPost?.id} handleUpdateCommentCount={handleUpdateCommentCount}>
                          <Button variant='ghost' size='lg' >
-                              <MessageCircle size={92} /> {dataPost?.commentCount}
+                              <MessageCircle size={92} /> {commentCount}
                          </Button>
                     </DialogComment>
 

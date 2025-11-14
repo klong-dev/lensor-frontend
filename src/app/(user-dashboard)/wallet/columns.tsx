@@ -12,25 +12,7 @@ import {
      DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-
-// Type definition - easy to sync with API
-export type Transaction = {
-     id: string
-     userId: string
-     orderId: string
-     paymentMethod: string
-     transactionType: string
-     amount: string
-     currency: string
-     status: string
-     transactionId: string
-     description: string
-     metadata: any
-     balanceBefore: string
-     balanceAfter: string
-     createdAt: string
-     updatedAt: string
-}
+import { Transaction } from "@/types/wallet"
 
 // Column definitions - easy to customize
 export const transactionColumns: ColumnDef<Transaction>[] = [
