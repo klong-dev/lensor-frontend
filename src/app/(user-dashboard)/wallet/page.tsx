@@ -7,7 +7,8 @@ import { useWallet, usePaymentHistory } from '@/lib/hooks/useWalletHooks'
 import { useWalletStore } from '@/stores/wallet-store'
 import { BanknoteArrowDown, Eye, EyeOff, Plus } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import { transactionColumns, Transaction } from "./columns"
+import { transactionColumns } from "./columns"
+import { Transaction } from '@/types/wallet'
 
 export default function Wallet() {
      const [hideBallance, setHideBallance] = useState(true)
@@ -22,12 +23,11 @@ export default function Wallet() {
      }, [walletData, setWalletData])
 
      const balance = storeWalletData?.balance || walletData?.data?.balance || 0
-     const formattedBalance = balance.toLocaleString('vi-VN')
 
      const transactions: Transaction[] = historyData?.data || []
 
      const handleWithdraw = async () => {
-          // TODO: Implement withdraw logic
+
      }
 
      return (
@@ -42,7 +42,7 @@ export default function Wallet() {
                                    </span>
                               ) : (
                                    <span className='text-5xl font-bold tracking-tight text-balance pb-0.5 select-none'>
-                                        {hideBallance ? '*.***.***' : formattedBalance} ₫
+                                             {hideBallance ? '*******' : balance.toLocaleString('vi-VN')} ₫
                                    </span>
                               )}
                               <div className='cursor-pointer' onClick={() => setHideBallance(!hideBallance)}>

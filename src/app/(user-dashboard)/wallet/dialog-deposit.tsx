@@ -14,11 +14,7 @@ import { CreditCard, Wallet } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
-interface DialogDepositProps {
-     children: React.ReactNode
-}
-
-export default function DialogDeposit({ children }: DialogDepositProps) {
+export default function DialogDeposit({ children }: { children: React.ReactNode }) {
      const [amount, setAmount] = useState('')
      const [isLoading, setIsLoading] = useState(false)
      const [selectedMethod, setSelectedMethod] = useState<'paypal' | 'vnpay' | null>(null)
@@ -48,11 +44,11 @@ export default function DialogDeposit({ children }: DialogDepositProps) {
                }
 
                if (!result?.data?.url && !result?.data?.paymentUrl) {
-                    toast.success('Payment created successfully')
+                    toast.success('Deposit successful')
                }
           } catch (error) {
                console.error('Error creating payment:', error)
-               toast.error('Failed to create payment')
+               toast.error('Deposit failed, please try again later')
           } finally {
                setIsLoading(false)
           }
@@ -79,7 +75,7 @@ export default function DialogDeposit({ children }: DialogDepositProps) {
                                    placeholder="Enter amount"
                                    value={amount}
                                    onChange={(e) => setAmount(e.target.value)}
-                                   min="1000"
+                                   min="5000"
                                    step="1000"
                               />
                          </div>

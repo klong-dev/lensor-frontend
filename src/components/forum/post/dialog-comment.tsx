@@ -17,7 +17,7 @@ import { useUserStore } from "@/stores/user-store"
 import { useCreateComment, useComments } from "@/lib/hooks/usePostHooks"
 import { CommentResponseType } from "@/types/post"
 
-export default function DialogComment({ children, postId }: { children: React.ReactNode, postId: string }) {
+export default function DialogComment({ children, postId, handleUpdateCommentCount }: { children: React.ReactNode, postId: string, handleUpdateCommentCount: () => void }) {
      const t = useTranslations('Forum')
      const user = useUserStore(state => state.user)
      const [content, setContent] = useState('')
@@ -36,6 +36,7 @@ export default function DialogComment({ children, postId }: { children: React.Re
                console.error('Error creating comment:', error)
           } finally {
                setIsLoading(false)
+               handleUpdateCommentCount()
           }
      }
 
