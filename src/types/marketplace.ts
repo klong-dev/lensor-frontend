@@ -20,6 +20,7 @@ export type MarketplaceItem = {
   imagePairs?: ImagePair[]
   thumbnail: string
   author: {
+    id: string
     name: string
     avatar: string
   }
@@ -48,6 +49,7 @@ export type MarketplaceDetail = {
   reviewCount?: number
   downloads?: number
   author: {
+    id: string
     name: string
     avatar: string
     verified?: boolean

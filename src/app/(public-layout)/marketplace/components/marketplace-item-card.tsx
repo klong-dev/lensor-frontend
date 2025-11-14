@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { BASE_URL } from '@/constants';
+import { ROUTES } from '@/constants/path';
 import { MarketplaceItem } from '@/types/marketplace';
 import { Star } from 'lucide-react';
 import Image from 'next/image';
@@ -59,27 +60,29 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
                 </div>
 
                 <div className='absolute p-4 inset-0 z-20 flex flex-col justify-end bg-gradient-to-t from-black to-transparent transition opacity-0 duration-200 ease-in-out group-hover:opacity-100'>
-                    <h3 className="text-lg text-white font-semibold mb-2 truncate">{item?.title}</h3>
+                    <h3 className="text-lg text-white font-semibold mb-2 truncate hover:opacity-80">{item?.title}</h3>
                     <p className="text-sm text-white mb-4 line-clamp-2">{item?.description}</p>
 
                     {item?.author && (
-                        <div className="flex items-center gap-2 mb-3">
-                            <Avatar className='size-8'>
-                                <AvatarImage
-                                    src={getAvatarSrc()}
-                                    alt={item?.author.name}
-                                    onError={() => {
-                                        if (!avatarError) {
-                                            setAvatarError(true);
-                                        }
-                                    }}
-                                />
-                                <AvatarFallback className="bg-card text-xs">
-                                    {item?.author.name?.charAt(0).toUpperCase() || '?'}
-                                </AvatarFallback>
-                            </Avatar>
-                            <span className="text-sm text-white">{item?.author.name}</span>
-                        </div>
+                        <Link href={ROUTES.PROFILE(item?.author?.id)}>
+                            <div className="flex items-center gap-2 mb-3">
+                                <Avatar className='size-8'>
+                                    <AvatarImage
+                                        src={getAvatarSrc()}
+                                        alt={item?.author.name}
+                                        onError={() => {
+                                            if (!avatarError) {
+                                                setAvatarError(true);
+                                            }
+                                        }}
+                                    />
+                                    <AvatarFallback className="bg-card text-xs">
+                                        {item?.author.name?.charAt(0).toUpperCase() || '?'}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <span className="text-sm text-white hover:opacity-80">{item?.author.name}</span>
+                            </div>
+                        </Link>
                     )}
 
                     <div className="flex items-center justify-between">

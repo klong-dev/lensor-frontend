@@ -138,6 +138,7 @@ export default function Cart() {
                           image={imageUrl}
                           title={item.product?.title || item.title || 'Untitled'}
                           author={item.product?.owner?.name || 'Unknown'}
+                          authorId={item?.product?.owner?.id || 'Unknown'}
                           price={parseFloat(item.product?.price || item.price)}
                           originalPrice={item.product?.originalPrice ? parseFloat(item.product.originalPrice) : undefined}
                           quantity={item.quantity}

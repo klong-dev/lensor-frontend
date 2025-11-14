@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Minus, Plus, Trash2 } from 'lucide-react'
 import { CartItemProps } from '@/types/cart'
 import Link from 'next/link'
+import { ROUTES } from '@/constants/path'
 
 export function CartItem({
     id,
@@ -13,6 +14,7 @@ export function CartItem({
     image,
     title,
     author,
+    authorId,
     price,
     originalPrice,
     quantity,
@@ -46,7 +48,9 @@ export function CartItem({
                     <Link href={`/marketplace/${productId}`}>
                         <h3 className="font-semibold text-base hover:text-primary">{title}</h3>
                     </Link>
-                    <p className="text-sm text-muted-foreground">by {author}</p>
+                    <Link href={ROUTES.PROFILE(authorId)}>
+                        <p className="text-sm text-muted-foreground">by <span className='hover:text-primary'>{author}</span></p>
+                    </Link>
                 </div>
 
                 <div className="flex items-center gap-3">

@@ -4,6 +4,7 @@ export type CartItemProps = {
     image: string
     title: string
     author: string
+    authorId: string
     price: number
     originalPrice?: number
     quantity: number

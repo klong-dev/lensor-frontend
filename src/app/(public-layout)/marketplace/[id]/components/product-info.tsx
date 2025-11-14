@@ -2,9 +2,11 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { ROUTES } from '@/constants/path'
 import { cartApi } from '@/lib/apis/cartApi'
 import { MarketplaceDetail } from '@/types/marketplace'
 import { ShoppingCart, Star } from 'lucide-react'
+import Link from 'next/link'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -42,18 +44,19 @@ export default function ProductInfo({
         <div className='col-span-5 flex flex-col gap-6'>
 
             <h1 className='text-3xl font-bold'>{name}</h1>
-
-            {author && (
-                <div className='flex items-center gap-3'>
-                    <Avatar className='size-8'>
-                        <AvatarImage src={author?.avatar} alt={author?.name} />
-                        <AvatarFallback>{author?.name?.charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className='font-semibold'>{author?.name}</p>
+            <Link href={ROUTES.PROFILE(author?.id)}>
+                {author && (
+                    <div className='flex items-center gap-3'>
+                        <Avatar className='size-8'>
+                            <AvatarImage src={author?.avatar} alt={author?.name} />
+                            <AvatarFallback>{author?.name?.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                            <p className='font-semibold hover:text-primary'>{author?.name}</p>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+            </Link>
 
             <div className='flex items-center gap-2'>
                 <div className='flex text-yellow-500'>
