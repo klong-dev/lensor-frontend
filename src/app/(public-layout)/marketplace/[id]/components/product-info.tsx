@@ -104,9 +104,6 @@ export default function ProductInfo({
                     {isSubmitting ? 'Adding' : 'Add to Cart'}
                 </Button>
             </div>
-            <div className='text-sm text-muted-foreground'>
-                <p>Enjoy <strong>FREE express</strong> & <strong>Free Returns</strong> on orders over $35!</p>
-            </div>
         </div>
     )
 }
