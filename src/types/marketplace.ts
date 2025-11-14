@@ -77,14 +77,19 @@ export type MarketplaceDetail = {
 }
 
 export type Review = {
-  id?: string
-  userId?: string
-  userName?: string
+  id: string
+  userId: string
+  userName: string
   userAvatar?: string
-  rating?: number
-  comment?: string
-  createdAt?: string
+  rating: number
+  comment: string
+  createdAt: string
   helpful?: number
+}
+
+export type CreateReviewPayload = {
+  rating: number
+  comment: string
 }
 
 export type FilterSidebarProps = {
@@ -112,4 +117,41 @@ export type PurchasedPreset = {
   }
   rating?: number
   purchasedDate: string
+}
+
+
+export type CartItemType = {
+  id: string
+  image: string
+  title: string
+  author: string
+  price: number
+  originalPrice?: number
+  quantity: number
+}
+
+export type ImagePairUploaderProps = {
+  onChange?: (pairs: { before: File; after: File }[]) => void
+}
+
+export type PresetItem = {
+  id: string
+  beforeImage: File
+  afterImage: File
+  presetFile: File | PresetFile
+  beforePreview: string
+  afterPreview: string
+  presetFileName: string
+}
+
+export type PresetUploadModalProps = {
+  isOpen: boolean
+  onClose: () => void
+  onSave: (items: PresetItem[]) => void
+  existingItems?: PresetItem[]
+}
+
+export type ReviewFormProps = {
+    productId: string
+    onSuccess?: () => void
 }

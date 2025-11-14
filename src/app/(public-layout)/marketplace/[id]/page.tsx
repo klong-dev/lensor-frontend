@@ -22,8 +22,9 @@ import MarketplaceSkeleton from "@/components/marketplace/marketplace-skeleton"
 export default function ProductDetail() {
     const param = useParams()
     const id = param.id as string
-    const { data: item, isLoading, error } = useMarketplaceDetail(id)
+    const { data: item, isLoading, error, mutate } = useMarketplaceDetail(id)
     const { data: allItems } = useMarketplace()
+
 
     const relatedProducts = useMemo(() => {
         if (!allItems?.data || !item?.category) return []
@@ -79,9 +80,9 @@ export default function ProductDetail() {
                         <ProductInfo {...item} />
                     </div>
 
-                    <ProductDetailsTabs {...item} />
+                    <ProductDetailsTabs {...item} onReviewSuccess={mutate} />
 
-                    {relatedProducts.length > 0
+                    {relatedProducts.length > 0 || relatedProducts !== null || relatedProducts !== undefined
                         ?
                         <RelatedProducts items={relatedProducts} />
                         :

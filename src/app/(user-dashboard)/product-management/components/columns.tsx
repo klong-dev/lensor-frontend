@@ -1,35 +1,34 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
      DropdownMenu,
      DropdownMenuContent,
      DropdownMenuItem,
-     DropdownMenuSeparator,
-     DropdownMenuTrigger,
+     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table"
+import { ArrowUpDown, MoreHorizontal, Star } from "lucide-react"
 import Image from "next/image"
-import Editable from "@/components/ui/editable"
 
-// Type definition - easy to sync with API
 export type Product = {
      id: string
      imageBefore: string
      imageAfter: string
      title: string
      price: string
+     description?: string
+     category?: string
+     author?: string
+     rating?: number
+     reviewCount?: number
+     sellCount?: number
 }
 
-// Create columns with callbacks for actions
 export const createProductColumns = (
-     onUpdateTitle: (id: string, newTitle: string) => void,
-     onUpdatePrice: (id: string, newPrice: string) => void,
      onEdit: (id: string) => void,
      onDelete: (id: string) => void,
-     onHide: (id: string) => void,
      onViewProduct: (id: string) => void
 ): ColumnDef<Product>[] => [
           {
@@ -65,7 +64,11 @@ export const createProductColumns = (
                          <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                ),
-               cell: ({ row }) => <div className="font-medium">{row.getValue("id")}</div>,
+               cell: ({ row }) => (
+                    <div className="font-medium">
+                         {row.getValue("id")}
+                    </div>
+               ),
           },
           {
                accessorKey: "imageBefore",
@@ -111,10 +114,9 @@ export const createProductColumns = (
                     </Button>
                ),
                cell: ({ row }) => (
-                    <Editable
-                         value={row.getValue("title")}
-                         onSave={(newValue) => onUpdateTitle(row.original.id, newValue)}
-                    />
+                    <div className="truncate w-36">
+                         {row.getValue("title")}
+                    </div>
                ),
           },
           {
@@ -129,44 +131,81 @@ export const createProductColumns = (
                     </Button>
                ),
                cell: ({ row }) => (
-                    <Editable
-                         value={row.getValue("price")}
-                         onSave={(newValue) => onUpdatePrice(row.original.id, newValue)}
-                    />
+                    <div className="font-medium">
+                         {Number(row.getValue("price")).toLocaleString('vi-VN')} ₫
+                    </div>
                ),
           },
           {
+               accessorKey: "rating",
+               header: ({ column }) => (
+                    <Button
+                         variant="ghost"
+                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                         Rating
+                         <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+               ),
+               cell: ({ row }) => (
+                    <div className="flex items-center gap-1">
+                         <span className="text-yellow-500"><Star fill="yellow" stroke="none" size={18}/></span>
+                         <span>{row.getValue("rating") || 0}</span>
+                    </div>
+               ),
+          },
+          {
+               accessorKey: "reviewCount",
+               header: ({ column }) => (
+                    <Button
+                         variant="ghost"
+                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                         Reviews
+                         <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+               ),
+               cell: ({ row }) => <div>{row.getValue("reviewCount") || 0}</div>,
+          },
+          {
+               accessorKey: "sellCount",
+               header: ({ column }) => (
+                    <Button
+                         variant="ghost"
+                         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                    >
+                         Sold
+                         <ArrowUpDown className="ml-2 h-4 w-4" />
+                    </Button>
+               ),
+               cell: ({ row }) => <div>{row.getValue("sellCount") || 0}</div>,
+          },
+          {
                id: "actions",
-               enableHiding: false,
+               header: "Actions",
                cell: ({ row }) => {
                     const product = row.original
 
                     return (
                          <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                   <Button variant="ghost" className="h-8 w-8 p-0">
-                                        <span className="sr-only">Open menu</span>
+                              <DropdownMenuTrigger asChild className="cursor-pointer">
                                         <MoreHorizontal className="h-4 w-4" />
-                                   </Button>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                    <DropdownMenuItem
-                                        onClick={() => navigator.clipboard.writeText(product.id)}
+                                        onClick={() => onViewProduct(product.id)}
+                                        className="cursor-pointer"
                                    >
-                                        Copy product ID
-                                   </DropdownMenuItem>
-                                   <DropdownMenuSeparator />
-                                   <DropdownMenuItem onClick={() => onViewProduct(product.id)}>
                                         View product
                                    </DropdownMenuItem>
-                                   <DropdownMenuItem onClick={() => onEdit(product.id)}>
+                                   <DropdownMenuItem
+                                        onClick={() => onEdit(product.id)}
+                                        className="cursor-pointer"
+                                   >
                                         Edit
                                    </DropdownMenuItem>
-                                   <DropdownMenuItem onClick={() => onHide(product.id)}>
-                                        Hide
-                                   </DropdownMenuItem>
                                    <DropdownMenuItem
-                                        className="text-red-600"
+                                        className="text-red-600 cursor-pointer"
                                         onClick={() => onDelete(product.id)}
                                    >
                                         Delete

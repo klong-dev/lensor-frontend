@@ -1,75 +1,104 @@
 "use client"
 
-import { useState } from 'react'
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { ROUTES } from "@/constants/path"
+import { BASE_URL } from "@/constants"
 import { DataTable } from '@/components/ui/data-table-advanced'
-import { createProductColumns, Product } from "./columns"
+import { createProductColumns, Product } from "./components/columns"
+import { useOwnProducts } from "@/lib/hooks/useMarketplaceHooks"
+import { MarketplaceItem } from "@/types/marketplace"
+import { EditProductDialog } from "./components/edit-product-dialog"
+import { DeleteProductDialog } from "./components/delete-product-dialog"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function ProductManagement() {
      const router = useRouter()
+     const { data: marketplaceData, error, isLoading, mutate } = useOwnProducts()
+     const [editDialogOpen, setEditDialogOpen] = useState(false)
+     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
 
-     // Mock data - replace with API call
-     const [data, setData] = useState<Product[]>([
-          {
-               id: 'preset_1sfdwz',
-               imageAfter: '/images/default-fallback-image.png',
-               imageBefore: '/images/default-fallback-image.png',
-               price: '3',
-               title: 'Preset for portrait'
-          }
-     ])
-
-     // Action handlers - easy to connect to API
-     const handleUpdateTitle = (id: string, newTitle: string) => {
-          setData(prev => prev.map(item =>
-               item.id === id ? { ...item, title: newTitle } : item
-          ))
-          console.log(`Updated product ${id} title to: ${newTitle}`)
-          // TODO: Call API to update title
-     }
-
-     const handleUpdatePrice = (id: string, newPrice: string) => {
-          setData(prev => prev.map(item =>
-               item.id === id ? { ...item, price: newPrice } : item
-          ))
-          console.log(`Updated product ${id} price to: ${newPrice}`)
-          // TODO: Call API to update price
-     }
+     const data: Product[] = marketplaceData?.data?.map((item: MarketplaceItem & { reviewCount?: number, sellCount?: number }) => ({
+          id: item?.id,
+          imageBefore: `${BASE_URL}${item?.thumbnail}`,
+          imageAfter: `${BASE_URL}${item?.image}`,
+          title: item?.title,
+          price: item?.price.toString(),
+          description: item?.description,
+          category: item?.category,
+          author: item?.author?.name,
+          rating: item?.rating || 0,
+          reviewCount: item?.reviewCount || 0,
+          sellCount: item?.sellCount || 0
+     })) || []
 
      const handleEdit = (id: string) => {
-          console.log(`Edit ${id}`)
-          // TODO: Implement edit logic
+          const product = data.find(p => p.id === id)
+          if (product) {
+               setSelectedProduct(product)
+               setEditDialogOpen(true)
+          }
      }
 
      const handleDelete = (id: string) => {
-          console.log(`Delete ${id}`)
-          // TODO: Call API to delete product
+          const product = data.find(p => p.id === id)
+          if (product) {
+               setSelectedProduct(product)
+               setDeleteDialogOpen(true)
+          }
      }
 
-     const handleHide = (id: string) => {
-          console.log(`Hide ${id}`)
-          // TODO: Call API to hide product
+     const handleEditSuccess = () => {
+          mutate()
+     }
+
+     const handleDeleteSuccess = () => {
+          mutate()
      }
 
      const handleViewProduct = (id: string) => {
           router.push(`${ROUTES.MARKETPLACE}/${id}`)
      }
 
-     // Create columns with action callbacks
      const columns = createProductColumns(
-          handleUpdateTitle,
-          handleUpdatePrice,
           handleEdit,
           handleDelete,
-          handleHide,
           handleViewProduct
      )
+
+     if (isLoading) {
+          return (
+               <div className="p-5">
+                    <div className="bg-accent w-full p-5 rounded-2xl shadow-2xl border">
+                         <h1 className="text-2xl font-bold mb-4">Product Management</h1>
+                         <p className="text-muted-foreground">Loading products...</p>
+                    </div>
+               </div>
+          )
+     }
+
+     if (error) {
+          return (
+               <div className="p-5">
+                    <div className="bg-accent w-full p-5 rounded-2xl shadow-2xl border">
+                         <h1 className="text-2xl font-bold mb-4">Product Management</h1>
+                         <p className="text-red-500">Error loading products. Please try again.</p>
+                    </div>
+               </div>
+          )
+     }
 
      return (
           <div className="p-5">
                <div className="bg-accent w-full p-5 rounded-2xl shadow-2xl border">
-                    <h1 className="text-2xl font-bold mb-4">Product Management</h1>
+                    <div className="flex justify-between items-center ">
+                         <h1 className="text-2xl font-bold mb-4">Product Management</h1>
+                         <Link href={'/create-product'}>
+                              <Button>Create Product</Button>
+                         </Link>
+                    </div>
                     <DataTable
                          columns={columns}
                          data={data}
@@ -78,6 +107,23 @@ export default function ProductManagement() {
                          pageSize={10}
                     />
                </div>
+
+               {selectedProduct && (
+                    <>
+                         <EditProductDialog
+                              open={editDialogOpen}
+                              onOpenChange={setEditDialogOpen}
+                              product={selectedProduct}
+                              onSuccess={handleEditSuccess}
+                         />
+                         <DeleteProductDialog
+                              open={deleteDialogOpen}
+                              onOpenChange={setDeleteDialogOpen}
+                              product={selectedProduct}
+                              onSuccess={handleDeleteSuccess}
+                         />
+                    </>
+               )}
           </div>
      )
 }
