@@ -71,24 +71,8 @@ export const createProductColumns = (
                ),
           },
           {
-               accessorKey: "imageBefore",
-               header: "Image Before",
-               cell: ({ row }) => {
-                    return (
-                         <div className="w-25 h-20 relative">
-                              <Image
-                                   src={row.getValue("imageBefore")}
-                                   alt="Before"
-                                   fill
-                                   className="object-cover rounded"
-                              />
-                         </div>
-                    )
-               },
-          },
-          {
                accessorKey: "imageAfter",
-               header: "Image After",
+               header: "Image",
                cell: ({ row }) => {
                     return (
                          <div className="w-25 h-20 relative">

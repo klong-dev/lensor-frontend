@@ -70,7 +70,7 @@ export default function OrderItem({ order }: OrderItemProps) {
 
                         <div className="text-right flex-shrink-0">
                             <div className="text-xl font-bold">
-                                {parseFloat(order.totalAmount).toLocaleString('vi-VN')} ₫
+                                - {parseFloat(order.totalAmount).toLocaleString('vi-VN')} ₫
                             </div>
                         </div>
                     </div>

@@ -63,8 +63,8 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
                     <h3 className="text-lg text-white font-semibold mb-2 truncate hover:opacity-80">{item?.title}</h3>
                     <p className="text-sm text-white mb-4 line-clamp-2">{item?.description}</p>
 
-                    {item?.author && (
-                        <Link href={ROUTES.PROFILE(item?.author?.id)}>
+                    <Link href={ROUTES.PROFILE(item?.author?.id)}>
+                        {item?.author && (
                             <div className="flex items-center gap-2 mb-3">
                                 <Avatar className='size-8'>
                                     <AvatarImage
@@ -82,8 +82,8 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
                                 </Avatar>
                                 <span className="text-sm text-white hover:opacity-80">{item?.author.name}</span>
                             </div>
-                        </Link>
-                    )}
+                        )}
+                    </Link>
 
                     <div className="flex items-center justify-between">
                         <div>
