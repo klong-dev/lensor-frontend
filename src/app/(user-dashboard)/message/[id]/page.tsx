@@ -17,68 +17,118 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
      const currentUser = useUserStore(state => state.user)
      const selectedConversation = useChatStore(state => state.selectedConversation)
      const { socket, isConnected } = useSocket()
-
      const { data: messagesData } = useRoomMessages(roomId)
 
      const [messages, setMessages] = useState<any[]>([])
      const [input, setInput] = useState('')
+     const [isTyping, setIsTyping] = useState(false)
+
      const scrollRef = useRef<HTMLDivElement>(null)
+     const typingTimerRef = useRef<any>(null)
+     const lastTypingTimeRef = useRef<number>(0)
+     const hasScrolledRef = useRef(false)
 
      const otherUser = selectedConversation?.participants?.find((p: any) => p.id !== currentUser?.id)
 
+     // Load messages
      useEffect(() => {
           if (messagesData?.data) {
                setMessages(messagesData.data)
+               hasScrolledRef.current = false
           }
      }, [messagesData])
 
+     // Auto scroll to bottom
+     useEffect(() => {
+          if (messages.length > 0 && !hasScrolledRef.current) {
+               setTimeout(() => {
+                    scrollRef.current?.scrollIntoView({ behavior: 'instant' })
+                    hasScrolledRef.current = true
+               }, 100)
+          } else if (hasScrolledRef.current) {
+               scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
+          }
+     }, [messages])
+
+     // Socket connection
      useEffect(() => {
           if (!socket || !isConnected || !roomId || !currentUser?.id) return
 
-          console.log('Socket: Joining room', roomId)
           socket.emit('joinRoom', { roomId, userId: currentUser.id })
 
           const handleNewMessage = (newMsg: any) => {
-               console.log('Socket: Received new message', newMsg)
-
                setMessages(prev => {
                     const filtered = prev.filter(m => !m.id.startsWith('temp-'))
-
-                    // if (filtered.some(m => m.id === newMsg.id)) return prev
-
+                    if (filtered.some(m => m.id === newMsg.id)) return prev
                     return [...filtered, newMsg]
                })
+
+               // Play sound for other user's messages
+               if (newMsg.userId !== currentUser.id) {
+                    const audio = new Audio('/audio/mixkit-long-pop-2358.wav')
+                    audio.volume = 0.3
+                    audio.play().catch(() => { })
+               }
+          }
+
+          const handleTyping = (data: any) => {
+               if (data.userId !== currentUser.id) {
+                    setIsTyping(data.isTyping)
+
+                    // Auto stop typing sau 5s
+                    if (data.isTyping && typingTimerRef.current) {
+                         clearTimeout(typingTimerRef.current)
+                    }
+                    if (data.isTyping) {
+                         typingTimerRef.current = setTimeout(() => setIsTyping(false), 5000)
+                    }
+               }
           }
 
           socket.on('newMessage', handleNewMessage)
+          socket.on('typing', handleTyping)
 
           return () => {
                socket.emit('leaveRoom', { roomId, userId: currentUser.id })
                socket.off('newMessage', handleNewMessage)
+               socket.off('typing', handleTyping)
+               if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
           }
      }, [socket, isConnected, roomId, currentUser?.id])
 
-     useEffect(() => {
-          scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
-     }, [messages])
+     const handleInputChange = (value: string) => {
+          setInput(value)
+          if (!socket || !currentUser?.id) return
+
+          const now = Date.now()
+          const timeSinceLastTyping = now - lastTypingTimeRef.current
+
+          // Chỉ gửi typing nếu đã qua 5s
+          if (value.length > 0 && timeSinceLastTyping >= 5000) {
+               socket.emit('typing', { roomId, userId: currentUser.id, isTyping: true })
+               lastTypingTimeRef.current = now
+          }
+     }
 
      const sendMessage = () => {
           if (!input.trim() || !socket || !currentUser?.id) return
 
           const content = input.trim()
 
+          // Thêm tin nhắn tạm
           setMessages(prev => [...prev, {
                id: `temp-${Date.now()}`,
                userId: currentUser.id,
-               content: content,
+               content,
                createdAt: new Date().toISOString(),
           }])
 
-          socket.emit('sendMessage', {
-               userId: currentUser.id,
-               roomId: roomId,
-               content: content
-          })
+          // Gửi tin nhắn
+          socket.emit('sendMessage', { userId: currentUser.id, roomId, content })
+
+          // Stop typing
+          socket.emit('typing', { roomId, userId: currentUser.id, isTyping: false })
+          lastTypingTimeRef.current = 0
 
           setInput('')
      }
@@ -95,7 +145,6 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                               </div>
                          </div>
                     </div>
-                    <div className="flex-1" />
                </div>
           )
      }
@@ -117,7 +166,7 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                                         {otherUser?.name || 'Unknown User'}
                                    </h2>
                                    <p className="text-xs text-muted-foreground">
-                                        {isConnected ? 'Online' : 'Offline'}
+                                        {isTyping ? 'Typing...' : isConnected ? 'Online' : 'Offline'}
                                    </p>
                               </div>
                          </div>
@@ -184,7 +233,7 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                     <div className="flex gap-2">
                          <Input
                               value={input}
-                              onChange={(e) => setInput(e.target.value)}
+                              onChange={(e) => handleInputChange(e.target.value)}
                               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), sendMessage())}
                               placeholder="Type a message..."
                               className="flex-1"

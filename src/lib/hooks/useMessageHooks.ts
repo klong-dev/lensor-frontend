@@ -20,8 +20,8 @@ export const useRoomDetail = (roomId: string) => {
 
 export const useRoomMessages = (roomId: string) => {
      const { data, mutate } = useSWR(
-          roomId ? endpoints.message.allMessage(roomId, 50) : null,
-          () => messageApi.getAllMessage(roomId, 50),
+          roomId ? endpoints.message.allMessage(roomId, 999999) : null,
+          () => messageApi.getAllMessage(roomId, 999999),
           { refreshInterval: 0 }
      )
      return { data, mutate }
