@@ -30,6 +30,7 @@ export const endpoints = {
           detail: (roomId: string) => `${API_PREFIX}/chat/rooms/${roomId}`,
           allMessage: (roomId: string, limit: number = 50) => `${API_PREFIX}/chat/rooms/${roomId}/messages?limit=${limit}`,
           createDirect: (otherUserId: string) => `${API_PREFIX}/chat/direct/${otherUserId}`,
+     },
      cart: createEndpoints('cart'),
      review: {
           byProductId: (productId: string) => `${API_PREFIX}/products/${productId}/reviews`,
