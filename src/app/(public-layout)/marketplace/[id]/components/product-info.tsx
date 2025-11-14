@@ -1,9 +1,15 @@
-import { CreditCard, ShoppingCart, Star } from 'lucide-react'
-import React from 'react'
+'use client'
+
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { cartApi } from '@/lib/apis/cartApi'
 import { MarketplaceDetail } from '@/types/marketplace'
+import { ShoppingCart, Star } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function ProductInfo({
+    id,
     name,
     rating,
     reviewCount,
@@ -12,6 +18,26 @@ export default function ProductInfo({
     features,
     author }:
     MarketplaceDetail) {
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const handleAddToCart = async () => {
+        setIsSubmitting(true)
+        try {
+            const res = await cartApi.addItem({
+                productId: id,
+                quantity: 1
+            })
+            if (res) {
+                toast.success('Product added successfully!')
+            }
+        } catch (error) {
+            console.error('Error adding product:', error)
+            toast.error('Failed to adding product. Please try again.')
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
+
     return (
         <div className='col-span-5 flex flex-col gap-6'>
 
@@ -45,8 +71,8 @@ export default function ProductInfo({
             </div>
 
             <div className='flex items-center gap-3'>
-                <span className='text-3xl font-bold'>${price?.toFixed(2)}</span>
-                <span className='text-xl text-muted-foreground line-through'>${originalPrice?.toFixed(2)}</span>
+                <span className='text-3xl font-bold'>{price?.toLocaleString('vi-VN') || 0} ₫</span>
+                <span className='text-xl text-muted-foreground line-through'>{originalPrice?.toLocaleString('vi-VN') || 0} ₫</span>
             </div>
 
             <div className='border-t pt-6'>
@@ -64,18 +90,26 @@ export default function ProductInfo({
                     </div>
                 </div>
             </div>
-
             <div className='flex gap-3'>
-                <button className='flex-1 bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2'>
-                    <ShoppingCart className='w-5 h-5' />
-                    Add to Cart
-                </button>
-                <button className='flex-1 bg-secondary text-secondary-foreground py-3 rounded-md font-medium hover:bg-secondary/90 transition-colors flex items-center justify-center gap-2'>
-                    <CreditCard className='w-5 h-5' />
-                    Buy Now
-                </button>
+                <Button
+                    onClick={handleAddToCart}
+                    size={'lg'}
+                    className='flex-1 bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2'
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ?
+                        <>
+                            <ShoppingCart className='w-5 h-5' />
+                            Adding
+                        </>
+                        :
+                        <>
+                            <ShoppingCart className='w-5 h-5' />
+                            Add to Cart
+                        </>
+                    }
+                </Button>
             </div>
-
             <div className='text-sm text-muted-foreground'>
                 <p>Enjoy <strong>FREE express</strong> & <strong>Free Returns</strong> on orders over $35!</p>
             </div>

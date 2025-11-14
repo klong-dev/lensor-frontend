@@ -1,49 +1,19 @@
 'use client'
 
-import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
-import { CreditCard, Package, Truck, Tags } from 'lucide-react'
+import { CreditCard, Download, Shield } from 'lucide-react'
 
 interface OrderSummaryProps {
     subtotal: number
-    shipping: number
     itemCount: number
 }
 
-export function OrderSummary({ subtotal, shipping, itemCount }: OrderSummaryProps) {
-    const [promoCode, setPromoCode] = useState('')
-    const total = subtotal + shipping
-
-    const handleApplyPromo = () => {
-        console.log('Applying promo code:', promoCode)
-    }
+export function OrderSummary({ subtotal, itemCount }: OrderSummaryProps) {
+    const total = subtotal
 
     return (
         <div className="space-y-6">
-            <Card>
-                <CardContent className="pt-6">
-                    <div className="flex items-center gap-2 mb-3">
-                        <Tags />
-                        <h3 className="font-semibold">Promo Code</h3>
-                    </div>
-                    <div className="flex gap-2">
-                        <Input
-                            placeholder="Enter promo code"
-                            value={promoCode}
-                            onChange={(e) => setPromoCode(e.target.value)}
-                            className="flex-1"
-                        />
-                        <Button variant="outline" onClick={handleApplyPromo}>
-                            Apply
-                        </Button>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-2">
-                        Try: BOTANICAL10, SPRING15 or FIRST20
-                    </p>
-                </CardContent>
-            </Card>
 
             <Card>
                 <CardContent className="pt-6">
@@ -52,18 +22,14 @@ export function OrderSummary({ subtotal, shipping, itemCount }: OrderSummaryProp
                     <div className="space-y-3 mb-4">
                         <div className="flex justify-between text-sm">
                             <span className="text-muted-foreground">Subtotal ({itemCount} items)</span>
-                            <span className="font-medium">${subtotal.toFixed(2)}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                            <span className="text-muted-foreground">Shipping</span>
-                            <span className="font-medium">${shipping.toFixed(2)}</span>
+                            <span className="font-medium">{subtotal.toLocaleString('vi-VN')} ₫</span>
                         </div>
                     </div>
 
                     <div className="border-t pt-4 mb-4">
                         <div className="flex justify-between items-center">
                             <span className="font-semibold text-lg">Total</span>
-                            <span className="font-bold text-xl">${total.toFixed(2)}</span>
+                            <span className="font-bold text-xl">{total.toLocaleString('vi-VN')} ₫</span>
                         </div>
                     </div>
 
@@ -77,18 +43,18 @@ export function OrderSummary({ subtotal, shipping, itemCount }: OrderSummaryProp
             <Card>
                 <CardContent className="pt-6 space-y-4">
                     <div className="flex items-start gap-3">
-                        <Truck className="h-5 w-5 text-muted-foreground mt-0.5" />
+                        <Download className="h-5 w-5 text-muted-foreground mt-0.5" />
                         <div>
-                            <h4 className="font-semibold text-sm">Free Shipping</h4>
-                            <p className="text-xs text-muted-foreground">On orders over $200</p>
+                            <h4 className="font-semibold text-sm">Instant Download</h4>
+                            <p className="text-xs text-muted-foreground">Access your presets immediately after purchase</p>
                         </div>
                     </div>
 
                     <div className="flex items-start gap-3">
-                        <Package className="h-5 w-5 text-muted-foreground mt-0.5" />
+                        <Shield className="h-5 w-5 text-muted-foreground mt-0.5" />
                         <div>
-                            <h4 className="font-semibold text-sm">Secure Packaging</h4>
-                            <p className="text-xs text-muted-foreground">Art safely packed & insured</p>
+                            <h4 className="font-semibold text-sm">Lifetime Access</h4>
+                            <p className="text-xs text-muted-foreground">Download anytime from your library</p>
                         </div>
                     </div>
                 </CardContent>
@@ -97,9 +63,9 @@ export function OrderSummary({ subtotal, shipping, itemCount }: OrderSummaryProp
             <Card>
                 <div className="text-center p-4 rounded-lg">
                     <p className="text-sm italic text-muted-foreground">
-                        &quot;Each piece is carefully created with love and attention to botanical detail.&quot;
+                        &quot;Professional presets that transform your photos instantly.&quot;
                     </p>
-                    <p className="text-xs text-muted-foreground mt-2">— Elena, Botanical Artist</p>
+                    <p className="text-xs text-muted-foreground mt-2">— Lensor Community</p>
                 </div>
             </Card>
         </div>

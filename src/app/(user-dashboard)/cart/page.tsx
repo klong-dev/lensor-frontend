@@ -1,93 +1,91 @@
 'use client'
 
-import React, { useState } from 'react'
-import { ChevronLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { BASE_URL } from '@/constants'
+import { cartApi } from '@/lib/apis/cartApi'
+import { useCart } from '@/lib/hooks/useCartHooks'
+import { CartItemData } from '@/types/cart'
+import { ChevronLeft, ShoppingCart } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import { CartItem } from './components/cart-item'
 import { OrderSummary } from './components/order-summary'
 import { SpecialInstructions } from './components/special-instructions'
-import Link from 'next/link'
-import { ShoppingCart } from 'lucide-react';
-
-interface CartItemType {
-  id: string
-  image: string
-  title: string
-  author: string
-  price: number
-  originalPrice?: number
-  quantity: number
-}
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItemType[]>([
-    {
-      id: '1',
-      image: 'https://i.pinimg.com/736x/ec/09/19/ec09199edeabd5175406361756f80c27.jpg',
-      title: 'Monstera Deliciosa Study',
-      author: 'Elena Botanical',
-      price: 85.0,
-      quantity: 1,
-    },
-    {
-      id: '2',
-      image: 'https://i.pinimg.com/736x/d0/8d/16/d08d168165ce14dcac8da86e93fa044a.jpg',
-      title: 'Eucalyptus Branch',
-      author: 'Elena Botanical',
-      price: 75.0,
-      originalPrice: 150.0,
-      quantity: 2,
-    },
-    {
-      id: '3',
-      image: 'https://i.pinimg.com/736x/1c/6b/f0/1c6bf09253e1819425a2e58ebcf5988d.jpg',
-      title: 'Fern Collection',
-      author: 'Elena Botanical',
-      price: 120.0,
-      quantity: 1,
-    },
-    {
-      id: '4',
-      image: 'https://i.pinimg.com/1200x/1b/08/af/1b08af4eab12bd921dc3541ccf6a10b1.jpg',
-      title: 'Desert Succulent',
-      author: 'Elena Botanical',
-      price: 60.0,
-      quantity: 1,
-    },
-    {
-      id: '5',
-      image: 'https://i.pinimg.com/736x/0a/20/fc/0a20fcc7bfacc5a20151f9e791e6b0f8.jpg',
-      title: 'Golden Barrel Cactus',
-      author: 'Elena Botanical',
-      price: 95.0,
-      originalPrice: 120.0,
-      quantity: 1,
-    },
-    {
-      id: '6',
-      image: 'https://i.pinimg.com/736x/75/06/6c/75066c010f5e93d186cce8584270a14d.jpg',
-      title: 'Phalaenopsis Orchid',
-      author: 'Elena Botanical',
-      price: 130.0,
-      quantity: 2,
-    },
-  ])
+  const { data: cartData, isLoading, error, mutate } = useCart()
+  const [isUpdating, setIsUpdating] = useState(false)
 
-  const handleQuantityChange = (id: string, newQuantity: number) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
+  const handleQuantityChange = async (cartItemId: string, newQuantity: number) => {
+    setIsUpdating(true)
+    try {
+      await cartApi.updateCartItem(cartItemId, newQuantity)
+      mutate()
+      toast.success('Cart updated successfully')
+    } catch (error) {
+      console.error('Failed to update cart item:', error)
+      toast.error('Failed to update cart item')
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  const handleRemoveItem = async (cartItemId: string) => {
+    setIsUpdating(true)
+    try {
+      await cartApi.removeCartItem(cartItemId)
+      mutate()
+      toast.success('Item removed from cart')
+    } catch (error) {
+      console.error('Failed to remove cart item:', error)
+      toast.error('Failed to remove item')
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  const handleClearCart = async () => {
+    setIsUpdating(true)
+    try {
+      await cartApi.clearCart()
+      mutate()
+      toast.success('Cart cleared successfully')
+    } catch (error) {
+      console.error('Failed to clear cart:', error)
+      toast.error('Failed to clear cart')
+    } finally {
+      setIsUpdating(false)
+    }
+  }
+
+  const cartItems = cartData?.items || []
+  const subtotal = cartItems.reduce((sum: number, item: CartItemData) => sum + parseFloat(item.price) * item.quantity, 0)
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen container px-6">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <p className="text-muted-foreground">Loading cart...</p>
+          </div>
+        </div>
+      </div>
     )
   }
 
-  const handleRemoveItem = (id: string) => {
-    setCartItems(items => items.filter(item => item.id !== id))
+  if (error) {
+    return (
+      <div className="min-h-screen container px-6">
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="flex items-center justify-center h-64">
+            <p className="text-red-500">Failed to load cart. Please try again.</p>
+          </div>
+        </div>
+      </div>
+    )
   }
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shipping = 15.00
 
   return (
     <div className="min-h-screen container px-6">
@@ -104,9 +102,22 @@ export default function Cart() {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ShoppingCart />
-                  Shopping Cart ({cartItems.length} items)
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <ShoppingCart />
+                    Shopping Cart ({cartItems.length} items)
+                  </div>
+                  {cartItems.length > 0 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleClearCart}
+                      disabled={isUpdating}
+                      className="text-red-500 hover:text-red-600"
+                    >
+                      Clear All
+                    </Button>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -116,14 +127,27 @@ export default function Cart() {
                   </div>
                 ) : (
                   <div>
-                    {cartItems.map((item) => (
-                      <CartItem
-                        key={item.id}
-                        {...item}
-                        onQuantityChange={handleQuantityChange}
-                        onRemove={handleRemoveItem}
-                      />
-                    ))}
+                    {cartItems.map((item: CartItemData) => {
+                      const imagePath = item.product?.thumbnail || item.image || ''
+                      const imageUrl = imagePath.startsWith('http') ? imagePath : `${BASE_URL}${imagePath}`
+
+                      return (
+                        <CartItem
+                          key={item.id}
+                          id={item.id}
+                          productId={item.product?.id || ''}
+                          image={imageUrl}
+                          title={item.product?.title || item.title || 'Untitled'}
+                          author={item.product?.userId || item.author || 'Unknown'}
+                          price={parseFloat(item.product?.price || item.price)}
+                          originalPrice={item.product?.originalPrice ? parseFloat(item.product.originalPrice) : undefined}
+                          quantity={item.quantity}
+                          onQuantityChange={handleQuantityChange}
+                          onRemove={handleRemoveItem}
+                          disabled={isUpdating}
+                        />
+                      )
+                    })}
                   </div>
                 )}
               </CardContent>
@@ -136,8 +160,7 @@ export default function Cart() {
             <div className="sticky top-20">
               <OrderSummary
                 subtotal={subtotal}
-                shipping={shipping}
-                itemCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+                itemCount={cartItems.reduce((sum: number, item: CartItemData) => sum + item.quantity, 0)}
               />
             </div>
           </div>

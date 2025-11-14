@@ -4,21 +4,12 @@ import React from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Minus, Plus, Trash2 } from 'lucide-react'
-
-interface CartItemProps {
-    id: string
-    image: string
-    title: string
-    author: string
-    price: number
-    originalPrice?: number
-    quantity: number
-    onQuantityChange: (id: string, quantity: number) => void
-    onRemove: (id: string) => void
-}
+import { CartItemProps } from '@/types/cart'
+import Link from 'next/link'
 
 export function CartItem({
     id,
+    productId,
     image,
     title,
     author,
@@ -27,6 +18,7 @@ export function CartItem({
     quantity,
     onQuantityChange,
     onRemove,
+    disabled = false,
 }: CartItemProps) {
     const handleIncrease = () => {
         onQuantityChange(id, quantity + 1)
@@ -40,18 +32,20 @@ export function CartItem({
 
     return (
         <div className="flex gap-4 py-6 border-b last:border-b-0">
-            <div className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+            <div className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden">
                 <Image
                     src={image}
                     alt={title}
                     fill
-                    className="object-cover"
+                    className="object-cover rounded-lg"
                 />
             </div>
 
             <div className="flex-1 flex flex-col justify-between">
                 <div>
-                    <h3 className="font-semibold text-base">{title}</h3>
+                    <Link href={`/marketplace/${productId}`}>
+                        <h3 className="font-semibold text-base hover:text-primary">{title}</h3>
+                    </Link>
                     <p className="text-sm text-muted-foreground">by {author}</p>
                 </div>
 
@@ -61,7 +55,7 @@ export function CartItem({
                             variant="ghost"
                             size="icon-sm"
                             onClick={handleDecrease}
-                            disabled={quantity <= 1}
+                            disabled={disabled || quantity <= 1}
                             className="h-8 w-8 rounded-r-none"
                         >
                             <Minus className="h-4 w-4" />
@@ -73,6 +67,7 @@ export function CartItem({
                             variant="ghost"
                             size="icon-sm"
                             onClick={handleIncrease}
+                            disabled={disabled}
                             className="h-8 w-8 rounded-l-none"
                         >
                             <Plus className="h-4 w-4" />
@@ -83,6 +78,7 @@ export function CartItem({
                         variant="ghost"
                         size="sm"
                         onClick={() => onRemove(id)}
+                        disabled={disabled}
                         className="text-red-500 hover:text-red-600 hover:bg-red-50"
                     >
                         <Trash2 className="h-4 w-4 mr-1" />
@@ -93,10 +89,10 @@ export function CartItem({
 
             <div className="flex flex-col items-end justify-between">
                 <div className="text-right">
-                    <p className="font-semibold text-lg">${price.toFixed(2)}</p>
+                    <p className="font-semibold text-lg">{price.toLocaleString('vi-VN')} ₫</p>
                     {originalPrice && (
-                        <p className="text-sm text-gray-500 line-through">
-                            ${originalPrice.toFixed(2)} total
+                        <p className="text-sm text-muted-foreground line-through">
+                            {originalPrice.toLocaleString('vi-VN')} ₫
                         </p>
                     )}
                 </div>
