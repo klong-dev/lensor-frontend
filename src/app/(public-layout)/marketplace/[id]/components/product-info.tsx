@@ -89,7 +89,9 @@ export default function ProductInfo({
 
             <div className='flex items-center gap-3'>
                 <span className='text-3xl font-bold'>{price?.toLocaleString('vi-VN') || 0} ₫</span>
-                <span className='text-xl text-muted-foreground line-through'>{originalPrice?.toLocaleString('vi-VN') || 0} ₫</span>
+                {price != originalPrice && (
+                    <span className='text-xl text-muted-foreground line-through'>{originalPrice?.toLocaleString('vi-VN') || 0} ₫</span>
+                )}
             </div>
 
             <div className='border-t pt-6'>
