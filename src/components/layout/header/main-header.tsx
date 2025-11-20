@@ -51,8 +51,7 @@ export default function MainHeader() {
 
   const navLinkItems = [
     { title: t('forum'), href: ROUTES.FORUM },
-    { title: t('marketplace'), href: ROUTES.MARKETPLACE },
-    { title: t('createPortfolio'), href: ROUTES.CREATE_PORTFOLIO }
+    { title: t('marketplace'), href: ROUTES.MARKETPLACE }
   ]
 
   return (

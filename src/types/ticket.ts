@@ -3,10 +3,7 @@ export type TicketPriority = 'low' | 'medium' | 'high' | 'urgent';
 
 export interface TicketMessage {
      id: string;
-     ticketId: string;
-     senderId: string;
-     senderName: string;
-     senderRole: 'user' | 'admin';
+     sender: string;
      message: string;
      attachments: string[];
      createdAt: string;
@@ -14,18 +11,18 @@ export interface TicketMessage {
 
 export interface Ticket {
      id: string;
-     userId: string;
-     userName: string;
      title: string;
      description: string;
      status: TicketStatus;
      priority: TicketPriority;
      category: string;
+     createdBy: string;
+     assignedTo: string | null;
      attachments: string[];
      messages: TicketMessage[];
      createdAt: string;
      updatedAt: string;
-     closedAt?: string;
+     closedAt: string | null;
 }
 
 export interface CreateTicketPayload {

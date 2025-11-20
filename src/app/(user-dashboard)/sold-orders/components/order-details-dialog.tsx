@@ -36,9 +36,21 @@ export function OrderDetailsDialog({ order, open, onOpenChange, onWithdraw }: Or
                },
                completed: {
                     variant: 'default',
-                    label: 'Completed',
+                    label: 'Waiting (3 days)',
+                    icon: <Clock className="h-3 w-3" />,
+                    className: 'bg-amber-500 hover:bg-amber-600'
+               },
+               withdrawn: {
+                    variant: 'default',
+                    label: 'Withdrawn',
                     icon: <CheckCircle className="h-3 w-3" />,
                     className: 'bg-blue-500 hover:bg-blue-600'
+               },
+               withdrawing: {
+                    variant: 'default',
+                    label: 'Withdrawing',
+                    icon: <Clock className="h-3 w-3" />,
+                    className: 'bg-yellow-500 hover:bg-yellow-600'
                },
                failed: {
                     variant: 'destructive',
@@ -177,11 +189,20 @@ export function OrderDetailsDialog({ order, open, onOpenChange, onWithdraw }: Or
                               </div>
                          </div>
 
-                         {order.status === 'completed' && (
+                         {order.status === 'withdrawn' && (
                               <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-md border border-blue-200 dark:border-blue-800">
                                    <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
                                         <CheckCircle className="h-4 w-4" />
                                         <p className="text-sm font-medium">This order has been withdrawn</p>
+                                   </div>
+                              </div>
+                         )}
+
+                         {order.status === 'withdrawing' && (
+                              <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-md border border-yellow-200 dark:border-yellow-800">
+                                   <div className="flex items-center gap-2 text-yellow-700 dark:text-yellow-300">
+                                        <Clock className="h-4 w-4" />
+                                        <p className="text-sm font-medium">Withdrawal is being processed by admin</p>
                                    </div>
                               </div>
                          )}
@@ -195,7 +216,7 @@ export function OrderDetailsDialog({ order, open, onOpenChange, onWithdraw }: Or
                               </div>
                          )}
 
-                         {order.canWithdraw && order.status !== 'completed' && order.status !== 'reported' && (
+                         {order.canWithdraw && order.status !== 'withdrawn' && order.status !== 'withdrawing' && order.status !== 'reported' && (
                               <div className="p-3 bg-green-50 dark:bg-green-950 rounded-md border border-green-200 dark:border-green-800">
                                    <div className="flex items-center gap-2 text-green-700 dark:text-green-300">
                                         <CheckCircle className="h-4 w-4" />
@@ -204,7 +225,7 @@ export function OrderDetailsDialog({ order, open, onOpenChange, onWithdraw }: Or
                               </div>
                          )}
 
-                         {!order.canWithdraw && order.status !== 'completed' && order.status !== 'reported' && (
+                         {!order.canWithdraw && order.status !== 'withdrawn' && order.status !== 'withdrawing' && order.status !== 'reported' && (
                               <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-md border border-yellow-200 dark:border-yellow-800">
                                    <div className="flex items-center gap-2 text-yellow-700 dark:text-yellow-300">
                                         <Clock className="h-4 w-4" />
@@ -220,7 +241,7 @@ export function OrderDetailsDialog({ order, open, onOpenChange, onWithdraw }: Or
                          <Button variant="outline" onClick={() => onOpenChange(false)}>
                               Close
                          </Button>
-                         {order.canWithdraw && order.status !== 'completed' && order.status !== 'reported' && onWithdraw && (
+                         {order.canWithdraw && order.status !== 'withdrawn' && order.status !== 'withdrawing' && order.status !== 'reported' && onWithdraw && (
                               <Button onClick={onWithdraw}>
                                    <Wallet className="mr-2 h-4 w-4" />
                                    Withdraw Funds

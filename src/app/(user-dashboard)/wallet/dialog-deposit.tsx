@@ -16,8 +16,25 @@ import { toast } from "sonner"
 
 export default function DialogDeposit({ children }: { children: React.ReactNode }) {
      const [amount, setAmount] = useState('')
+     const [displayAmount, setDisplayAmount] = useState('')
      const [isLoading, setIsLoading] = useState(false)
      const [selectedMethod, setSelectedMethod] = useState<'paypal' | 'vnpay' | null>(null)
+
+     const formatCurrency = (value: string): string => {
+          // Remove all non-digit characters
+          const numericValue = value.replace(/\D/g, '')
+          if (!numericValue) return ''
+
+          // Format with thousand separators
+          const formatted = Number(numericValue).toLocaleString('vi-VN')
+          return formatted
+     }
+
+     const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+          const rawValue = e.target.value.replace(/\D/g, '') // Keep only numbers
+          setAmount(rawValue)
+          setDisplayAmount(formatCurrency(rawValue))
+     }
 
      const handleDeposit = async (method: 'paypal' | 'vnpay') => {
           if (!amount || Number(amount) <= 0) {
@@ -71,13 +88,14 @@ export default function DialogDeposit({ children }: { children: React.ReactNode 
                               <Label htmlFor="amount">Amount (VNĐ)</Label>
                               <Input
                                    id="amount"
-                                   type="number"
+                                   type="text"
                                    placeholder="Enter amount"
-                                   value={amount}
-                                   onChange={(e) => setAmount(e.target.value)}
-                                   min="5000"
-                                   step="1000"
+                                   value={displayAmount}
+                                   onChange={handleAmountChange}
                               />
+                              <p className="text-xs text-muted-foreground">
+                                   Minimum: 5,000 VNĐ
+                              </p>
                          </div>
 
                          <div className="space-y-2">

@@ -144,17 +144,16 @@ export function OrdersTable({ orders, withdrawals, onViewDetails, onWithdraw, se
                          <TableRow>
                               {showCheckboxes && <TableHead className="w-12"></TableHead>}
                               <TableHead>Order ID</TableHead>
-                              <TableHead>Status</TableHead>
                               <TableHead>Products</TableHead>
                               <TableHead>Earnings</TableHead>
-                              <TableHead>Withdrawable</TableHead>
+                              <TableHead>Withdrawal Status</TableHead>
                               <TableHead>Created At</TableHead>
                               <TableHead>Actions</TableHead>
                          </TableRow>
                     </TableHeader>
                     <TableBody>
                          {orders.map((order) => {
-                              const isWithdrawable = order.canWithdraw;
+                              const isWithdrawable = order.canWithdraw && order.status !== 'withdrawing';
                               const isSelected = selectedOrders.includes(order.id);
 
                               return (
@@ -174,7 +173,6 @@ export function OrdersTable({ orders, withdrawals, onViewDetails, onWithdraw, se
                                         <TableCell className="font-mono text-xs">
                                              {order.id.substring(0, 8)}...
                                         </TableCell>
-                                        <TableCell>{getStatusBadge(order.status)}</TableCell>
                                         <TableCell>
                                              <div className="max-w-[200px]">
                                                   {order.sellerItems.map((item, idx) => (
@@ -188,25 +186,42 @@ export function OrdersTable({ orders, withdrawals, onViewDetails, onWithdraw, se
                                              {formatCurrency(order.sellerEarnings)}
                                         </TableCell>
                                         <TableCell>
-                                             {order.status === 'completed' || isOrderWithdrawn(order.id) ? (
-                                                  <Badge className="bg-yellow-500 hover:bg-yellow-600">
+                                             {order.status === 'withdrawn' ? (
+                                                  <Badge className="bg-blue-500 hover:bg-blue-600 text-white">
+                                                       <CheckCircle className="h-3 w-3 mr-1" />
+                                                       Withdrawn
+                                                  </Badge>
+                                             ) : order.status === 'withdrawing' ? (
+                                                  <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white">
+                                                       <Clock className="h-3 w-3 mr-1" />
+                                                       Withdrawing
+                                                  </Badge>
+                                             ) : isOrderWithdrawn(order.id) ? (
+                                                  <Badge className="bg-blue-500 hover:bg-blue-600 text-white">
                                                        <CheckCircle className="h-3 w-3 mr-1" />
                                                        Withdrawn
                                                   </Badge>
                                              ) : order.status === 'reported' ? (
-                                                  <Badge className="bg-red-500 hover:bg-red-600">
+                                                  <Badge className="bg-red-500 hover:bg-red-600 text-white">
                                                        <AlertTriangle className="h-3 w-3 mr-1" />
                                                        Cannot Withdraw
                                                   </Badge>
+                                             ) : order.status === 'refunded' ? (
+                                                  <Badge className="bg-gray-500 hover:bg-gray-600 text-white">
+                                                       <XCircle className="h-3 w-3 mr-1" />
+                                                       Refunded
+                                                  </Badge>
                                              ) : order.canWithdraw ? (
-                                                  <Badge className="bg-green-500 hover:bg-green-600">
+                                                  <Badge className="bg-green-500 hover:bg-green-600 text-white">
                                                        <CheckCircle className="h-3 w-3 mr-1" />
-                                                       Available
+                                                       Available Now
                                                   </Badge>
                                              ) : (
-                                                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                                       <CalendarClock className="h-3 w-3" />
-                                                       {getTimeUntilWithdrawable(order.withdrawableAt)}
+                                                  <div className="flex items-center gap-1.5 text-sm">
+                                                       <CalendarClock className="h-4 w-4 text-amber-500" />
+                                                       <span className="text-muted-foreground">
+                                                            Available in {getTimeUntilWithdrawable(order.withdrawableAt)}
+                                                       </span>
                                                   </div>
                                              )}
                                         </TableCell>
@@ -232,7 +247,7 @@ export function OrdersTable({ orders, withdrawals, onViewDetails, onWithdraw, se
                                                             <Eye className="mr-2 h-4 w-4" />
                                                             View Details
                                                        </DropdownMenuItem>
-                                                       {isWithdrawable && order.status !== 'completed' && !isOrderWithdrawn(order.id) && (
+                                                       {isWithdrawable && order.status !== 'withdrawn' && order.status !== 'withdrawing' && !isOrderWithdrawn(order.id) && (
                                                             <DropdownMenuItem
                                                                  onClick={() => onWithdraw(order)}
                                                                  className="cursor-pointer text-green-600"

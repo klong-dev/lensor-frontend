@@ -60,7 +60,7 @@ const normalizeFollowData = (follow: Follow, type: 'followers' | 'following' = '
                };
           }
      }
-     
+
      // For followers list: create nested 'follower' object
      if (type === 'followers') {
           // If flat structure with name/avatar, convert to nested
@@ -98,7 +98,7 @@ const normalizeFollowData = (follow: Follow, type: 'followers' | 'following' = '
                };
           }
      }
-     
+
      return follow;
 };
 

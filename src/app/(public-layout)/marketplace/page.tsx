@@ -44,7 +44,9 @@ export default function MarketplacePage() {
             typeof item.image === 'string' &&
             item.image.trim() !== '';
 
-        return hasValidThumbnail && hasValidImage;
+        const isActive = item?.status === 'active';
+
+        return hasValidThumbnail && hasValidImage && isActive;
     }) || []
 
 

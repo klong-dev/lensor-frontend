@@ -162,7 +162,7 @@ export default function SoldOrdersPage() {
      // Select/deselect all withdrawable orders
      const handleSelectAll = (checked: boolean) => {
           setSelectedOrders(checked
-               ? filteredOrders.filter(o => o.canWithdraw).map(o => o.id)
+               ? filteredOrders.filter(o => o.canWithdraw && o.status !== 'withdrawing').map(o => o.id)
                : []
           );
      };
@@ -298,26 +298,27 @@ export default function SoldOrdersPage() {
                     <TabsList>
                          <TabsTrigger value="all">All Orders</TabsTrigger>
                          <TabsTrigger value="ready_for_withdrawal">Ready to Withdraw</TabsTrigger>
-                         <TabsTrigger value="pending">Pending</TabsTrigger>
-                         <TabsTrigger value="completed">Completed</TabsTrigger>
+                         <TabsTrigger value="completed">Waiting (3 days)</TabsTrigger>
+                         <TabsTrigger value="withdrawing">Withdrawing</TabsTrigger>
+                         <TabsTrigger value="withdrawn">Withdrawn</TabsTrigger>
                          <TabsTrigger value="reported">Reported</TabsTrigger>
                          <TabsTrigger value="refunded">Refunded</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value={activeTab} className="mt-4">
                          {/* Bulk selection and withdrawal bar */}
-                         {filteredOrders.some(o => o.canWithdraw) && (
+                         {filteredOrders.some(o => o.canWithdraw && o.status !== 'withdrawing') && (
                               <Card className="bg-muted/50 mb-3">
                                    <CardContent className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
                                              <Checkbox
                                                   id="select-all"
                                                   checked={selectedOrders.length > 0 &&
-                                                       selectedOrders.length === filteredOrders.filter(o => o.canWithdraw).length}
+                                                       selectedOrders.length === filteredOrders.filter(o => o.canWithdraw && o.status !== 'withdrawing').length}
                                                   onCheckedChange={handleSelectAll}
                                              />
                                              <label htmlFor="select-all" className="text-sm font-medium cursor-pointer">
-                                                  Select All ({filteredOrders.filter(o => o.canWithdraw).length})
+                                                  Select All ({filteredOrders.filter(o => o.canWithdraw && o.status !== 'withdrawing').length})
                                              </label>
                                              {selectedOrders.length > 0 && (
                                                   <span className="text-sm text-muted-foreground">
@@ -359,7 +360,7 @@ export default function SoldOrdersPage() {
                                              onWithdraw={handleWithdrawClick}
                                              selectedOrders={selectedOrders}
                                              onOrderSelect={handleOrderSelect}
-                                             showCheckboxes={filteredOrders.some(o => o.canWithdraw === true)}
+                                             showCheckboxes={filteredOrders.some(o => o.canWithdraw === true && o.status !== 'withdrawing')}
                                         />
                                    )}
                               </CardContent>
