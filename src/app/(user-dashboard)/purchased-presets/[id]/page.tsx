@@ -4,10 +4,11 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useOrderProducts } from "@/lib/hooks/useOrderHooks"
-import { ArrowLeft, Calendar, Package, Loader2 } from "lucide-react"
+import { ArrowLeft, Calendar, Package, Loader2, Download } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import OrderProductsList from "./components/order-products-list"
 import ReportDialog from "../components/report-dialog"
+import { toast } from "sonner"
 
 export default function OrderDetailPage() {
     const params = useParams()
@@ -15,6 +16,7 @@ export default function OrderDetailPage() {
     const orderId = params.id as string
 
     const { data, isLoading, error } = useOrderProducts(orderId)
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3005'
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -28,6 +30,75 @@ export default function OrderDetailPage() {
                 return 'bg-blue-500/10 text-blue-600 border-blue-500/20'
             default:
                 return 'bg-gray-500/10 text-gray-600 border-gray-500/20'
+        }
+    }
+
+    const handleDownloadAllOrderFiles = async () => {
+        if (!data?.data?.products || data.data.products.length === 0) {
+            toast.error('No products available')
+            return
+        }
+
+        toast.loading('Preparing all files for download...', { id: 'order-zip-download' })
+
+        try {
+            const JSZip = (await import('jszip')).default
+            const zip = new JSZip()
+
+            for (const product of data.data.products) {
+                const { productDetails } = product
+                if (!productDetails.presetFiles || productDetails.presetFiles.length === 0) {
+                    continue
+                }
+
+                const productFolderName = productDetails.name
+                    .replace(/[^a-z0-9\s]/gi, '_')
+                    .replace(/\s+/g, '_')
+                    .toLowerCase()
+
+                const fetchPromises = productDetails.presetFiles.map(async (file, index) => {
+                    const fullFileUrl = file.startsWith('http') ? file : `${baseUrl}${file}`
+                    const fileName = file.split('/').pop() || `preset-${index + 1}`
+
+                    try {
+                        const response = await fetch(fullFileUrl)
+                        if (!response.ok) throw new Error(`Failed to fetch ${fileName}`)
+                        const blob = await response.blob()
+                        zip.file(`${productFolderName}/${fileName}`, blob)
+                    } catch (error) {
+                        console.error(`Error fetching ${fileName}:`, error)
+                        toast.error(`Failed to fetch ${fileName}`, { id: 'order-zip-download' })
+                    }
+                })
+
+                await Promise.all(fetchPromises)
+            }
+
+            const zipBlob = await zip.generateAsync({ type: 'blob' })
+
+            const link = document.createElement('a')
+            link.href = URL.createObjectURL(zipBlob)
+            link.download = `order_${orderId.slice(0, 8)}_all_products.zip`
+            document.body.appendChild(link)
+            link.click()
+            document.body.removeChild(link)
+            URL.revokeObjectURL(link.href)
+
+            const totalFiles = data.data.products.reduce(
+                (sum, product) => sum + (product.productDetails.presetFiles?.length || 0),
+                0
+            )
+
+            toast.success('Download completed', {
+                id: 'order-zip-download',
+                description: `Downloaded ${totalFiles} file(s) from ${data.data.products.length} product(s) as ZIP`,
+            })
+        } catch (error) {
+            console.error('Download error:', error)
+            toast.error('Download failed', {
+                id: 'order-zip-download',
+                description: 'Failed to create ZIP file. Please try again.',
+            })
         }
     }
 
@@ -129,7 +200,19 @@ export default function OrderDetailPage() {
             </Card>
 
             <div>
-                <h2 className="text-xl font-semibold mb-4">Products in this Order</h2>
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-xl font-semibold">Products in this Order</h2>
+                    {orderData.products.length > 1 && (
+                        <Button
+                            onClick={handleDownloadAllOrderFiles}
+                            size="lg"
+                            className="gap-2"
+                        >
+                            <Download className="h-5 w-5" />
+                            Download All Product Files
+                        </Button>
+                    )}
+                </div>
                 <OrderProductsList products={orderData.products} />
             </div>
         </div>
