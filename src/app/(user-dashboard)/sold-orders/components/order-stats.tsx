@@ -14,8 +14,9 @@ export function OrderStats({ orders, statistics }: OrderStatsProps) {
      const stats = {
           total: orders.length,
           readyForWithdrawal: orders.filter(o => o.status === 'ready_for_withdrawal').length,
-          pending: orders.filter(o => o.status === 'pending').length,
-          completed: orders.filter(o => o.status === 'completed').length,
+          waiting: orders.filter(o => o.status === 'completed').length,
+          withdrawing: orders.filter(o => o.status === 'withdrawing').length,
+          withdrawn: orders.filter(o => o.status === 'withdrawn').length,
           totalEarnings: totalEarnings,
           actualAmount: statistics?.totalActualAmount || 0,
      };
@@ -51,11 +52,11 @@ export function OrderStats({ orders, statistics }: OrderStatsProps) {
 
                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                         <CardTitle className="text-sm font-medium">Pending</CardTitle>
-                         <Clock className="h-4 w-4 text-yellow-600" />
+                         <CardTitle className="text-sm font-medium">Waiting (3 days)</CardTitle>
+                         <Clock className="h-4 w-4 text-amber-600" />
                     </CardHeader>
                     <CardContent>
-                         <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+                         <div className="text-2xl font-bold text-amber-600">{stats.waiting}</div>
                     </CardContent>
                </Card>
 

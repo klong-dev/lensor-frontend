@@ -2,6 +2,8 @@ export type OrderStatus =
     | 'ready_for_withdrawal'
     | 'pending'
     | 'completed'
+    | 'withdrawn'
+    | 'withdrawing'
     | 'failed'
     | 'refunded'
     | 'reported';

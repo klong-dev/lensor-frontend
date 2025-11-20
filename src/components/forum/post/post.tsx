@@ -483,8 +483,8 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                          </Button>
                     </DialogComment>
 
-                    <DialogShare linkShare={`${BASE_URL}${ROUTES.FORUM}/${dataPost?.id}`}>
-                         <Button variant='ghost' size='lg'>
+                    <DialogShare linkShare={`${process.env.NEXT_PUBLIC_FRONTEND_URL}${ROUTES.FORUM}/${dataPost?.id}`}>
+                         <Button variant="ghost" size="sm">
                               <Share2 />
                          </Button>
                     </DialogShare>

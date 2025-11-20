@@ -69,11 +69,6 @@ export default function Wallet() {
                                    Deposit
                               </Button>
                          </DialogDeposit>
-
-                         <Button variant='outline' onClick={handleWithdraw}>
-                              <BanknoteArrowDown />
-                              Withdraw
-                         </Button>
                     </div>
                </div>
 

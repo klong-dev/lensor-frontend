@@ -17,5 +17,6 @@ export const ROUTES = {
      WALLET: '/wallet',
      PRODUCT_MANAGEMENT: '/product-management',
      STATISTICS: '/statistics',
-     SOLD_ORDERS: '/sold-orders'
+     SOLD_ORDERS: '/sold-orders',
+     SUPPORT: '/support'
 }
