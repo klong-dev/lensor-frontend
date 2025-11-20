@@ -148,22 +148,8 @@ export default function OrderDetailPage() {
             </div>
 
             <Card className="p-6">
-                <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-3">
-                        <div className="text-sm text-muted-foreground">Status</div>
-                        <Badge className={getStatusColor(orderData.status)}>
-                            {orderData.status}
-                        </Badge>
-                    </div>
-                    {orderData.status === 'completed' && (
-                        <ReportDialog
-                            orderId={orderId}
-                            products={orderData.products}
-                        />
-                    )}
-                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div>
                         <div className="text-sm text-muted-foreground mb-1">Total Amount</div>
                         <div className="text-xl font-bold">
@@ -196,6 +182,16 @@ export default function OrderDetailPage() {
                             </div>
                         </div>
                     )}
+
+                    <div className="flex justify-end items-center">
+                        {orderData.status !== 'reported' && (
+                            <ReportDialog
+                                orderId={orderId}
+                                products={orderData.products}
+                            />
+                        )}
+                    </div>
+
                 </div>
             </Card>
 

@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -17,20 +16,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Checkbox } from "@/components/ui/checkbox"
 import { marketplaceApi } from "@/lib/apis/marketplaceApi"
 import { toast } from "sonner"
-import { Paperclip } from "lucide-react"
-import { PresetItem, EditProductDialogProps } from "@/types/marketplace"
-import PresetUploadModal from "@/app/(user-dashboard)/create-product/components/preset-upload-modal"
+import { EditProductDialogProps } from "@/types/marketplace"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
 import { COMPATIBILITY_OPTIONS, FEATURES_OPTIONS, SPECIFICATIONS_OPTIONS } from "@/constants/productOptions"
 import { useMarketplaceDetail } from "@/lib/hooks/useMarketplaceHooks"
-import { BASE_URL } from "@/constants"
-import { X, Plus } from "lucide-react"
 
 export function EditProductDialog({ open, onOpenChange, productId, onSuccess }: EditProductDialogProps) {
     const { data: productData, isLoading: isLoadingProduct } = useMarketplaceDetail(productId)
     const [isLoading, setIsLoading] = useState(false)
-    const [isModalOpen, setIsModalOpen] = useState(false)
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -50,18 +44,9 @@ export function EditProductDialog({ open, onOpenChange, productId, onSuccess }: 
     const [displayOriginalPrice, setDisplayOriginalPrice] = useState("")
     const [priceError, setPriceError] = useState("")
     const [originalPriceError, setOriginalPriceError] = useState("")
-    const [presetItems, setPresetItems] = useState<PresetItem[]>([])
-    const [existingPresetItems, setExistingPresetItems] = useState<Array<{
-        id: string
-        before: string
-        after: string
-        presetFile: { url: string; fileName: string; fileSize?: number; format: string }
-    }>>([])
 
     useEffect(() => {
         if (productData && open) {
-            console.log('Product Data:', productData) // Debug log
-
             setFormData({
                 title: productData.name || productData.title || "",
                 description: productData.description || "",
@@ -81,42 +66,8 @@ export function EditProductDialog({ open, onOpenChange, productId, onSuccess }: 
             setDisplayOriginalPrice(productData.originalPrice ? Number(productData.originalPrice).toLocaleString('vi-VN') : "")
             setPriceError("")
             setOriginalPriceError("")
-            setPresetItems([])
-
-            // Load existing preset items
-            if (productData.imagePairs && Array.isArray(productData.imagePairs)) {
-                const existingItems = productData.imagePairs.map((pair: { before: string; after: string }, index: number) => {
-                    // Handle both presetFiles array and single presetFile
-                    let presetFile = { url: '', fileName: 'preset.xmp', format: '.xmp' }
-
-                    if (productData.presetFiles && Array.isArray(productData.presetFiles) && productData.presetFiles[index]) {
-                        presetFile = productData.presetFiles[index]
-                    } else if (productData.fileFormat) {
-                        presetFile = {
-                            url: '',
-                            fileName: `preset${index + 1}${productData.fileFormat}`,
-                            format: productData.fileFormat
-                        }
-                    }
-
-                    return {
-                        id: `existing-${index}`,
-                        before: pair.before,
-                        after: pair.after,
-                        presetFile
-                    }
-                })
-                setExistingPresetItems(existingItems)
-            } else {
-                setExistingPresetItems([])
-            }
         }
     }, [productData, open])
-
-    const handleRemoveExistingItem = (id: string) => {
-        setExistingPresetItems(prev => prev.filter(item => item.id !== id))
-        toast.info('Item marked for removal. Changes will apply when you save.')
-    }
 
     const validatePrice = (currentPrice: string, currentOriginalPrice: string) => {
         if (currentPrice && currentOriginalPrice) {
@@ -211,11 +162,6 @@ export function EditProductDialog({ open, onOpenChange, productId, onSuccess }: 
         }))
     }
 
-    const handleSavePresetItems = (items: PresetItem[]) => {
-        setPresetItems(items)
-        toast.success(`${items.length} preset item(s) updated successfully!`)
-    }
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
@@ -278,60 +224,9 @@ export function EditProductDialog({ open, onOpenChange, productId, onSuccess }: 
                 updateData.append('specifications', JSON.stringify(formData.specifications))
             }
 
-            // Debug: Log what we're sending
-            console.log('Sending update data:', {
-                title: formData.title,
-                price: formData.price,
-                originalPrice: formData.originalPrice,
-                tags: formData.tags,
-                compatibility: formData.compatibility,
-                features: formData.features,
-                specifications: formData.specifications
-            })
-
-            // Log FormData entries
-            console.log('FormData entries:')
-            for (const pair of updateData.entries()) {
-                console.log(pair[0], pair[1])
-            }
-
-            // Handle preset items - only if there are changes (new items added)
-            if (presetItems.length > 0) {
-                const fileFormats = new Set<string>()
-                let totalSize = 0
-
-                presetItems.forEach(item => {
-                    const file = item.presetFile as File
-                    const extension = '.' + file.name.split('.').pop()
-                    fileFormats.add(extension)
-                    totalSize += file.size
-                })
-
-                const fileFormatStr = Array.from(fileFormats).join(', ')
-                const fileSizeStr = totalSize > 1048576
-                    ? `${(totalSize / 1048576).toFixed(2)} MB`
-                    : `${(totalSize / 1024).toFixed(2)} KB`
-
-                updateData.append('fileFormat', fileFormatStr)
-                updateData.append('fileSize', fileSizeStr)
-                updateData.append('includesCount', (existingPresetItems.length + presetItems.length).toString())
-                updateData.append('image', presetItems[0].afterImage)
-
-                presetItems.forEach((item, index) => {
-                    updateData.append(`imagePairs[${index}][before]`, item.beforeImage)
-                    updateData.append(`imagePairs[${index}][after]`, item.afterImage)
-                    updateData.append('presetFiles', item.presetFile as File)
-                })
-            } else if (existingPresetItems.length > 0) {
-                // If no new items but have existing items, just update the count
-                updateData.append('includesCount', existingPresetItems.length.toString())
-            }
-
             await marketplaceApi.update(productId, updateData)
 
             toast.success("Product updated successfully")
-
-            // Close dialog and trigger refresh
             onOpenChange(false)
             onSuccess?.()
         } catch (error) {
@@ -576,124 +471,6 @@ export function EditProductDialog({ open, onOpenChange, productId, onSuccess }: 
 
                                     <Separator />
 
-                                    {/* Preset Items */}
-                                    <div className="space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <h3 className="font-semibold text-lg">Preset Items</h3>
-                                            <Button
-                                                type="button"
-                                                onClick={() => setIsModalOpen(true)}
-                                                variant="outline"
-                                                size="sm"
-                                            >
-                                                <Plus className="h-4 w-4 mr-2" />
-                                                Add New Items
-                                            </Button>
-                                        </div>
-
-                                        {/* Existing Preset Items */}
-                                        {existingPresetItems.length > 0 && (
-                                            <div className="space-y-3">
-                                                <p className="text-sm font-medium">Current Items ({existingPresetItems.length})</p>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                    {existingPresetItems.map((item, index) => (
-                                                        <div key={item.id} className="border rounded-lg p-3 space-y-2 relative">
-                                                            <Button
-                                                                type="button"
-                                                                variant="ghost"
-                                                                size="sm"
-                                                                className="absolute top-2 right-2 h-6 w-6 p-0 hover:bg-red-100 hover:text-red-600"
-                                                                onClick={() => handleRemoveExistingItem(item.id)}
-                                                            >
-                                                                <X className="h-4 w-4" />
-                                                            </Button>
-                                                            <p className="text-xs font-medium">Item {index + 1}</p>
-                                                            <div className="grid grid-cols-2 gap-2">
-                                                                <div className="space-y-1">
-                                                                    <p className="text-xs text-muted-foreground">Before</p>
-                                                                    <div className="relative aspect-video rounded overflow-hidden border">
-                                                                        <Image
-                                                                            src={`${BASE_URL}${item.before}`}
-                                                                            alt="Before"
-                                                                            fill
-                                                                            className="object-cover"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                                <div className="space-y-1">
-                                                                    <p className="text-xs text-muted-foreground">After</p>
-                                                                    <div className="relative aspect-video rounded overflow-hidden border">
-                                                                        <Image
-                                                                            src={`${BASE_URL}${item.after}`}
-                                                                            alt="After"
-                                                                            fill
-                                                                            className="object-cover"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                                <Paperclip size={12} />
-                                                                <span className="truncate">{item.presetFile.fileName}</span>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {/* New Preset Items to be Added */}
-                                        {presetItems.length > 0 && (
-                                            <div className="space-y-3">
-                                                <p className="text-sm font-medium text-green-600">New Items to Add ({presetItems.length})</p>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                                    {presetItems.map((item, index) => (
-                                                        <div key={item.id} className="border border-green-500/50 rounded-lg p-3 space-y-2 bg-green-50/50 dark:bg-green-950/20">
-                                                            <p className="text-xs font-medium text-green-600">New Item {index + 1}</p>
-                                                            <div className="grid grid-cols-2 gap-2">
-                                                                <div className="space-y-1">
-                                                                    <p className="text-xs text-muted-foreground">Before</p>
-                                                                    <div className="relative aspect-video rounded overflow-hidden border">
-                                                                        <Image
-                                                                            src={item.beforePreview}
-                                                                            alt="Before"
-                                                                            fill
-                                                                            className="object-cover"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                                <div className="space-y-1">
-                                                                    <p className="text-xs text-muted-foreground">After</p>
-                                                                    <div className="relative aspect-video rounded overflow-hidden border">
-                                                                        <Image
-                                                                            src={item.afterPreview}
-                                                                            alt="After"
-                                                                            fill
-                                                                            className="object-cover"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                                <Paperclip size={12} />
-                                                                <span className="truncate">{item.presetFileName}</span>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        {existingPresetItems.length === 0 && presetItems.length === 0 && (
-                                            <div className="text-center py-8 border rounded-lg border-dashed">
-                                                <p className="text-sm text-muted-foreground">No preset items yet</p>
-                                                <p className="text-xs text-muted-foreground mt-1">Click &quot;Add New Items&quot; to upload preset items</p>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <Separator />
-
                                     {/* Footer Buttons */}
                                     <div className="flex justify-end gap-3 pt-4">
                                         <Button
@@ -714,13 +491,6 @@ export function EditProductDialog({ open, onOpenChange, productId, onSuccess }: 
                     )}
                 </DialogContent>
             </Dialog>
-
-            <PresetUploadModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSave={handleSavePresetItems}
-                existingItems={presetItems}
-            />
         </>
     )
 }
