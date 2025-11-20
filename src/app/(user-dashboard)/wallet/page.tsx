@@ -75,17 +75,19 @@ export default function Wallet() {
                {/* Transactions Table */}
                <div className='bg-accent w-full p-5 rounded-2xl shadow-2xl border mt-5'>
                     <h1 className='text-2xl font-bold mb-4'>Transaction History</h1>
-                    {historyLoading ? (
-                         <p className="text-muted-foreground text-sm">Loading transactions...</p>
-                    ) : (
-                         <DataTable
-                              columns={transactionColumns}
-                              data={transactions}
-                              searchKey="description"
-                              searchPlaceholder="Filter by description..."
-                              pageSize={10}
-                         />
-                    )}
+                    <div className='overflow-x-auto'>
+                         {historyLoading ? (
+                              <p className="text-muted-foreground text-sm">Loading transactions...</p>
+                         ) : (
+                              <DataTable
+                                   columns={transactionColumns}
+                                   data={transactions}
+                                   searchKey="description"
+                                   searchPlaceholder="Filter by description..."
+                                   pageSize={10}
+                              />
+                         )}
+                    </div>
                </div>
           </div>
      )

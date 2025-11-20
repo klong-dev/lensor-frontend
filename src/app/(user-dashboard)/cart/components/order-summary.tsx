@@ -164,6 +164,16 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
                         >
                             Cancel
                         </Button>
+                        {hasInsufficientFunds && (
+                            <Button
+                                onClick={() => {
+                                    setShowCheckoutDialog(false)
+                                    router.push('/wallet')
+                                }}
+                            >
+                                Add Funds
+                            </Button>
+                        )}
                         <Button
                             onClick={handleCheckout}
                             disabled={isCheckingOut || hasInsufficientFunds || isLoadingWallet}

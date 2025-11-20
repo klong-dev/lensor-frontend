@@ -42,14 +42,16 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           accessorKey: "transactionId",
           header: "Transaction ID",
           cell: ({ row }) => (
-               <div className="font-medium">{row.getValue("transactionId") || "N/A"}</div>
+               <div className="font-medium max-w-[120px] truncate" title={row.getValue("transactionId") || "N/A"}>
+                    {row.getValue("transactionId") || "N/A"}
+               </div>
           ),
      },
      {
           accessorKey: "transactionType",
           header: "Type",
           cell: ({ row }) => (
-               <div className="capitalize font-medium">{row.getValue("transactionType")}</div>
+               <div className="capitalize font-medium min-w-[80px]">{row.getValue("transactionType")}</div>
           ),
      },
      {
@@ -59,7 +61,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
                const status = row.getValue("status") as string
                return (
                     <div
-                         className={`capitalize font-medium ${status === "completed"
+                         className={`capitalize font-medium min-w-[90px] ${status === "completed"
                               ? "text-green-600"
                               : status === "failed"
                                    ? "text-red-600"
@@ -80,12 +82,12 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                >
-                    Payment Method
+                    Payment
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                </Button>
           ),
           cell: ({ row }) => (
-               <div className="uppercase font-medium">{row.getValue("paymentMethod")}</div>
+               <div className="uppercase font-medium min-w-[80px]">{row.getValue("paymentMethod")}</div>
           ),
      },
      {
@@ -99,7 +101,11 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                </Button>
           ),
-          cell: ({ row }) => <div>{row.getValue("description")}</div>,
+          cell: ({ row }) => (
+               <div className="max-w-[200px] truncate" title={row.getValue("description")}>
+                    {row.getValue("description")}
+               </div>
+          ),
      },
      {
           accessorKey: "amount",
@@ -108,7 +114,7 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
                const amount = parseFloat(row.getValue("amount"))
                const formatted = amount.toLocaleString("vi-VN")
 
-               return <div className="text-right font-bold">{formatted} ₫</div>
+               return <div className="text-right font-bold min-w-[120px]">{formatted} ₫</div>
           },
      },
      {
@@ -116,35 +122,10 @@ export const transactionColumns: ColumnDef<Transaction>[] = [
           header: "Date",
           cell: ({ row }) => {
                const date = new Date(row.getValue("createdAt"))
-               return <div>{date.toLocaleString("vi-VN")}</div>
-          },
-     },
-     {
-          id: "actions",
-          enableHiding: false,
-          cell: ({ row }) => {
-               const transaction = row.original
-
                return (
-                    <DropdownMenu>
-                         <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                   <span className="sr-only">Open menu</span>
-                                   <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                         </DropdownMenuTrigger>
-                         <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                              <DropdownMenuItem
-                                   onClick={() => navigator.clipboard.writeText(transaction.id)}
-                              >
-                                   Copy transaction ID
-                              </DropdownMenuItem>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem>View details</DropdownMenuItem>
-                              <DropdownMenuItem>Download receipt</DropdownMenuItem>
-                         </DropdownMenuContent>
-                    </DropdownMenu>
+                    <div className="min-w-[140px]" title={date.toLocaleString("vi-VN")}>
+                         {date.toLocaleDateString("vi-VN")}
+                    </div>
                )
           },
      },
