@@ -12,8 +12,10 @@ import {
      EmptyMedia,
      EmptyTitle,
 } from "@/components/ui/empty"
+import { useTranslations } from "next-intl"
 
-export function LostConnect({refecth} : {refecth: () => void}) {
+export function LostConnect({ refecth }: { refecth: () => void }) {
+     const t = useTranslations()
      return (
           <Empty>
                <EmptyHeader>

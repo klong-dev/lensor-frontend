@@ -2,28 +2,205 @@
   "HomePage": {
     "title": "Hello world!"
   },
-  "LoginPage": {
-    "button": "Login"
+  "Button": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "myAccount": "My Account",
+    "profile": "Profile",
+    "darkMode": "Dark Mode",
+    "languages": "Languages",
+    "createPost": "Create Post",
+    "following": "Following",
+    "follow": "Follow",
+    "viewDetail": "View detail",
+    "report": "Report",
+    "savePost": "Save post",
+    "unsavePost": "Unsave post",
+    "deletePost": "Delete post",
+    "cancel": "Cancel",
+    "post": "Post"
   },
-  "MainHeader": {
-    "feature": "Feature",
-    "pricing": "Pricing",
-    "faq": "FAQ",
-    "login": "Login"
+  "ToastMessage": {
+    "loggoutSuccess": "Logged out successfully"
+  },
+  "Header": {
+    "forum": "Forum",
+    "marketplace": "Marketplace",
+    "createPortfolio": "Create portfolio"
   },
   "Sidebar": {
-    "marketplaces": "MARKETPLACES",
+    "publicSpaces": "Public Spaces",
     "settings": "SETTINGS",
-    "main-menu": "MAIN MENU",
+    "personalSpace": "Personal Space",
     "forum": "Forum",
     "profile": "Profile",
-    "create-portfolio": "Create Porfolio",
+    "notification": "Notification",
     "message": "Message",
     "marketplace": "Marketplace",
-    "purchased-presets": "Purchased Presets",
+    "purchasedPresets": "Purchased Presets",
     "cart": "Cart",
+    "wallet": "Wallet",
     "setting": "Setting",
     "help": "Help",
     "search": "Search"
+  },
+  "Auth": {},
+  "Forum": {
+    "placeholderInputCreatePost": "Let's share what going on your mind....",
+    "imageErrorText": "Image not available",
+    "comment": "Comment",
+    "shareYourComment": "Share your comment",
+    "search": "Search",
+    "titleInputPlaceholder": "Title",
+    "dialogCreateTitle": "Create your new post",
+    "dialogCreateDescription": "Share your moments with the community",
+    "descriptionInputPlaceholder": "Your post description",
+    "uploading": "Uploading",
+    "upload": "Upload",
+    "aFile": "a file",
+    "files": "files",
+    "acceptsImage": "Accepts image",
+    "dropFileDescription": "Drop or click to upload your image",
+    "missingTitleToast": "Please enter post title.",
+    "missingImageToast": "Please select an image.",
+    "postSuccessToast": "Post created successfully!",
+    "postFailToast": "Failed to create post",
+    "noComments": "No comments yet"
+  },
+  "Message": {},
+  "Notification": {},
+  "Cart": {},
+  "Landing": {
+    "hero": {
+      "badge": "✨ Your Creative Journey Starts Here",
+      "title": "Community for",
+      "titleHighlight": "Photographers",
+      "description": "The ultimate platform for photographers to create stunning portfolios, build a personal brand, sell their work, and connect with a vibrant community.",
+      "startForFree": "Start for Free",
+      "exploreMarketplace": "Explore Marketplace",
+      "rating": "from 2000+ creators"
+    },
+    "features": {
+      "title": "Everything You Need to",
+      "titleHighlight": "Succeed",
+      "description": "All-in-one platform designed specifically for creative professionals",
+      "portfolioBuilder": {
+        "title": "Portfolio Builder",
+        "description": "Create stunning, professional portfolios with customizable templates in minutes."
+      },
+      "customDomain": {
+        "title": "Custom Domain",
+        "description": "Get your own custom domain and showcase your brand professionally."
+      },
+      "digitalStore": {
+        "title": "Digital Store",
+        "description": "Sell your photos, presets, and digital products directly to your audience."
+      },
+      "community": {
+        "title": "Community Forum",
+        "description": "Connect with thousands of photographers, share tips, and grow together."
+      },
+      "lightningFast": {
+        "title": "Lightning Fast",
+        "description": "Optimized performance ensures your portfolio loads instantly everywhere."
+      },
+      "secure": {
+        "title": "Secure & Reliable",
+        "description": "Enterprise-grade security to protect your work and customer data."
+      }
+    },
+    "howItWorks": {
+      "title": "How It",
+      "titleHighlight": "Works",
+      "description": "Get your professional portfolio online in 4 simple steps",
+      "step1": {
+        "title": "Choose Your Template",
+        "description": "Select from our collection of stunning, professionally designed templates tailored for photographers."
+      },
+      "step2": {
+        "title": "Customize Everything",
+        "description": "Make it yours with our intuitive drag-and-drop editor. No coding skills required."
+      },
+      "step3": {
+        "title": "Launch Your Site",
+        "description": "Go live in minutes with your custom domain or our free subdomain. It's that simple."
+      },
+      "step4": {
+        "title": "Grow Your Business",
+        "description": "Start selling your work, connect with clients, and watch your photography business thrive."
+      },
+      "readyToStart": "Ready to get started?",
+      "createPortfolio": "Create Your Portfolio",
+      "watchDemo": "Watch Demo"
+    },
+    "showcase": {
+      "title": "Beautiful Portfolios by",
+      "titleHighlight": "Real Creators",
+      "description": "Get inspired by stunning portfolios built with Lensor",
+      "viewMore": "View More Examples"
+    },
+    "stats": {
+      "activeCreators": "Active Creators",
+      "portfoliosCreated": "Portfolios Created",
+      "creatorEarnings": "Creator Earnings",
+      "averageRating": "Average Rating"
+    },
+    "pricing": {
+      "title": "Simple, Transparent",
+      "titleHighlight": "Pricing",
+      "description": "Choose the plan that fits your needs. Upgrade or downgrade anytime.",
+      "mostPopular": "Most Popular",
+      "getStarted": "Get Started",
+      "starter": {
+        "name": "Starter",
+        "price": "Free",
+        "period": "forever",
+        "description": "Perfect for getting started",
+        "feature1": "1 Portfolio site",
+        "feature2": "Basic templates",
+        "feature3": "Lensor subdomain",
+        "feature4": "Community access",
+        "feature5": "5GB storage"
+      },
+      "pro": {
+        "name": "Pro",
+        "price": "$12",
+        "period": "/month",
+        "description": "For serious creators",
+        "feature1": "Unlimited portfolios",
+        "feature2": "Premium templates",
+        "feature3": "Custom domain",
+        "feature4": "Digital store (5% fee)",
+        "feature5": "100GB storage",
+        "feature6": "Priority support",
+        "feature7": "Analytics"
+      },
+      "business": {
+        "name": "Business",
+        "price": "$29",
+        "period": "/month",
+        "description": "For agencies & teams",
+        "feature1": "Everything in Pro",
+        "feature2": "No store fees",
+        "feature3": "Team collaboration",
+        "feature4": "1TB storage",
+        "feature5": "White-label option",
+        "feature6": "API access",
+        "feature7": "Dedicated support"
+      }
+    },
+    "testimonials": {
+      "title": "Loved by",
+      "titleHighlight": "Creators",
+      "description": "See what photographers are saying about Lensor"
+    },
+    "cta": {
+      "title": "Ready to Showcase Your",
+      "titleHighlight": "Creativity?",
+      "description": "Join thousands of photographers who have already built their dream portfolio with Lensor",
+      "startBuilding": "Start Building for Free",
+      "joinCommunity": "Join Community"
+    }
   }
 }

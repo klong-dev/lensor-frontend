@@ -1,40 +1,52 @@
-import React from 'react'
 import {
      DropdownMenu,
      DropdownMenuContent,
      DropdownMenuItem,
-     DropdownMenuLabel,
-     DropdownMenuSeparator,
-     DropdownMenuTrigger,
+     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
-import { BookMarked, Eye, Flag, Trash2 } from "lucide-react"
+import { BookMarked, Eye, Flag, Trash2, Bookmark } from "lucide-react"
+import { useTranslations } from "next-intl"
+import React from 'react'
 
 interface DropdownMenuPostProps {
      children: React.ReactNode,
      handleDeletePost: () => void,
      handleReportPost: () => void,
      handleSavePost: () => void,
-     handleViewDetail: () => void
+     handleViewDetail: () => void,
+     isSaved: boolean,
+     isOwner: boolean
 }
 
 export default function DropdownMenuPost(props: DropdownMenuPostProps) {
+     const tButton = useTranslations('Button')
+
      return (
           <DropdownMenu>
                <DropdownMenuTrigger asChild>{props.children}</DropdownMenuTrigger>
                <DropdownMenuContent>
-                    <DropdownMenuLabel>Action for this post</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={props.handleViewDetail}>
-                         <Eye /> View detail
+                         <Eye />
+                         {tButton('viewDetail')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={props.handleReportPost}>
-                         <Flag /> Report
+                    <DropdownMenuItem
+                         onClick={props.handleReportPost}
+                         className={props.isOwner ? 'hidden' : ''}
+                    >
+                         <Flag />
+                         {tButton('report')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={props.handleSavePost}>
-                         <BookMarked /> Save post
+                         {props.isSaved ? <BookMarked className="fill-current" /> : <Bookmark />}
+                         {props.isSaved ? tButton('unsavePost') : tButton('savePost')}
                     </DropdownMenuItem>
-                    <DropdownMenuItem variant="destructive" onClick={props.handleDeletePost}>
-                         <Trash2 /> Delete post
+                    <DropdownMenuItem
+                         variant="destructive"
+                         onClick={props.handleDeletePost}
+                         className={props.isOwner ? '' : 'hidden'}
+                    >
+                         <Trash2 />
+                         {tButton('deletePost')}
                     </DropdownMenuItem>
                </DropdownMenuContent>
           </DropdownMenu>

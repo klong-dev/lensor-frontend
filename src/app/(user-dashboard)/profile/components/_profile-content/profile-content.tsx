@@ -2,38 +2,47 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import PostSection from './post-section'
+import SavedPostsSection from './saved-posts-section'
 
-export default function ProfileContent() {
+interface ProfileContentProps {
+     onPostsCountChange?: (count: number) => void
+}
+
+export default function ProfileContent({ onPostsCountChange }: ProfileContentProps) {
      const listTabs = [
           {
-               label: 'Your post',
+               label: 'Your posts',
                value: 'posts'
           },
           {
-               label: 'Followers',
-               value: 'follower'
+               label: 'Saved posts',
+               value: 'saved'
           },
           {
-               label: 'Following',
-               value: 'following'
+               label: 'Loved posts',
+               value: 'loved'
           },
      ]
      return (
           <div className=''>
                <Tabs defaultValue="posts">
-                    <TabsList>
+                    <TabsList className='w-full'>
                          {listTabs.map((tab, index) => (
-                              <TabsTrigger key={index} value={tab.value}>{tab.label}</TabsTrigger>
+                              <TabsTrigger key={index} value={tab.value} className='flex-1'>
+                                   {tab.label}
+                              </TabsTrigger>
                          ))}
                     </TabsList>
                     <TabsContent value="posts">
-                         <PostSection />
+                         <PostSection onPostsCountChange={onPostsCountChange} />
                     </TabsContent>
-                    <TabsContent value="follower">
-                         Tab2
+                    <TabsContent value="saved">
+                         <SavedPostsSection />
                     </TabsContent>
-                    <TabsContent value="following">
-                         Tab3
+                    <TabsContent value="loved">
+                         <div className='text-center py-16 text-muted-foreground'>
+                              Loved posts coming soon...
+                         </div>
                     </TabsContent>
                </Tabs>
           </div>

@@ -2,22 +2,56 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { ROUTES } from '@/constants/path'
 import { useUserStore } from '@/stores/user-store'
-import { Bell, ChevronDown, ShoppingCart } from 'lucide-react'
+import { useWalletStore } from '@/stores/wallet-store'
+import { useCartStore } from '@/stores/cart-store'
+import { useNotificationStore } from '@/stores/notification-store'
+import { Bell, ChevronDown, ShoppingCart, Wallet } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { useCart } from '@/lib/hooks/useCartHooks'
+import { useNotifications } from '@/lib/hooks/useNotificationHooks'
 
 export default function MainHeader() {
-  const t = useTranslations('MainHeader')
+  const t = useTranslations('Header')
+  const tButton = useTranslations('Button')
   const currentPath = usePathname()
   const user = useUserStore(state => state.user)
+  const { walletData, fetchWallet } = useWalletStore()
+  const { itemCount, setCart } = useCartStore()
+  const { unreadCount, setNotifications } = useNotificationStore()
+
+  const { data: cartData } = useCart()
+  const { data: notificationData } = useNotifications()
+
+  useEffect(() => {
+    if (user) {
+      fetchWallet()
+    }
+  }, [user, fetchWallet])
+
+  useEffect(() => {
+    if (cartData) {
+      setCart(cartData)
+    }
+  }, [cartData, setCart])
+
+  useEffect(() => {
+    if (notificationData?.data) {
+      setNotifications(notificationData.data.notifications, notificationData.data.meta.unreadCount)
+    }
+  }, [notificationData, setNotifications])
+
+  const balance = walletData?.balance || 0
+  const formattedBalance = balance.toLocaleString('vi-VN')
 
   const navLinkItems = [
-    { title: 'Forum', href: ROUTES.FORUM },
-    { title: 'Marketplace', href: ROUTES.MARKETPLACE },
-    { title: 'Create portfolio', href: ROUTES.MARKETPLACE }
+    { title: t('forum'), href: ROUTES.FORUM },
+    { title: t('marketplace'), href: ROUTES.MARKETPLACE }
   ]
 
   return (
@@ -34,25 +68,55 @@ export default function MainHeader() {
         <div className='w-64 flex justify-end items-center gap-5'>
           {!user
             ? <>
-              <Link href={ROUTES.LOGIN}><Button variant='secondary'>Register</Button></Link>
-              <Link href={ROUTES.LOGIN}><Button>Login</Button></Link>
+              <Link href={ROUTES.LOGIN}><Button variant='secondary'>{tButton('register')}</Button></Link>
+              <Link href={ROUTES.LOGIN}><Button>{tButton('login')}</Button></Link>
             </>
             : <>
+              <Link href={ROUTES.WALLET}>
+                <Button variant='outline' size='sm' className='gap-1.5'>
+                  <Wallet className='h-4 w-4' />
+                  <span className='font-semibold'>{formattedBalance} ₫</span>
+                </Button>
+              </Link>
               <div className='flex justify-end items-center gap-1'>
                 <div className='flex items-center'>
-                  <Link href={ROUTES.CURRENT_PROFILE} className='max-w-32 overflow-hidden text-nowrap text-ellipsis'>Nguyễn Huỳnh Bảo Trọng</Link>
+                  <Link href={ROUTES.CURRENT_PROFILE} className='max-w-32 overflow-hidden text-nowrap text-ellipsis'>{user?.user_metadata.name}</Link>
                   <DropdownMenuUser><Button variant='ghost' size='icon'><ChevronDown /></Button></DropdownMenuUser>
                 </div>
                 <Link href={ROUTES.CURRENT_PROFILE}>
                   <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarImage src={user?.user_metadata.avatar_url} />
                     <AvatarFallback>BT</AvatarFallback>
                   </Avatar>
                 </Link>
               </div>
               <div className='flex'>
-                <Button variant='ghost' size='icon'><Link href={ROUTES.CART}><ShoppingCart /></Link></Button>
-                <Button variant='ghost' size='icon'><Link href={ROUTES.NOTIFICATION}><Bell /></Link></Button>
+                <Button variant='ghost' size='icon' className='relative'>
+                  <Link href={ROUTES.CART}>
+                    <ShoppingCart className='h-4 w-4' />
+                    {itemCount > 0 && (
+                      <Badge
+                        variant='destructive'
+                        className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
+                      >
+                        {itemCount > 99 ? '99+' : itemCount}
+                      </Badge>
+                    )}
+                  </Link>
+                </Button>
+                <Button variant='ghost' size='icon' className='relative'>
+                  <Link href={ROUTES.NOTIFICATION}>
+                    <Bell className='h-4 w-4' />
+                    {unreadCount > 0 && (
+                      <Badge
+                        variant='destructive'
+                        className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
+                      >
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </Badge>
+                    )}
+                  </Link>
+                </Button>
               </div>
             </>
           }
@@ -71,35 +135,90 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
+import { APP_NAME, DEFAULT_LOCALE } from '@/constants'
 import { authHelpers } from '@/lib/supabase'
 import { useTheme } from 'next-themes'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 function DropdownMenuUser({ children }: { children: React.ReactNode }) {
+  const [locale, setLocale] = useState("")
   const { setTheme, resolvedTheme } = useTheme()
   const router = useRouter()
+  const tButton = useTranslations('Button')
+  const tToastMsg = useTranslations("ToastMessage")
 
   const handleChangeTheme = (value: boolean) => {
     setTheme(value ? 'dark' : 'light')
   }
 
+  useEffect(() => {
+    const cookieLocale = document.cookie
+      .split("; ")
+      .find(row => row.startsWith(`${APP_NAME}_LOCALE=`))
+      ?.split("=")[1]
+
+    if (cookieLocale) {
+      setLocale(cookieLocale)
+    } else {
+      setLocale(DEFAULT_LOCALE)
+      document.cookie = `${APP_NAME}_LOCALE=${DEFAULT_LOCALE}`
+      router.refresh()
+    }
+  }, [router])
+
+  const handleChangeLanguage = (newLocale: string) => {
+    setLocale(newLocale)
+    document.cookie = `${APP_NAME}_LOCALE=${newLocale}`
+    router.refresh()
+  }
+
   const handleLogout = async () => {
     const res = await authHelpers.signOut()
-    if (!res.error) router.refresh()
+    if (!res.error) {
+      toast(tToastMsg("loggoutSuccess"))
+      router.refresh()
+    }
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{tButton('myAccount')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem><Link href={ROUTES.CURRENT_PROFILE}>Profile</Link></DropdownMenuItem>
-        <DropdownMenuItem onSelect={e => e.preventDefault()}>
-          <Switch id="dark-mode" onCheckedChange={handleChangeTheme} checked={resolvedTheme === 'dark'} />
-          <Label htmlFor="dark-mode">Dark Mode</Label>
+
+        <DropdownMenuItem>
+          <Link href={ROUTES.CURRENT_PROFILE}>{tButton('profile')}</Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+
+        <DropdownMenuItem onSelect={e => e.preventDefault()}>
+          <Label htmlFor="dark-mode">{tButton('darkMode')}</Label>
+          <Switch id="dark-mode" onCheckedChange={handleChangeTheme} checked={resolvedTheme === 'dark'} />
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onSelect={e => e.preventDefault()}>
+          <Select onValueChange={handleChangeLanguage} defaultValue={locale}>
+            <SelectTrigger className="">
+              <SelectValue placeholder="Select language" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>{tButton('languages')}</SelectLabel>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="vi">Việt Nam</SelectItem>
+                <SelectItem value="jp">日本語</SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={handleLogout}>
+          {tButton('logout')}
+        </DropdownMenuItem>
+
       </DropdownMenuContent>
     </DropdownMenu>
   )

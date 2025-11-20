@@ -4,21 +4,34 @@ import { LostConnect } from '@/components/empty/lost-connect'
 import DialogCreatePost from '@/components/forum/post/dialog-create-post'
 import Post from '@/components/forum/post/post'
 import PostSkeleton from '@/components/forum/post/post-skeleton'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
 import { usePosts } from '@/lib/hooks/usePostHooks'
+import { useUserStore } from '@/stores/user-store'
 import { PostType } from '@/types/post'
+import { useTranslations } from 'next-intl'
 
 export default function ForumPage() {
+     const t = useTranslations('Forum')
+     const tButton = useTranslations("Button")
      const { data: dataForum, error, mutate, isValidating } = usePosts()
-
+     const user = useUserStore(state => state.user)
+     
      if (error) return <LostConnect refecth={mutate} />
 
      return (
-          <div className='max-w-[720px] mx-auto'>
+          <div className='w-[720px] mx-auto'>
                <div className='p-5'>
                     <DialogCreatePost>
-                         <Card>
-                              Create new post
+                         <Card className='flex flex-row justify-center px-3 gap-3 py-3'>
+                              <Avatar>
+                                   <AvatarImage src={user?.user_metadata.avatar_url} />
+                                   <AvatarFallback>{user?.user_metadata.name}</AvatarFallback>
+                              </Avatar>
+                              <Input disabled type="text" placeholder={t('placeholderInputCreatePost')} />
+                              <Button>{tButton('createPost')}</Button>
                          </Card>
                     </DialogCreatePost>
                </div>

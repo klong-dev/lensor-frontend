@@ -1,29 +1,203 @@
 {
   "HomePage": {
-    "title": "Hello world!"
+    "title": "Xin chào thế giới!"
   },
-  "LoginPage": {
-    "button": "Đăng nhập"
+  "Button": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "logout": "Đăng xuất",
+    "myAccount": "Tài khoản của tôi",
+    "profile": "Hồ sơ",
+    "darkMode": "Chế độ tối",
+    "languages": "Ngôn ngữ",
+    "createPost": "Tạo bài viết",
+    "following": "Đang theo dõi",
+    "follow": "Theo dõi",
+    "viewDetail": "Xem chi tiết",
+    "report": "Báo cáo",
+    "savePost": "Lưu bài viết",
+    "deletePost": "Xóa bài viết",
+    "cancel": "Hủy",
+    "post": "Đăng"
   },
-  "MainHeader": {
-    "feature": "Tính năng",
-    "pricing": "Giá",
-    "faq": "Hỏi đáp",
-    "login": "Đăng nhập"
+  "ToastMessage": {
+    "loggoutSuccess": "Đăng xuất thành công"
+  },
+  "Header": {
+    "forum": "Diễn đàn",
+    "marketplace": "Chợ",
+    "createPortfolio": "Tạo hồ sơ"
   },
   "Sidebar": {
-    "marketplaces": "CHỢ GIAO DỊCH",
+    "publicSpaces": "Không gian công cộng",
     "settings": "CÀI ĐẶT",
-    "main-menu": "MENU CHÍNH",
+    "personalSpace": "Không gian cá nhân",
     "forum": "Diễn đàn",
-    "profile": "Hồ sơ cá nhân",
-    "create-portfolio": "Tạo hồ sơ đầu tư",
+    "profile": "Hồ sơ",
+    "notification": "Thông báo",
     "message": "Tin nhắn",
     "marketplace": "Chợ",
-    "purchased-presets": "Gói đã mua",
+    "purchasedPresets": "Presets đã mua",
     "cart": "Giỏ hàng",
+    "wallet": "Ví tiền",
     "setting": "Cài đặt",
     "help": "Trợ giúp",
     "search": "Tìm kiếm"
+  },
+  "Auth": {},
+  "Forum": {
+    "placeholderInputCreatePost": "Hãy chia sẻ điều bạn đang nghĩ...",
+    "imageErrorText": "Không thể tải hình ảnh",
+    "comment": "Bình luận",
+    "shareYourComment": "Chia sẻ bình luận của bạn",
+    "search": "Tìm kiếm",
+    "titleInputPlaceholder": "Tiêu đề",
+    "dialogCreateTitle": "Tạo bài viết mới",
+    "dialogCreateDescription": "Chia sẻ khoảnh khắc của bạn với cộng đồng",
+    "descriptionInputPlaceholder": "Mô tả bài viết",
+    "uploading": "Đang tải lên",
+    "upload": "Tải lên",
+    "aFile": "một tệp",
+    "files": "tệp",
+    "dropFileDescription": "Kéo hoặc nhấn để tải ảnh lên",
+    "missingTitleToast": "Vui lòng nhập tiêu đề bài viết.",
+    "missingImageToast": "Vui lòng chọn hình ảnh.",
+    "postSuccessToast": "Tạo bài viết thành công!",
+    "postFailToast": "Không thể tạo bài viết"
+  },
+  "Message": {},
+  "Notification": {},
+  "Cart": {},
+  "Landing": {
+    "hero": {
+      "badge": "✨ Hành Trình Sáng Tạo Của Bạn Bắt Đầu Tại Đây",
+      "title": "Cộng đồng dành cho",
+      "titleHighlight": "Nhiếp Ảnh Gia",
+      "description": "Nền tảng hoàn hảo cho nhiếp ảnh gia để tạo portfolio tuyệt đẹp, xây dựng thương hiệu cá nhân, bán tác phẩm và kết nối với cộng đồng sôi động.",
+      "startForFree": "Bắt Đầu Miễn Phí",
+      "exploreMarketplace": "Khám Phá Chợ",
+      "rating": "từ hơn 2000 nhà sáng tạo"
+    },
+    "features": {
+      "title": "Mọi Thứ Bạn Cần Để",
+      "titleHighlight": "Thành Công",
+      "description": "Nền tảng tất cả trong một được thiết kế đặc biệt cho các chuyên gia sáng tạo",
+      "portfolioBuilder": {
+        "title": "Tạo Portfolio",
+        "description": "Tạo portfolio chuyên nghiệp và tuyệt đẹp với các mẫu có thể tùy chỉnh trong vài phút."
+      },
+      "customDomain": {
+        "title": "Tên Miền Riêng",
+        "description": "Sở hữu tên miền riêng và thể hiện thương hiệu của bạn một cách chuyên nghiệp."
+      },
+      "digitalStore": {
+        "title": "Cửa Hàng Số",
+        "description": "Bán ảnh, preset và sản phẩm số của bạn trực tiếp cho khán giả."
+      },
+      "community": {
+        "title": "Diễn Đàn Cộng Đồng",
+        "description": "Kết nối với hàng nghìn nhiếp ảnh gia, chia sẻ mẹo và cùng phát triển."
+      },
+      "lightningFast": {
+        "title": "Cực Kỳ Nhanh",
+        "description": "Hiệu suất được tối ưu hóa đảm bảo portfolio của bạn tải ngay lập tức ở mọi nơi."
+      },
+      "secure": {
+        "title": "An Toàn & Tin Cậy",
+        "description": "Bảo mật cấp doanh nghiệp để bảo vệ tác phẩm và dữ liệu khách hàng của bạn."
+      }
+    },
+    "howItWorks": {
+      "title": "Cách Thức",
+      "titleHighlight": "Hoạt Động",
+      "description": "Đưa portfolio chuyên nghiệp của bạn lên mạng chỉ trong 4 bước đơn giản",
+      "step1": {
+        "title": "Chọn Mẫu Của Bạn",
+        "description": "Chọn từ bộ sưu tập các mẫu thiết kế chuyên nghiệp tuyệt đẹp được thiết kế riêng cho nhiếp ảnh gia."
+      },
+      "step2": {
+        "title": "Tùy Chỉnh Mọi Thứ",
+        "description": "Biến nó thành của bạn với trình chỉnh sửa kéo và thả trực quan. Không cần kỹ năng lập trình."
+      },
+      "step3": {
+        "title": "Ra Mắt Trang Web",
+        "description": "Phát hành trong vài phút với tên miền tùy chỉnh hoặc tên miền phụ miễn phí của chúng tôi. Đơn giản như vậy thôi."
+      },
+      "step4": {
+        "title": "Phát Triển Doanh Nghiệp",
+        "description": "Bắt đầu bán tác phẩm, kết nối với khách hàng và xem doanh nghiệp nhiếp ảnh của bạn phát triển mạnh."
+      },
+      "readyToStart": "Sẵn sàng để bắt đầu?",
+      "createPortfolio": "Tạo Portfolio Của Bạn",
+      "watchDemo": "Xem Demo"
+    },
+    "showcase": {
+      "title": "Portfolio Đẹp Tuyệt Vời Từ",
+      "titleHighlight": "Nhà Sáng Tạo Thực",
+      "description": "Lấy cảm hứng từ các portfolio tuyệt đẹp được xây dựng với Lensor",
+      "viewMore": "Xem Thêm Ví Dụ"
+    },
+    "stats": {
+      "activeCreators": "Nhà Sáng Tạo Hoạt Động",
+      "portfoliosCreated": "Portfolio Đã Tạo",
+      "creatorEarnings": "Thu Nhập Của Nhà Sáng Tạo",
+      "averageRating": "Đánh Giá Trung Bình"
+    },
+    "pricing": {
+      "title": "Giá Cả Đơn Giản,",
+      "titleHighlight": "Minh Bạch",
+      "description": "Chọn gói phù hợp với nhu cầu của bạn. Nâng cấp hoặc hạ cấp bất cứ lúc nào.",
+      "mostPopular": "Phổ Biến Nhất",
+      "getStarted": "Bắt Đầu",
+      "starter": {
+        "name": "Người Mới",
+        "price": "Miễn Phí",
+        "period": "mãi mãi",
+        "description": "Hoàn hảo để bắt đầu",
+        "feature1": "1 trang Portfolio",
+        "feature2": "Mẫu cơ bản",
+        "feature3": "Tên miền phụ Lensor",
+        "feature4": "Truy cập cộng đồng",
+        "feature5": "Dung lượng 5GB"
+      },
+      "pro": {
+        "name": "Chuyên Nghiệp",
+        "price": "280.000đ",
+        "period": "/tháng",
+        "description": "Cho nhà sáng tạo nghiêm túc",
+        "feature1": "Portfolio không giới hạn",
+        "feature2": "Mẫu cao cấp",
+        "feature3": "Tên miền tùy chỉnh",
+        "feature4": "Cửa hàng số (phí 5%)",
+        "feature5": "Dung lượng 100GB",
+        "feature6": "Hỗ trợ ưu tiên",
+        "feature7": "Phân tích"
+      },
+      "business": {
+        "name": "Doanh Nghiệp",
+        "price": "680.000đ",
+        "period": "/tháng",
+        "description": "Cho công ty và nhóm",
+        "feature1": "Tất cả trong gói Pro",
+        "feature2": "Không phí cửa hàng",
+        "feature3": "Cộng tác nhóm",
+        "feature4": "Dung lượng 1TB",
+        "feature5": "Tùy chọn nhãn trắng",
+        "feature6": "Truy cập API",
+        "feature7": "Hỗ trợ chuyên dụng"
+      }
+    },
+    "testimonials": {
+      "title": "Được Yêu Thích Bởi",
+      "titleHighlight": "Nhà Sáng Tạo",
+      "description": "Xem nhiếp ảnh gia nói gì về Lensor"
+    },
+    "cta": {
+      "title": "Sẵn Sàng Thể Hiện",
+      "titleHighlight": "Sáng Tạo Của Bạn?",
+      "description": "Tham gia cùng hàng nghìn nhiếp ảnh gia đã xây dựng portfolio mơ ước của họ với Lensor",
+      "startBuilding": "Bắt Đầu Xây Dựng Miễn Phí",
+      "joinCommunity": "Tham Gia Cộng Đồng"
+    }
   }
 }

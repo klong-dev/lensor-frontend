@@ -1,0 +1,203 @@
+{
+  "HomePage": {
+    "title": "こんにちは世界！"
+  },
+  "Button": {
+    "login": "ログイン",
+    "register": "登録",
+    "logout": "ログアウト",
+    "myAccount": "マイアカウント",
+    "profile": "プロフィール",
+    "darkMode": "ダークモード",
+    "languages": "言語",
+    "createPost": "投稿を作成",
+    "following": "フォロー中",
+    "follow": "フォロー",
+    "viewDetail": "詳細を見る",
+    "report": "報告",
+    "savePost": "投稿を保存",
+    "deletePost": "投稿を削除",
+    "cancel": "キャンセル",
+    "post": "投稿"
+  },
+  "ToastMessage": {
+    "loggoutSuccess": "正常にログアウトしました"
+  },
+  "Header": {
+    "forum": "フォーラム",
+    "marketplace": "マーケットプレイス",
+    "createPortfolio": "ポートフォリオを作成"
+  },
+  "Sidebar": {
+    "publicSpaces": "パブリックスペース",
+    "settings": "設定",
+    "personalSpace": "個人スペース",
+    "forum": "フォーラム",
+    "profile": "プロフィール",
+    "notification": "通知",
+    "message": "メッセージ",
+    "marketplace": "マーケットプレイス",
+    "purchasedPresets": "購入済みプリセット",
+    "cart": "カート",
+    "wallet": "ウォレット",
+    "setting": "設定",
+    "help": "ヘルプ",
+    "search": "検索"
+  },
+  "Auth": {},
+  "Forum": {
+    "placeholderInputCreatePost": "考えていることを共有しましょう...",
+    "imageErrorText": "画像を読み込めません",
+    "comment": "コメント",
+    "shareYourComment": "コメントを共有する",
+    "search": "検索",
+    "titleInputPlaceholder": "タイトル",
+    "dialogCreateTitle": "新しい投稿を作成",
+    "dialogCreateDescription": "コミュニティとあなたの瞬間を共有しましょう",
+    "descriptionInputPlaceholder": "投稿の説明",
+    "uploading": "アップロード中",
+    "upload": "アップロード",
+    "aFile": "ファイル",
+    "files": "複数のファイル",
+    "dropFileDescription": "画像をドロップまたはクリックしてアップロード",
+    "missingTitleToast": "タイトルを入力してください。",
+    "missingImageToast": "画像を選択してください。",
+    "postSuccessToast": "投稿が正常に作成されました！",
+    "postFailToast": "投稿の作成に失敗しました"
+  },
+  "Message": {},
+  "Notification": {},
+  "Cart": {},
+  "Landing": {
+    "hero": {
+      "badge": "✨ あなたのクリエイティブな旅がここから始まります",
+      "title": "フォトグラファーのための",
+      "titleHighlight": "コミュニティ",
+      "description": "フォトグラファーが美しいポートフォリオを作成し、個人ブランドを構築し、作品を販売し、活気あるコミュニティとつながるための究極のプラットフォーム。",
+      "startForFree": "無料で始める",
+      "exploreMarketplace": "マーケットプレイスを探索",
+      "rating": "2000人以上のクリエイターから"
+    },
+    "features": {
+      "title": "成功に必要な",
+      "titleHighlight": "すべて",
+      "description": "クリエイティブ専門家のために特別に設計されたオールインワンプラットフォーム",
+      "portfolioBuilder": {
+        "title": "ポートフォリオビルダー",
+        "description": "カスタマイズ可能なテンプレートで、数分で美しいプロフェッショナルなポートフォリオを作成。"
+      },
+      "customDomain": {
+        "title": "カスタムドメイン",
+        "description": "独自のカスタムドメインを取得し、ブランドをプロフェッショナルに紹介。"
+      },
+      "digitalStore": {
+        "title": "デジタルストア",
+        "description": "写真、プリセット、デジタル製品を直接オーディエンスに販売。"
+      },
+      "community": {
+        "title": "コミュニティフォーラム",
+        "description": "何千人ものフォトグラファーとつながり、ヒントを共有し、一緒に成長。"
+      },
+      "lightningFast": {
+        "title": "超高速",
+        "description": "最適化されたパフォーマンスにより、ポートフォリオがどこでも即座に読み込まれます。"
+      },
+      "secure": {
+        "title": "安全で信頼性",
+        "description": "エンタープライズグレードのセキュリティで作品と顧客データを保護。"
+      }
+    },
+    "howItWorks": {
+      "title": "仕組み",
+      "titleHighlight": "",
+      "description": "4つの簡単なステップでプロフェッショナルなポートフォリオをオンラインに",
+      "step1": {
+        "title": "テンプレートを選択",
+        "description": "フォトグラファー向けに設計された美しいプロフェッショナルなテンプレートのコレクションから選択。"
+      },
+      "step2": {
+        "title": "すべてをカスタマイズ",
+        "description": "直感的なドラッグアンドドロップエディターであなたのものにしましょう。コーディングスキルは不要。"
+      },
+      "step3": {
+        "title": "サイトを公開",
+        "description": "カスタムドメインまたは無料のサブドメインで数分で公開。とても簡単です。"
+      },
+      "step4": {
+        "title": "ビジネスを成長",
+        "description": "作品の販売を開始し、クライアントとつながり、写真ビジネスが繁栄するのを見守りましょう。"
+      },
+      "readyToStart": "始める準備はできましたか？",
+      "createPortfolio": "ポートフォリオを作成",
+      "watchDemo": "デモを見る"
+    },
+    "showcase": {
+      "title": "美しいポートフォリオ by",
+      "titleHighlight": "実際のクリエイター",
+      "description": "Lensorで構築された素晴らしいポートフォリオからインスピレーションを得る",
+      "viewMore": "もっと見る"
+    },
+    "stats": {
+      "activeCreators": "アクティブクリエイター",
+      "portfoliosCreated": "作成されたポートフォリオ",
+      "creatorEarnings": "クリエイターの収益",
+      "averageRating": "平均評価"
+    },
+    "pricing": {
+      "title": "シンプルで透明な",
+      "titleHighlight": "料金",
+      "description": "ニーズに合ったプランを選択してください。いつでもアップグレードまたはダウングレードできます。",
+      "mostPopular": "最も人気",
+      "getStarted": "始める",
+      "starter": {
+        "name": "スターター",
+        "price": "無料",
+        "period": "永久",
+        "description": "始めるのに最適",
+        "feature1": "1つのポートフォリオサイト",
+        "feature2": "基本テンプレート",
+        "feature3": "Lensorサブドメイン",
+        "feature4": "コミュニティアクセス",
+        "feature5": "5GBストレージ"
+      },
+      "pro": {
+        "name": "プロ",
+        "price": "¥1,200",
+        "period": "/月",
+        "description": "本格的なクリエイター向け",
+        "feature1": "無制限のポートフォリオ",
+        "feature2": "プレミアムテンプレート",
+        "feature3": "カスタムドメイン",
+        "feature4": "デジタルストア（5％手数料）",
+        "feature5": "100GBストレージ",
+        "feature6": "優先サポート",
+        "feature7": "分析"
+      },
+      "business": {
+        "name": "ビジネス",
+        "price": "¥3,000",
+        "period": "/月",
+        "description": "代理店とチーム向け",
+        "feature1": "プロの全て",
+        "feature2": "ストア手数料なし",
+        "feature3": "チームコラボレーション",
+        "feature4": "1TBストレージ",
+        "feature5": "ホワイトラベルオプション",
+        "feature6": "APIアクセス",
+        "feature7": "専用サポート"
+      }
+    },
+    "testimonials": {
+      "title": "愛されている",
+      "titleHighlight": "クリエイター",
+      "description": "フォトグラファーがLensorについて何を言っているかを見る"
+    },
+    "cta": {
+      "title": "あなたの創造性を",
+      "titleHighlight": "披露する準備はできましたか？",
+      "description": "すでにLensorで夢のポートフォリオを構築している何千人ものフォトグラファーに参加しましょう",
+      "startBuilding": "無料で構築を開始",
+      "joinCommunity": "コミュニティに参加"
+    }
+  }
+}

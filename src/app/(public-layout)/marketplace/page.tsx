@@ -1,163 +1,105 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import MarketplaceHeader from './components/MarketplaceHeader';
-import FilterSidebar from './components/FilterSidebar';
-import MarketplaceGrid from './components/MarketplaceGrid';
+import MarketplaceSkeleton from "@/components/marketplace/marketplace-skeleton";
 import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
+import { Input } from "@/components/ui/input";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
+import { ROUTES } from '@/constants/path';
+import { useMarketplace } from '@/lib/hooks/useMarketplaceHooks';
+import { MarketplaceItem } from "@/types/marketplace";
+import { useEffect, useState } from 'react';
+import FilterSidebar from './components/filter-sidebar';
+import MarketplaceItemCard from "./components/marketplace-item-card";
 
 export default function MarketplacePage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchInput, setSearchInput] = useState('');
-
-    const marketplaceItems = [
-        {
-            id: 1,
-            title: "Urban Photography Preset",
-            description: "Professional preset pack for urban street photography with moody tones.",
-            price: "$15.99",
-            image: "https://i.pinimg.com/1200x/3e/d5/5b/3ed55b7a8edad9e811900cd55ca50f05.jpg",
-            author: {
-                name: "Alex Chen",
-                avatar: "https://randomuser.me/api/portraits/men/32.jpg"
-            },
-            rating: 4.8
-        },
-        {
-            id: 2,
-            title: "Nature Portrait Collection",
-            description: "Beautiful nature portraits with natural lighting and vibrant colors.",
-            price: "$24.99",
-            image: "https://i.pinimg.com/1200x/d9/b2/97/d9b29715b473dd0a5b37e1bc9929907b.jpg",
-            author: {
-                name: "Sarah Martinez",
-                avatar: "https://randomuser.me/api/portraits/women/44.jpg"
-            },
-            rating: 4.9
-        },
-        {
-            id: 3,
-            title: "Vintage Film Presets",
-            description: "Classic film look presets for that authentic vintage aesthetic.",
-            price: "$12.99",
-            image: "https://i.pinimg.com/736x/3f/93/c6/3f93c61810a9a68442366031087841a9.jpg",
-            author: {
-                name: "Mike Johnson",
-                avatar: "https://randomuser.me/api/portraits/men/65.jpg"
-            },
-            rating: 4.7
-        },
-        {
-            id: 4,
-            title: "Happy Robot 032",
-            description: "Cute robot character for digital art projects.",
-            price: "$300.00",
-            image: "https://i.pinimg.com/1200x/7d/66/04/7d6604111a2fb44b73a4bc8b643e479d.jpg",
-            author: {
-                name: "BeKind2Robots",
-                avatar: "https://randomuser.me/api/portraits/men/12.jpg"
-            },
-            rating: 4.6
-        },
-        {
-            id: 5,
-            title: "Cinematic LUT Pack",
-            description: "Transform your videos with cinematic LUTs for professional-grade color grading.",
-            price: "$19.99",
-            image: "https://i.pinimg.com/1200x/95/5b/43/955b437d7a0a91f60b944abf6a99a544.jpg",
-            author: {
-                name: "Emma Watson",
-                avatar: "https://randomuser.me/api/portraits/women/68.jpg"
-            },
-            rating: 4.9
-        },
-        {
-            id: 6,
-            title: "Abstract 3D Models",
-            description: "Pack of 10 abstract 3D models perfect for motion design and concept art.",
-            price: "$45.00",
-            image: "https://i.pinimg.com/1200x/b4/fe/42/b4fe428c83502f66bbd2af43ae20b1dc.jpg",
-            author: {
-                name: "David Kim",
-                avatar: "https://randomuser.me/api/portraits/men/23.jpg"
-            },
-            rating: 4.8
-        },
-        {
-            id: 7,
-            title: "Moody Landscape Presets",
-            description: "Dark and dramatic tones for stunning landscape photography.",
-            price: "$17.99",
-            image: "https://i.pinimg.com/736x/fd/ac/3c/fdac3cc7c47d3fa7a0df6bce7be249eb.jpg",
-            author: {
-                name: "Liam Brown",
-                avatar: "https://randomuser.me/api/portraits/men/41.jpg"
-            },
-            rating: 4.7
-        },
-        {
-            id: 8,
-            title: "Minimal Portrait Pack",
-            description: "Clean and soft presets for minimalistic portrait photography.",
-            price: "$21.00",
-            image: "https://i.pinimg.com/736x/f7/80/44/f780449c1d678dcc7474cb20fb075ff8.jpg",
-            author: {
-                name: "Sophia Lee",
-                avatar: "https://randomuser.me/api/portraits/women/55.jpg"
-            },
-            rating: 4.8
-        },
-        {
-            id: 9,
-            title: "Golden Hour Magic",
-            description: "Warm presets to enhance golden hour and sunset photos.",
-            price: "$18.50",
-            image: "https://i.pinimg.com/1200x/29/fd/cc/29fdccf1df70d964d1b1be7ef163b594.jpg",
-            author: {
-                name: "Olivia Green",
-                avatar: "https://randomuser.me/api/portraits/women/33.jpg"
-            },
-            rating: 4.9
-        },
-        {
-            id: 10,
-            title: "Black & White Mastery",
-            description: "High-contrast black and white presets for timeless photography.",
-            price: "$14.00",
-            image: "https://i.pinimg.com/1200x/da/01/9c/da019c2984b8381140b07c17ca3fb353.jpg",
-            author: {
-                name: "Ethan White",
-                avatar: "https://randomuser.me/api/portraits/men/77.jpg"
-            },
-            rating: 4.6
-        },
-        {
-            id: 11,
-            title: "Travel Explorer Presets",
-            description: "Vibrant presets perfect for travel bloggers and explorers.",
-            price: "$22.00",
-            image: "https://i.pinimg.com/736x/39/b3/be/39b3be05e8e691e67032df91f831225e.jpg",
-            author: {
-                name: "Isabella Cruz",
-                avatar: "https://randomuser.me/api/portraits/women/21.jpg"
-            },
-            rating: 4.8
-        }
-    ];
-
-    const filteredItems = marketplaceItems.filter(item => {
-        const query = searchQuery.toLowerCase();
-        return (
-            item.title.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query)
-        );
+    const [filters, setFilters] = useState({
+        category: 'all',
+        price: 'all',
+        rating: 'all',
     });
+    const [resetFilter, setResetFilter] = useState(false)
+    const [currentPage, setCurrentPage] = useState(1)
+    const itemPerPage = 12
+
+    const { data: marketplaceItems, isLoading } = useMarketplace()
+
+    const categories: string[] = marketplaceItems?.data
+        ? Array.from(new Set(marketplaceItems.data.map((item: MarketplaceItem) => item.category)))
+        : [];
+
+    const validItems = marketplaceItems?.data?.filter((item: MarketplaceItem) => {
+        const hasValidThumbnail = item?.thumbnail &&
+            typeof item.thumbnail === 'string' &&
+            item.thumbnail.trim() !== '';
+
+        const hasValidImage = item?.image &&
+            typeof item.image === 'string' &&
+            item.image.trim() !== '';
+
+        const isActive = item?.status === 'active';
+
+        return hasValidThumbnail && hasValidImage && isActive;
+    }) || []
+
+
+    const filteredItems = validItems?.filter((item: MarketplaceItem) => {
+        const query = searchQuery.toLowerCase();
+
+        const matchesSearch =
+            item.title.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query);
+
+        const matchesCategory = filters.category === 'all' || item.category === filters.category;
+
+        const matchesRating = filters.rating === 'all' || (item.rating !== undefined && item.rating >= parseFloat(filters.rating));
+
+        const priceValue = item.price
+        let matchesPrice = true;
+        if (filters.price === 'under-50000') matchesPrice = priceValue < 50000;
+        else if (filters.price === '50000-200000') matchesPrice = priceValue >= 50000 && priceValue <= 200000;
+        else if (filters.price === '200000-500000') matchesPrice = priceValue > 200000 && priceValue <= 500000;
+        else if (filters.price === 'over-500000') matchesPrice = priceValue > 500000;
+        return matchesSearch && matchesCategory && matchesPrice && matchesRating;
+    });
+
+
+    const totalPages = Math.ceil(filteredItems.length / itemPerPage)
+    const startIndex = (currentPage - 1) * itemPerPage
+    const endIndex = startIndex + itemPerPage
+    const paginationItems = filteredItems.slice(startIndex, endIndex)
+
+
+    const handleResetFilter = () => {
+        if (resetFilter) {
+            setSearchInput('')
+            setSearchQuery('')
+            setFilters({
+                category: 'all',
+                price: 'all',
+                rating: 'all'
+            })
+        }
+        setResetFilter(false)
+    }
+
+    useEffect(() => {
+        const isDefault =
+            searchInput === '' &&
+            searchQuery === '' &&
+            filters.category === 'all' &&
+            filters.price === 'all' &&
+            filters.rating === 'all';
+
+        setResetFilter(!isDefault);
+    }, [filters, searchInput, searchQuery])
 
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -166,37 +108,160 @@ export default function MarketplacePage() {
         return () => clearTimeout(timeout);
     }, [searchInput]);
 
+    useEffect(() => {
+        setCurrentPage(1)
+    }, [filters, searchQuery])
+
     return (
         <div className="min-h-screen">
-            <div className="container mx-auto py-10">
+
+            <div className="container mx-auto py-3">
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/forum">Home</BreadcrumbLink>
+                            <BreadcrumbLink href={ROUTES.HOME}>Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/marketplace">Marketplace</BreadcrumbLink>
+                            <BreadcrumbLink href={ROUTES.MARKETPLACE}>Marketplace</BreadcrumbLink>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <MarketplaceHeader />
 
-                <div className="grid grid-cols-1 md:grid-cols-14 gap-6">
-                    <FilterSidebar
-                        searchInput={searchInput}
-                        onSearchChange={setSearchInput}
-                        searchQuery={searchQuery}
-                        resultsCount={filteredItems.length}
-                    />
+                <div className="mb-10 mt-3 border-b-1">
+                    <h1 className='font-extrabold text-3xl uppercase mb-2'>
+                        Your <span className='text-primary'>Marketplace</span> for Creativity
+                    </h1>
+                    <p className='mb-6 text-muted-foreground text-sm'>Buy, sell, and showcase stunning photos & professional presets in one place</p>
 
-                    <div className="col-span-11">
-                        <MarketplaceGrid
-                            items={filteredItems}
-                            searchQuery={searchQuery}
+                    <div className="flex gap-2 mb-6 justify-between items-center">
+                        <div className="w-[90%]">
+                            <Input
+                                type="text"
+                                value={searchInput}
+                                onChange={(e) => setSearchInput(e.target.value)}
+                                placeholder="Search presets..."
+                                className="w-full focus:ring-2 focus:ring-purple-500 transition-all"
+                            />
+
+                            {searchQuery && (
+                                <div className="mt-4">
+                                    <p className='font-bold text-sm'>
+                                        Found <span className='text-purple-500'>{filteredItems?.length}</span> result{filteredItems?.length !== 1 ? 's' : ''} for &quot;<span className='text-purple-500'>{searchQuery}</span>&quot;
+                                    </p>
+                                    <div className='border-t border-gray-200 dark:border-gray-700 mt-3' />
+                                </div>
+                            )}
+                        </div>
+
+                        <FilterSidebar
+                            filters={filters}
+                            onFilterChange={setFilters}
+                            resetFilter={resetFilter}
+                            onResetFilter={handleResetFilter}
+                            categories={categories}
                         />
                     </div>
                 </div>
+
+                <div className='flex flex-col gap-8'>
+                    {isLoading ?
+                        <MarketplaceSkeleton />
+                        :
+
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+                            {paginationItems?.map((item: MarketplaceItem) => (
+                                <MarketplaceItemCard {...item} key={item.id} />
+                            ))}
+                        </div>
+                    }
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        if (currentPage > 1) setCurrentPage(currentPage - 1)
+                                    }}
+                                />
+                            </PaginationItem>
+
+                            <PaginationItem>
+                                <PaginationLink
+                                    href="#"
+                                    isActive={currentPage === 1}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        setCurrentPage(1)
+                                    }}
+                                >
+                                    1
+                                </PaginationLink>
+                            </PaginationItem>
+
+                            {currentPage > 3 && (
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
+                            )}
+
+                            {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                .filter(
+                                    (page) =>
+                                        page !== 1 &&
+                                        page !== totalPages &&
+                                        page >= currentPage - 1 &&
+                                        page <= currentPage + 1
+                                )
+                                .map((page) => (
+                                    <PaginationItem key={page}>
+                                        <PaginationLink
+                                            href="#"
+                                            isActive={page === currentPage}
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                setCurrentPage(page)
+                                            }}
+                                        >
+                                            {page}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
+
+                            {currentPage < totalPages - 2 && (
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
+                            )}
+
+                            {totalPages > 1 && (
+                                <PaginationItem>
+                                    <PaginationLink
+                                        href="#"
+                                        isActive={currentPage === totalPages}
+                                        onClick={(e) => {
+                                            e.preventDefault()
+                                            setCurrentPage(totalPages)
+                                        }}
+                                    >
+                                        {totalPages}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )}
+
+                            <PaginationItem>
+                                <PaginationNext
+                                    href="#"
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                                    }}
+                                />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div >
             </div>
         </div>
     );
