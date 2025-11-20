@@ -5,13 +5,14 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { BASE_URL } from '@/constants'
 import { ROUTES } from '@/constants/path'
 import { userApi } from '@/lib/apis/userApi'
 import { messageApi } from '@/lib/apis/messageApi'
 import { useUserStore } from '@/stores/user-store'
 import { UserProfile, UserPost } from '@/types'
-import { MessageCircle, UserPlus, UserMinus, Calendar, Loader2, Package, Image as ImageIcon } from 'lucide-react'
+import { MessageCircle, Calendar, Loader2, Package, Image as ImageIcon, Users } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -19,6 +20,8 @@ import { toast } from 'sonner'
 import Post from '@/components/forum/post/post'
 import { PostType } from '@/types/post'
 import { formatDistanceToNow } from 'date-fns'
+import { FollowButton } from '@/components/forum/FollowButton'
+import { useFollowStats, useUserFollowers, useUserFollowing } from '@/lib/hooks/useFollow'
 
 export default function PublicProfile() {
   const params = useParams()
@@ -26,9 +29,14 @@ export default function PublicProfile() {
   const currentUser = useUserStore(state => state.user)
   const userId = params.id as string
   const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [isFollowing, setIsFollowing] = useState(false)
   const [loading, setLoading] = useState(true)
   const [messageLoading, setMessageLoading] = useState(false)
+  const [followersDialogOpen, setFollowersDialogOpen] = useState(false)
+  const [followingDialogOpen, setFollowingDialogOpen] = useState(false)
+
+  const { stats, refetch: refetchStats } = useFollowStats(userId)
+  const { followers } = useUserFollowers(userId)
+  const { following } = useUserFollowing(userId)
 
   const isOwnProfile = currentUser?.id === userId
 
@@ -45,29 +53,11 @@ export default function PublicProfile() {
       setLoading(true)
       const { data } = await userApi.getUserProfile(userId)
       setProfile(data)
-      setIsFollowing(data.isFollowing || false)
     } catch (error) {
       console.error('Error fetching profile:', error)
       toast.error('Failed to load profile')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleFollow = async () => {
-    try {
-      if (isFollowing) {
-        await userApi.unfollowUser(userId)
-        toast.success('Unfollowed successfully')
-      } else {
-        await userApi.followUser(userId)
-        toast.success('Followed successfully')
-      }
-      setIsFollowing(!isFollowing)
-      fetchProfile()
-    } catch (error) {
-      console.error('Error following user:', error)
-      toast.error('Failed to follow user')
     }
   }
 
@@ -135,24 +125,7 @@ export default function PublicProfile() {
                 </div>
 
                 <div className='flex items-center gap-2 flex-shrink-0'>
-                  <Button
-                    variant={isFollowing ? 'outline' : 'default'}
-                    size='sm'
-                    onClick={handleFollow}
-                    disabled={messageLoading}
-                  >
-                    {isFollowing ? (
-                      <>
-                        <UserMinus className='mr-1 h-4 w-4' />
-                        Unfollow
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className='mr-1 h-4 w-4' />
-                        Follow
-                      </>
-                    )}
-                  </Button>
+                  <FollowButton userId={userId} size="sm" />
                   <Button
                     variant='outline'
                     size='sm'
@@ -169,14 +142,20 @@ export default function PublicProfile() {
               </div>
 
               <div className='flex items-center gap-6 text-sm'>
-                <div>
-                  <span className='font-semibold'>{profile.followerCount || 0}</span>
+                <button
+                  onClick={() => setFollowersDialogOpen(true)}
+                  className='hover:underline cursor-pointer'
+                >
+                  <span className='font-semibold'>{stats?.followersCount || 0}</span>
                   <span className='text-muted-foreground ml-1'>Followers</span>
-                </div>
-                <div>
-                  <span className='font-semibold'>{profile.followingCount || 0}</span>
+                </button>
+                <button
+                  onClick={() => setFollowingDialogOpen(true)}
+                  className='hover:underline cursor-pointer'
+                >
+                  <span className='font-semibold'>{stats?.followingCount || 0}</span>
                   <span className='text-muted-foreground ml-1'>Following</span>
-                </div>
+                </button>
                 <div>
                   <span className='font-semibold'>{profile.posts.length}</span>
                   <span className='text-muted-foreground ml-1'>Posts</span>
@@ -230,7 +209,7 @@ export default function PublicProfile() {
                         id: profile.id,
                         name: profile.name,
                         avatarUrl: profile.avatarUrl,
-                        isFollowed: isFollowing
+                        isFollowed: false
                       },
                       voteCount: 0,
                       commentCount: 0,
@@ -294,6 +273,88 @@ export default function PublicProfile() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Followers Dialog */}
+      <Dialog open={followersDialogOpen} onOpenChange={setFollowersDialogOpen}>
+        <DialogContent className='max-w-md'>
+          <DialogHeader>
+            <DialogTitle className='flex items-center gap-2'>
+              <Users className='h-5 w-5' />
+              Followers
+            </DialogTitle>
+          </DialogHeader>
+          <div className='max-h-[400px] overflow-y-auto space-y-3'>
+            {followers.length === 0 ? (
+              <p className='text-center text-sm text-muted-foreground py-8'>No followers yet</p>
+            ) : (
+              followers.map((follow) => (
+                <div key={follow.id} className='flex items-center justify-between gap-3'>
+                  <Link
+                    href={`/profile/${follow.follower?.id}`}
+                    className='flex items-center gap-3 flex-1 hover:bg-muted/50 rounded-lg p-2 transition'
+                    onClick={() => setFollowersDialogOpen(false)}
+                  >
+                    <Avatar className='h-10 w-10'>
+                      <AvatarImage src={follow.follower?.avatarUrl} />
+                      <AvatarFallback>
+                        {follow.follower?.name?.charAt(0)?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className='flex-1 min-w-0'>
+                      <p className='text-sm font-medium truncate'>{follow.follower?.name}</p>
+                      <p className='text-xs text-muted-foreground truncate'>{follow.follower?.email}</p>
+                    </div>
+                  </Link>
+                  {follow.follower?.id !== currentUser?.id && (
+                    <FollowButton userId={follow.follower?.id || ''} size='sm' variant='outline' />
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Following Dialog */}
+      <Dialog open={followingDialogOpen} onOpenChange={setFollowingDialogOpen}>
+        <DialogContent className='max-w-md'>
+          <DialogHeader>
+            <DialogTitle className='flex items-center gap-2'>
+              <Users className='h-5 w-5' />
+              Following
+            </DialogTitle>
+          </DialogHeader>
+          <div className='max-h-[400px] overflow-y-auto space-y-3'>
+            {following.length === 0 ? (
+              <p className='text-center text-sm text-muted-foreground py-8'>Not following anyone yet</p>
+            ) : (
+              following.map((follow) => (
+                <div key={follow.id} className='flex items-center justify-between gap-3'>
+                  <Link
+                    href={`/profile/${follow.following?.id}`}
+                    className='flex items-center gap-3 flex-1 hover:bg-muted/50 rounded-lg p-2 transition'
+                    onClick={() => setFollowingDialogOpen(false)}
+                  >
+                    <Avatar className='h-10 w-10'>
+                      <AvatarImage src={follow.following?.avatarUrl} />
+                      <AvatarFallback>
+                        {follow.following?.name?.charAt(0)?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className='flex-1 min-w-0'>
+                      <p className='text-sm font-medium truncate'>{follow.following?.name}</p>
+                      <p className='text-xs text-muted-foreground truncate'>{follow.following?.email}</p>
+                    </div>
+                  </Link>
+                  {follow.following?.id !== currentUser?.id && (
+                    <FollowButton userId={follow.following?.id || ''} size='sm' variant='outline' />
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

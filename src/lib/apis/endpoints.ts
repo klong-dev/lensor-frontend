@@ -76,5 +76,15 @@ export const endpoints = {
           all: `${API_PREFIX}/notifications`,
           markAsRead: (id: string) => `${API_PREFIX}/notifications/${id}/read`,
           markAllAsRead: `${API_PREFIX}/notifications/read-all`
+     },
+     userFollows: {
+          follow: (userId: string) => `${API_PREFIX}/user-follows/${userId}`,
+          unfollow: (userId: string) => `${API_PREFIX}/user-follows/${userId}`,
+          updateSettings: (userId: string) => `${API_PREFIX}/user-follows/${userId}/settings`,
+          check: (userId: string) => `${API_PREFIX}/user-follows/check/${userId}`,
+          myFollowers: `${API_PREFIX}/user-follows/followers`,
+          myFollowing: `${API_PREFIX}/user-follows/following`,
+          userFollowers: (userId: string) => `${API_PREFIX}/user-follows/followers?userId=${userId}`,
+          userFollowing: (userId: string) => `${API_PREFIX}/user-follows/following?userId=${userId}`,
      }
 }

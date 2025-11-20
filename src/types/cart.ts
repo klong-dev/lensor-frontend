@@ -12,6 +12,9 @@ export type CartItemProps = {
     fileSize?: string
     onRemove: (id: string) => void
     disabled?: boolean
+    status?: 'active' | 'inactive' | 'blocked'
+    onSelect?: (id: string, selected: boolean) => void
+    isSelected?: boolean
 }
 
 export type CartItemData = {
@@ -48,6 +51,7 @@ export type CartItemData = {
         features?: string
         specifications?: string
         warranty?: string
+        status?: 'active' | 'inactive' | 'blocked'
         createdAt: string
         updatedAt: string
         deletedAt?: string | null

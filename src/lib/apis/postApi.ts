@@ -63,6 +63,25 @@ export const postApi = {
 
      getSavedPosts: async (limit: number = 20, offset: number = 0) => {
           const res = await apiClient.get(endpoints.savedPost.all(limit, offset))
-          return res.data
+
+          // Response structure: { data: { savedPosts: [...], total: number } }
+          // Extract posts from savedPosts and set isSaved to true
+          if (res.data?.data?.savedPosts) {
+               const posts = res.data.data.savedPosts.map((item: any) => ({
+                    ...item.post,
+                    isSaved: true, // Override backend's isSaved value
+               }))
+
+               return {
+                    data: posts,
+                    total: res.data.data.total,
+               }
+          }
+
+          // Fallback for unexpected structure
+          return {
+               data: [],
+               total: 0,
+          }
      }
 }

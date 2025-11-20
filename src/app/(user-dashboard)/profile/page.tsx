@@ -3,16 +3,29 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { useUserStore } from '@/stores/user-store'
 import ProfileContent from './components/_profile-content/profile-content'
 import About from './components/about'
 import SuggestionList from './components/suggestion-list'
 import { authHelpers } from '@/lib/supabase'
+import { useFollowStats, useUserFollowers, useUserFollowing } from '@/lib/hooks/useFollow'
+import { useState } from 'react'
+import Link from 'next/link'
+import { Users, Loader2 } from 'lucide-react'
+import { FollowButton } from '@/components/forum/FollowButton'
 
 export default function ProfilePage() {
      const isOwnProfile = false
-
      const { user } = useUserStore()
+     const [followersDialogOpen, setFollowersDialogOpen] = useState(false)
+     const [followingDialogOpen, setFollowingDialogOpen] = useState(false)
+     const [postsCount, setPostsCount] = useState(0)
+
+     const userId = user?.id || ''
+     const { stats, loading: statsLoading } = useFollowStats(userId)
+     const { followers } = useUserFollowers(userId)
+     const { following } = useUserFollowing(userId)
 
      return (
           <div className='container mx-auto p-5'>
@@ -62,16 +75,26 @@ export default function ProfilePage() {
                          </div>
 
                          <div className='mt-6 flex items-center gap-8 text-sm'>
-                              <div className='flex items-center gap-2'>
-                                   <span className='font-semibold text-foreground'>124</span>
+                              <button
+                                   onClick={() => setFollowersDialogOpen(true)}
+                                   className='flex items-center gap-2 hover:underline cursor-pointer'
+                              >
+                                   <span className='font-semibold text-foreground'>
+                                        {statsLoading ? <Loader2 className='h-4 w-4 animate-spin inline' /> : stats?.followersCount || 0}
+                                   </span>
                                    <span className='text-muted-foreground'>Followers</span>
-                              </div>
-                              <div className='flex items-center gap-2'>
-                                   <span className='font-semibold text-foreground'>89</span>
+                              </button>
+                              <button
+                                   onClick={() => setFollowingDialogOpen(true)}
+                                   className='flex items-center gap-2 hover:underline cursor-pointer'
+                              >
+                                   <span className='font-semibold text-foreground'>
+                                        {statsLoading ? <Loader2 className='h-4 w-4 animate-spin inline' /> : stats?.followingCount || 0}
+                                   </span>
                                    <span className='text-muted-foreground'>Following</span>
-                              </div>
+                              </button>
                               <div className='flex items-center gap-2'>
-                                   <span className='font-semibold text-foreground'>42</span>
+                                   <span className='font-semibold text-foreground'>{postsCount}</span>
                                    <span className='text-muted-foreground'>Posts</span>
                               </div>
                          </div>
@@ -83,7 +106,7 @@ export default function ProfilePage() {
                          <About />
                     </Card>
                     <Card className='col-span-2 p-4'>
-                         <ProfileContent />
+                         <ProfileContent onPostsCountChange={setPostsCount} />
                     </Card>
                     <div className='bg-[var(--color-box-inside)] rounded-md'>
                          <Card className='sticky top-0'>
@@ -91,6 +114,84 @@ export default function ProfilePage() {
                          </Card>
                     </div>
                </div>
+
+               {/* Followers Dialog */}
+               <Dialog open={followersDialogOpen} onOpenChange={setFollowersDialogOpen}>
+                    <DialogContent className='max-w-md'>
+                         <DialogHeader>
+                              <DialogTitle className='flex items-center gap-2'>
+                                   <Users className='h-5 w-5' />
+                                   Followers
+                              </DialogTitle>
+                         </DialogHeader>
+                         <div className='max-h-[400px] overflow-y-auto space-y-3'>
+                              {followers.length === 0 ? (
+                                   <p className='text-center text-sm text-muted-foreground py-8'>No followers yet</p>
+                              ) : (
+                                   followers.map((follow) => (
+                                        <div key={follow.id} className='flex items-center justify-between gap-3'>
+                                             <Link
+                                                  href={`/profile/${follow.follower?.id}`}
+                                                  className='flex items-center gap-3 flex-1 hover:bg-muted/50 rounded-lg p-2 transition'
+                                                  onClick={() => setFollowersDialogOpen(false)}
+                                             >
+                                                  <Avatar className='h-10 w-10'>
+                                                       <AvatarImage src={follow.follower?.avatarUrl} />
+                                                       <AvatarFallback>
+                                                            {follow.follower?.name?.charAt(0)?.toUpperCase()}
+                                                       </AvatarFallback>
+                                                  </Avatar>
+                                                  <div className='flex-1 min-w-0'>
+                                                       <p className='text-sm font-medium truncate'>{follow.follower?.name}</p>
+                                                       <p className='text-xs text-muted-foreground truncate'>{follow.follower?.email}</p>
+                                                  </div>
+                                             </Link>
+                                             <FollowButton userId={follow.follower?.id || ''} size='sm' variant='outline' />
+                                        </div>
+                                   ))
+                              )}
+                         </div>
+                    </DialogContent>
+               </Dialog>
+
+               {/* Following Dialog */}
+               <Dialog open={followingDialogOpen} onOpenChange={setFollowingDialogOpen}>
+                    <DialogContent className='max-w-md'>
+                         <DialogHeader>
+                              <DialogTitle className='flex items-center gap-2'>
+                                   <Users className='h-5 w-5' />
+                                   Following
+                              </DialogTitle>
+                         </DialogHeader>
+                         <div className='max-h-[400px] overflow-y-auto space-y-3'>
+                              {following.length === 0 ? (
+                                   <p className='text-center text-sm text-muted-foreground py-8'>Not following anyone yet</p>
+                              ) : (
+                                   following.map((follow) => (
+                                        <div key={follow.id} className='flex items-center justify-between gap-3'>
+                                             <Link
+                                                  href={`/profile/${follow.following?.id}`}
+                                                  className='flex items-center gap-3 flex-1 hover:bg-muted/50 rounded-lg p-2 transition'
+                                                  onClick={() => setFollowingDialogOpen(false)}
+                                             >
+                                                  <Avatar className='h-10 w-10'>
+                                                       <AvatarImage src={follow.following?.avatarUrl} />
+                                                       <AvatarFallback>
+                                                            {follow.following?.name?.charAt(0)?.toUpperCase()}
+                                                       </AvatarFallback>
+                                                  </Avatar>
+                                                  <div className='flex-1 min-w-0'>
+                                                       <p className='text-sm font-medium truncate'>{follow.following?.name}</p>
+                                                       <p className='text-xs text-muted-foreground truncate'>{follow.following?.email}</p>
+                                                  </div>
+                                             </Link>
+                                             <FollowButton userId={follow.following?.id || ''} size='sm' variant='outline' />
+                                        </div>
+                                   ))
+                              )}
+                         </div>
+                    </DialogContent>
+               </Dialog>
           </div>
      )
 }

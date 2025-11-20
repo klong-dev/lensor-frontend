@@ -21,9 +21,10 @@ interface OrderSummaryProps {
     subtotal: number
     itemCount: number
     onCheckoutSuccess?: () => void
+    disabled?: boolean
 }
 
-export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess }: OrderSummaryProps) {
+export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled = false }: OrderSummaryProps) {
     const total = subtotal
     const router = useRouter()
     const [isCheckingOut, setIsCheckingOut] = useState(false)
@@ -93,10 +94,10 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess }: OrderSu
                         className="w-full"
                         size="lg"
                         onClick={handleOpenCheckoutDialog}
-                        disabled={isCheckingOut || itemCount === 0}
+                        disabled={isCheckingOut || itemCount === 0 || disabled}
                     >
                         <CreditCard className="mr-2 h-4 w-4" />
-                        {isCheckingOut ? 'Processing...' : 'Proceed to Checkout'}
+                        {isCheckingOut ? 'Processing...' : disabled ? 'Select Items to Checkout' : 'Proceed to Checkout'}
                     </Button>
                 </CardContent>
             </Card>
@@ -133,8 +134,8 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess }: OrderSu
                         </div>
 
                         <div className={`flex items-center justify-between p-4 rounded-lg border-2 ${hasInsufficientFunds
-                                ? 'bg-destructive/10 border-destructive'
-                                : 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-800'
+                            ? 'bg-destructive/10 border-destructive'
+                            : 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-800'
                             }`}>
                             <div className="flex items-center gap-2">
                                 {hasInsufficientFunds && <AlertCircle className="h-5 w-5 text-destructive" />}

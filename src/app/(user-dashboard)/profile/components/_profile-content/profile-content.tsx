@@ -4,7 +4,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import PostSection from './post-section'
 import SavedPostsSection from './saved-posts-section'
 
-export default function ProfileContent() {
+interface ProfileContentProps {
+     onPostsCountChange?: (count: number) => void
+}
+
+export default function ProfileContent({ onPostsCountChange }: ProfileContentProps) {
      const listTabs = [
           {
                label: 'Your posts',
@@ -30,7 +34,7 @@ export default function ProfileContent() {
                          ))}
                     </TabsList>
                     <TabsContent value="posts">
-                         <PostSection />
+                         <PostSection onPostsCountChange={onPostsCountChange} />
                     </TabsContent>
                     <TabsContent value="saved">
                          <SavedPostsSection />

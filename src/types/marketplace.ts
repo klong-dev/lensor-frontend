@@ -27,6 +27,7 @@ export type MarketplaceItem = {
   presetFile?: PresetFile
   rating?: number
   category: string
+  status?: 'active' | 'inactive' | 'blocked'
 }
 
 export type MarketplaceGridProps = {
@@ -130,6 +131,7 @@ export type CartItemType = {
   price: number
   originalPrice?: number
   quantity: number
+  status?: 'active' | 'inactive' | 'blocked'
 }
 
 export type ImagePairUploaderProps = {
@@ -154,6 +156,6 @@ export type PresetUploadModalProps = {
 }
 
 export type ReviewFormProps = {
-    productId: string
-    onSuccess?: () => void
+  productId: string
+  onSuccess?: () => void
 }

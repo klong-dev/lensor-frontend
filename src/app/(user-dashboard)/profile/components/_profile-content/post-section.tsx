@@ -10,7 +10,11 @@ import { UserPost } from '@/types'
 import { FileText } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
-export default function PostSection() {
+interface PostSectionProps {
+  onPostsCountChange?: (count: number) => void
+}
+
+export default function PostSection({ onPostsCountChange }: PostSectionProps) {
   const user = useUserStore(state => state.user)
   const [posts, setPosts] = useState<PostType[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -19,6 +23,13 @@ export default function PostSection() {
   useEffect(() => {
     fetchUserPosts()
   }, [user])
+
+  useEffect(() => {
+    // Report posts count when it changes
+    if (onPostsCountChange) {
+      onPostsCountChange(posts.length)
+    }
+  }, [posts.length, onPostsCountChange])
 
   const fetchUserPosts = async () => {
     if (!user?.id) return

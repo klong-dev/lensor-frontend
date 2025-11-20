@@ -5,10 +5,11 @@ import { ROUTES } from '@/constants/path';
 import { useCart } from '@/lib/hooks/useCartHooks';
 import { MarketplaceItem } from '@/types/marketplace';
 import { CartItemData } from '@/types/cart';
-import { Star, ShoppingCart } from 'lucide-react';
+import { Star, ShoppingCart, Ban } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState, useMemo } from 'react';
+import { toast } from 'sonner';
 
 export default function MarketplaceItemCard(item: MarketplaceItem) {
     const [imageError, setImageError] = useState(false);
@@ -47,6 +48,10 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
     }
 
     const handleCardClick = () => {
+        if (item?.status !== 'active') {
+            toast.error('This product is currently unavailable for purchase');
+            return;
+        }
         router.push(`/marketplace/${item?.id}`);
     };
 
@@ -58,8 +63,18 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
     return (
         <div
             onClick={handleCardClick}
-            className="relative w-full aspect-square bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:opacity-80 transition-shadow h-min-[442px] h-full group cursor-pointer"
+            className={`relative w-full aspect-square bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:opacity-80 transition-shadow h-min-[442px] h-full group ${item?.status === 'active' ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
+                }`}
         >
+            {item?.status !== 'active' && (
+                <div className="absolute inset-0 z-40 bg-black/60 flex items-center justify-center">
+                    <div className="text-center">
+                        <Ban className="w-16 h-16 text-red-500 mx-auto mb-2" />
+                        <p className="text-white font-semibold">Unavailable</p>
+                    </div>
+                </div>
+            )}
+
             {isInCart && (
                 <Badge className="absolute top-3 right-3 z-30 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1">
                     <ShoppingCart className="w-3 h-3" />

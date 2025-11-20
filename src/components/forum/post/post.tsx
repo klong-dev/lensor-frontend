@@ -22,6 +22,7 @@ import { useTranslations } from "next-intl"
 import { formatDistanceToNow } from 'date-fns'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
+import { FollowButton } from '../FollowButton'
 
 const getTimeAgo = (dateString: string) => {
      try {
@@ -39,7 +40,6 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      const [isVoted, setIsVoted] = useState(dataPost?.isLiked || false)
      const [voteCount, setVoteCount] = useState(dataPost?.voteCount || 0)
      const [commentCount, setCommentCount] = useState(dataPost?.commentCount || 0)
-     const [isFollowing, setIsFollowing] = useState(dataPost?.user.isFollowed || false)
      const [imageError, setImageError] = useState(false)
      const [isSaved, setIsSaved] = useState(false)
      const [showNSFWContent, setShowNSFWContent] = useState(false)
@@ -78,10 +78,6 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                setVoteCount(previousCount)
                toast.error('Failed to update like status')
           }
-     }
-
-     const handleFollow = () => {
-          setIsFollowing(!isFollowing)
      }
 
      const handleDeletePost = async () => {
@@ -127,33 +123,46 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
           <div className='p-5 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-0 rounded-2xl duration-300 my-3'>
                <div className='flex items-center justify-between'>
                     <div className='flex items-center'>
-                         <Link href={ROUTES.PROFILE(dataPost?.user.id)} className="hover:opacity-80 duration-300">
+                         {dataPost?.user?.id ? (
+                              <Link href={ROUTES.PROFILE(dataPost.user.id)} className="hover:opacity-80 duration-300">
+                                   <Avatar>
+                                        <AvatarImage src={dataPost?.user?.avatarUrl} />
+                                        <AvatarFallback>{dataPost?.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                                   </Avatar>
+                              </Link>
+                         ) : (
                               <Avatar>
-                                   <AvatarImage src={dataPost?.user.avatarUrl} />
-                                   <AvatarFallback>{dataPost?.user.name}</AvatarFallback>
+                                   <AvatarImage src={dataPost?.user?.avatarUrl} />
+                                   <AvatarFallback>U</AvatarFallback>
                               </Avatar>
-                         </Link>
-                         <Link href={ROUTES.PROFILE(dataPost?.user.id)} className='font-bold ml-2 text-[var(--c-text-title)] hover:opacity-80 duration-300'>
-                              {dataPost?.user.name}
-                         </Link>
+                         )}
+                         {dataPost?.user?.id ? (
+                              <Link href={ROUTES.PROFILE(dataPost.user.id)} className='font-bold ml-2 text-[var(--c-text-title)] hover:opacity-80 duration-300'>
+                                   {dataPost?.user?.name || 'Unknown User'}
+                              </Link>
+                         ) : (
+                              <span className='font-bold ml-2 text-[var(--c-text-title)]'>
+                                   {dataPost?.user?.name || 'Unknown User'}
+                              </span>
+                         )}
                          <Dot />
                          <span className='text-[var(--color-text-muted)]'>{getTimeAgo(dataPost?.createdAt)}</span>
                     </div>
                     <div className='flex items-center gap-3'>
-                         <Button
-                              className={dataPost?.user.id === user?.id ? 'hidden' : ''}
-                              onClick={handleFollow}
-                              variant={dataPost?.user.isFollowed ? 'outline' : 'default'}
-                         >
-                              {dataPost?.user.isFollowed ? tButton('following') : tButton('follow')}
-                         </Button>
+                         {dataPost?.user?.id && dataPost.user.id !== user?.id && (
+                              <FollowButton
+                                   userId={dataPost.user.id}
+                                   size="sm"
+                                   variant="default"
+                              />
+                         )}
                          <DropdownMenuPost
                               handleDeletePost={handleDeletePost}
                               handleReportPost={handleReportPost}
                               handleSavePost={handleSavePost}
                               handleViewDetail={handleViewDetail}
                               isSaved={isSaved}
-                              isOwner={dataPost?.user.id === user?.id}
+                              isOwner={dataPost?.user?.id === user?.id}
                          >
                               <Button variant='ghost'>
                                    <Ellipsis />

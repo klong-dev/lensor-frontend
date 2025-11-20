@@ -3,11 +3,13 @@
 import React from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { Trash2, Package, FileType, HardDrive } from 'lucide-react'
+import { Trash2, Package, FileType, HardDrive, Ban, AlertCircle } from 'lucide-react'
 import { CartItemProps } from '@/types/cart'
 import Link from 'next/link'
 import { ROUTES } from '@/constants/path'
 import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
+import { Checkbox } from '@/components/ui/checkbox'
 
 export function CartItem({
     id,
@@ -23,11 +25,50 @@ export function CartItem({
     fileSize,
     onRemove,
     disabled = false,
+    status = 'active',
+    onSelect,
+    isSelected = false,
 }: CartItemProps) {
+    const isUnavailable = status !== 'active';
+
+    const handleClick = () => {
+        if (isUnavailable) {
+            toast.error('This product is currently unavailable for purchase');
+        }
+    };
+
+    const handleCheckboxChange = (checked: boolean) => {
+        if (isUnavailable) {
+            toast.error('Cannot select unavailable product');
+            return;
+        }
+        if (onSelect) {
+            onSelect(id, checked);
+        }
+    };
 
     return (
-        <div className="group flex gap-4 p-4 rounded-lg border bg-card hover:shadow-md transition-all duration-200">
+        <div
+            className={`group flex gap-4 p-4 rounded-lg border bg-card hover:shadow-md transition-all duration-200 ${isUnavailable ? 'opacity-60 cursor-not-allowed' : ''
+                }`}
+            onClick={handleClick}
+        >
+            {onSelect && (
+                <div className="flex items-center pt-2">
+                    <Checkbox
+                        checked={isSelected && !isUnavailable}
+                        onCheckedChange={handleCheckboxChange}
+                        disabled={isUnavailable}
+                    />
+                </div>
+            )}
+
             <div className="relative h-28 w-28 flex-shrink-0 rounded-lg overflow-hidden border bg-muted">
+                {isUnavailable && (
+                    <div className="absolute inset-0 z-10 bg-black/60 flex items-center justify-center">
+                        <Ban className="w-8 h-8 text-red-500" />
+                    </div>
+                )}
                 <Image
                     src={image}
                     alt={title}
@@ -38,6 +79,12 @@ export function CartItem({
 
             <div className="flex-1 flex flex-col gap-3">
                 <div className="space-y-1.5">
+                    {isUnavailable && (
+                        <Badge variant="destructive" className="w-fit mb-2">
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                            Product Unavailable
+                        </Badge>
+                    )}
                     <Link href={`/marketplace/${productId}`}>
                         <h3 className="font-semibold text-base hover:text-primary transition-colors line-clamp-1">
                             {title}
