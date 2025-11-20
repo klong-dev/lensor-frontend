@@ -9,7 +9,7 @@ import {
      DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal, Star } from "lucide-react"
+import { ArrowUpDown, Ban, MoreHorizontal, Star } from "lucide-react"
 import Image from "next/image"
 
 export type Product = {
@@ -94,7 +94,7 @@ export const createProductColumns = (
                cell: ({ row }) => {
                     const isBlocked = row.original.status === 'blocked'
                     return (
-                         <div className={`w-25 h-20 relative ${isBlocked ? 'opacity-40 blur-sm' : ''}`}>
+                         <div className={`w-25 h-20 relative ${isBlocked ? 'opacity-40' : ''}`}>
                               <Image
                                    src={row.getValue("imageAfter")}
                                    alt="After"
@@ -201,12 +201,12 @@ export const createProductColumns = (
                     if (isBlocked) {
                          return (
                               <Button
-                                   variant="ghost"
+                                   variant="secondary"
                                    size="sm"
-                                   className="opacity-40"
+                                   className="bg-red-500 hover:bg-red-600"
                                    onClick={() => onBlockedProductClick(product.id, product.title)}
                               >
-                                   <MoreHorizontal className="h-4 w-4" />
+                                   <Ban />
                               </Button>
                          )
                     }
