@@ -12,30 +12,21 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { CartItem } from './components/cart-item'
 import { OrderSummary } from './components/order-summary'
-import { SpecialInstructions } from './components/special-instructions'
 
 export default function Cart() {
   const { data: cartData, isLoading, error, mutate } = useCart()
   const [isUpdating, setIsUpdating] = useState(false)
-
-  const handleQuantityChange = async (cartItemId: string, newQuantity: number) => {
-    setIsUpdating(true)
-    try {
-      await cartApi.updateCartItem(cartItemId, newQuantity)
-      mutate()
-      toast.success('Cart updated successfully')
-    } catch (error) {
-      console.error('Failed to update cart item:', error)
-      toast.error('Failed to update cart item')
-    } finally {
-      setIsUpdating(false)
-    }
-  }
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
 
   const handleRemoveItem = async (cartItemId: string) => {
     setIsUpdating(true)
     try {
       await cartApi.removeCartItem(cartItemId)
+      setSelectedItems(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(cartItemId);
+        return newSet;
+      });
       mutate()
       toast.success('Item removed from cart')
     } catch (error) {
@@ -46,10 +37,23 @@ export default function Cart() {
     }
   }
 
+  const handleSelectItem = (itemId: string, selected: boolean) => {
+    setSelectedItems(prev => {
+      const newSet = new Set(prev);
+      if (selected) {
+        newSet.add(itemId);
+      } else {
+        newSet.delete(itemId);
+      }
+      return newSet;
+    });
+  };
+
   const handleClearCart = async () => {
     setIsUpdating(true)
     try {
       await cartApi.clearCart()
+      setSelectedItems(new Set());
       mutate()
       toast.success('Cart cleared successfully')
     } catch (error) {
@@ -61,7 +65,9 @@ export default function Cart() {
   }
 
   const cartItems = cartData?.items || []
-  const subtotal = cartItems.reduce((sum: number, item: CartItemData) => sum + parseFloat(item.price) * item.quantity, 0)
+  const activeItems = cartItems.filter((item: CartItemData) => item.product?.status === 'active')
+  const selectedCartItems = cartItems.filter((item: CartItemData) => selectedItems.has(item.id))
+  const subtotal = selectedCartItems.reduce((sum: number, item: CartItemData) => sum + parseFloat(item.price) * item.quantity, 0)
 
   if (isLoading) {
     return (
@@ -126,9 +132,16 @@ export default function Cart() {
                     <p className="text-muted-foreground">Your cart is empty</p>
                   </div>
                 ) : (
-                  <div>
+                  <div className="space-y-4">
+                    {activeItems.length < cartItems.length && (
+                      <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
+                        <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                          Some products in your cart are currently unavailable and cannot be purchased.
+                        </p>
+                      </div>
+                    )}
                     {cartItems.map((item: CartItemData) => {
-                      const imagePath = item.product?.thumbnail || item.image || ''
+                      const imagePath = item.product?.thumbnail || ''
                       const imageUrl = imagePath.startsWith('http') ? imagePath : `${BASE_URL}${imagePath}`
 
                       return (
@@ -137,14 +150,19 @@ export default function Cart() {
                           id={item.id}
                           productId={item.product?.id || ''}
                           image={imageUrl}
-                          title={item.product?.title || item.title || 'Untitled'}
-                          author={item.product?.userId || item.author || 'Unknown'}
+                          title={item.product?.title || 'Untitled'}
+                          author={item.product?.owner?.name || 'Unknown'}
+                          authorId={item?.product?.owner?.id || 'Unknown'}
                           price={parseFloat(item.product?.price || item.price)}
                           originalPrice={item.product?.originalPrice ? parseFloat(item.product.originalPrice) : undefined}
-                          quantity={item.quantity}
-                          onQuantityChange={handleQuantityChange}
+                          category={item.product?.category}
+                          fileFormat={item.product?.fileFormat}
+                          fileSize={item.product?.fileSize}
                           onRemove={handleRemoveItem}
                           disabled={isUpdating}
+                          status={item.product?.status || 'active'}
+                          onSelect={handleSelectItem}
+                          isSelected={selectedItems.has(item.id)}
                         />
                       )
                     })}
@@ -152,15 +170,15 @@ export default function Cart() {
                 )}
               </CardContent>
             </Card>
-
-            <SpecialInstructions />
           </div>
 
           <div className="lg:col-span-1">
             <div className="sticky top-20">
               <OrderSummary
                 subtotal={subtotal}
-                itemCount={cartItems.reduce((sum: number, item: CartItemData) => sum + item.quantity, 0)}
+                itemCount={selectedCartItems.reduce((sum: number, item: CartItemData) => sum + item.quantity, 0)}
+                onCheckoutSuccess={mutate}
+                disabled={selectedItems.size === 0 || selectedCartItems.some((item: CartItemData) => item.product?.status !== 'active')}
               />
             </div>
           </div>

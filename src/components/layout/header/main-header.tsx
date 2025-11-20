@@ -2,14 +2,19 @@
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { ROUTES } from '@/constants/path'
 import { useUserStore } from '@/stores/user-store'
 import { useWalletStore } from '@/stores/wallet-store'
+import { useCartStore } from '@/stores/cart-store'
+import { useNotificationStore } from '@/stores/notification-store'
 import { Bell, ChevronDown, ShoppingCart, Wallet } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useCart } from '@/lib/hooks/useCartHooks'
+import { useNotifications } from '@/lib/hooks/useNotificationHooks'
 
 export default function MainHeader() {
   const t = useTranslations('Header')
@@ -17,6 +22,11 @@ export default function MainHeader() {
   const currentPath = usePathname()
   const user = useUserStore(state => state.user)
   const { walletData, fetchWallet } = useWalletStore()
+  const { itemCount, setCart } = useCartStore()
+  const { unreadCount, setNotifications } = useNotificationStore()
+
+  const { data: cartData } = useCart()
+  const { data: notificationData } = useNotifications()
 
   useEffect(() => {
     if (user) {
@@ -24,13 +34,24 @@ export default function MainHeader() {
     }
   }, [user, fetchWallet])
 
+  useEffect(() => {
+    if (cartData) {
+      setCart(cartData)
+    }
+  }, [cartData, setCart])
+
+  useEffect(() => {
+    if (notificationData?.data) {
+      setNotifications(notificationData.data.notifications, notificationData.data.meta.unreadCount)
+    }
+  }, [notificationData, setNotifications])
+
   const balance = walletData?.balance || 0
   const formattedBalance = balance.toLocaleString('vi-VN')
 
   const navLinkItems = [
     { title: t('forum'), href: ROUTES.FORUM },
-    { title: t('marketplace'), href: ROUTES.MARKETPLACE },
-    { title: t('createPortfolio'), href: ROUTES.CREATE_PORTFOLIO }
+    { title: t('marketplace'), href: ROUTES.MARKETPLACE }
   ]
 
   return (
@@ -70,8 +91,32 @@ export default function MainHeader() {
                 </Link>
               </div>
               <div className='flex'>
-                <Button variant='ghost' size='icon'><Link href={ROUTES.CART}><ShoppingCart /></Link></Button>
-                <Button variant='ghost' size='icon'><Link href={ROUTES.NOTIFICATION}><Bell /></Link></Button>
+                <Button variant='ghost' size='icon' className='relative'>
+                  <Link href={ROUTES.CART}>
+                    <ShoppingCart className='h-4 w-4' />
+                    {itemCount > 0 && (
+                      <Badge
+                        variant='destructive'
+                        className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
+                      >
+                        {itemCount > 99 ? '99+' : itemCount}
+                      </Badge>
+                    )}
+                  </Link>
+                </Button>
+                <Button variant='ghost' size='icon' className='relative'>
+                  <Link href={ROUTES.NOTIFICATION}>
+                    <Bell className='h-4 w-4' />
+                    {unreadCount > 0 && (
+                      <Badge
+                        variant='destructive'
+                        className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
+                      >
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </Badge>
+                    )}
+                  </Link>
+                </Button>
               </div>
             </>
           }

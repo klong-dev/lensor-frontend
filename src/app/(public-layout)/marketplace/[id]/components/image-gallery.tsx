@@ -30,13 +30,13 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
             <div className='relative aspect-video'>
                 <ImageComparison className='aspect-16/10 w-full rounded-lg border border-zinc-200 dark:border-zinc-800'>
                     <ImageComparisonImage
-                        src={getImageSrc(imagePairs?.[selectedImage]?.after)}
+                        src={getImageSrc(imagePairs?.[selectedImage]?.before)}
                         alt={name || 'Product image'}
                         position='right'
                         className={`rounded-2xl object-cover transition-opacity duration-300 ease-in-out ${fade ? 'opacity-100' : 'opacity-0'}`} />
 
                     <ImageComparisonImage
-                        src={getImageSrc(imagePairs?.[selectedImage]?.before)}
+                        src={getImageSrc(imagePairs?.[selectedImage]?.after)}
                         alt={name || 'Product image'}
                         position='left'
                         className={`rounded-2xl object-cover transition-opacity duration-300 ease-in-out ${fade ? 'opacity-100' : 'opacity-0'}`} />
@@ -46,10 +46,10 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
                         </div>
                     </ImageComparisonSlider>
 
-                    <div className='absolute top-5 right-5 text-sm font-semibold text-white pointer-events-none' data-position="right">
+                    <div className='absolute top-5 left-5 text-sm font-semibold text-white pointer-events-none' data-position="right">
                         Normal
                     </div>
-                    <div className='absolute top-5 left-5 text-sm font-semibold text-white pointer-events-none' data-position="left">
+                    <div className='absolute top-5 right-5 text-sm font-semibold text-white pointer-events-none' data-position="left">
                         {
                             imagePairs && imagePairs.length > 1
                                 ? (name ? `${name} - Preset ${selectedImage + 1}` : 'Product')

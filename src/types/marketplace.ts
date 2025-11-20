@@ -16,16 +16,37 @@ export type MarketplaceItem = {
   description: string
   price: number
   salePrice?: number
+  originalPrice?: number
+  discount?: number
   image?: string
   imagePairs?: ImagePair[]
   thumbnail: string
   author: {
+    id: string
     name: string
     avatar: string
   }
   presetFile?: PresetFile
+  presetFiles?: PresetFile[]
   rating?: number
   category: string
+  status?: 'active' | 'inactive' | 'blocked'
+  tags?: string[]
+  compatibility?: string[]
+  features?: string[]
+  specifications?: {
+    adjustments?: string[]
+    bestFor?: string[]
+    difficulty?: string
+  }
+  fileFormat?: string
+  fileSize?: string
+  includesCount?: number
+  warranty?: {
+    duration?: string
+    coverage?: string
+    terms?: string[]
+  }
 }
 
 export type MarketplaceGridProps = {
@@ -48,6 +69,7 @@ export type MarketplaceDetail = {
   reviewCount?: number
   downloads?: number
   author: {
+    id: string
     name: string
     avatar: string
     verified?: boolean
@@ -83,7 +105,7 @@ export type Review = {
   userAvatar?: string
   rating: number
   comment: string
-  createdAt: string
+  date: string
   helpful?: number
 }
 
@@ -128,6 +150,7 @@ export type CartItemType = {
   price: number
   originalPrice?: number
   quantity: number
+  status?: 'active' | 'inactive' | 'blocked'
 }
 
 export type ImagePairUploaderProps = {
@@ -152,6 +175,19 @@ export type PresetUploadModalProps = {
 }
 
 export type ReviewFormProps = {
-    productId: string
-    onSuccess?: () => void
+  productId: string
+  onSuccess?: () => void
+}
+
+export type EditProductDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  productId: string
+  onSuccess?: () => void
+}
+
+export type BlockedProductDialogProps = {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  productTitle: string
 }

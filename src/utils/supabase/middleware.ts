@@ -43,7 +43,8 @@ export async function updateSession(request: NextRequest) {
           !request.nextUrl.pathname.startsWith('/callback') &&
           !request.nextUrl.pathname.startsWith('/marketplace') &&
           !request.nextUrl.pathname.startsWith('/forum') &&
-          !request.nextUrl.pathname.startsWith('/error')
+          !request.nextUrl.pathname.startsWith('/error') &&
+          request.nextUrl.pathname !== '/'
      ) {
           // no user, potentially respond by redirecting the user to the login page
           const url = request.nextUrl.clone()

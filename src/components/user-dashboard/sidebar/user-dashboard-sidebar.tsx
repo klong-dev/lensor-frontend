@@ -19,13 +19,15 @@ import {
   CirclePoundSterling,
   Command,
   GalleryVerticalEnd,
+  Headphones,
   Images,
   Mail,
   Package,
   ShoppingCart,
   Store,
   TicketCheck,
-  User
+  User,
+  Wallet
 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import { usePathname } from "next/navigation"
@@ -113,6 +115,16 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
         name: 'Product Management',
         url: ROUTES.PRODUCT_MANAGEMENT,
         icon: Package,
+      },
+      {
+        name: 'Sold Orders',
+        url: ROUTES.SOLD_ORDERS,
+        icon: Wallet,
+      },
+      {
+        name: 'Support',
+        url: ROUTES.SUPPORT,
+        icon: Headphones,
       },
     ],
   }

@@ -1,211 +1,265 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-
-import {
-     Card,
-     CardContent,
-     CardDescription,
-     CardHeader,
-     CardTitle,
-} from "@/components/ui/card"
-import {
-     ChartConfig,
-     ChartContainer,
-     ChartTooltip,
-     ChartTooltipContent,
-} from "@/components/ui/chart"
-
-export const description = "An interactive bar chart"
-
-const chartData = [
-     { date: "2024-04-01", desktop: 222, mobile: 150 },
-     { date: "2024-04-02", desktop: 97, mobile: 180 },
-     { date: "2024-04-03", desktop: 167, mobile: 120 },
-     { date: "2024-04-04", desktop: 242, mobile: 260 },
-     { date: "2024-04-05", desktop: 373, mobile: 290 },
-     { date: "2024-04-06", desktop: 301, mobile: 340 },
-     { date: "2024-04-07", desktop: 245, mobile: 180 },
-     { date: "2024-04-08", desktop: 409, mobile: 320 },
-     { date: "2024-04-09", desktop: 59, mobile: 110 },
-     { date: "2024-04-10", desktop: 261, mobile: 190 },
-     { date: "2024-04-11", desktop: 327, mobile: 350 },
-     { date: "2024-04-12", desktop: 292, mobile: 210 },
-     { date: "2024-04-13", desktop: 342, mobile: 380 },
-     { date: "2024-04-14", desktop: 137, mobile: 220 },
-     { date: "2024-04-15", desktop: 120, mobile: 170 },
-     { date: "2024-04-16", desktop: 138, mobile: 190 },
-     { date: "2024-04-17", desktop: 446, mobile: 360 },
-     { date: "2024-04-18", desktop: 364, mobile: 410 },
-     { date: "2024-04-19", desktop: 243, mobile: 180 },
-     { date: "2024-04-20", desktop: 89, mobile: 150 },
-     { date: "2024-04-21", desktop: 137, mobile: 200 },
-     { date: "2024-04-22", desktop: 224, mobile: 170 },
-     { date: "2024-04-23", desktop: 138, mobile: 230 },
-     { date: "2024-04-24", desktop: 387, mobile: 290 },
-     { date: "2024-04-25", desktop: 215, mobile: 250 },
-     { date: "2024-04-26", desktop: 75, mobile: 130 },
-     { date: "2024-04-27", desktop: 383, mobile: 420 },
-     { date: "2024-04-28", desktop: 122, mobile: 180 },
-     { date: "2024-04-29", desktop: 315, mobile: 240 },
-     { date: "2024-04-30", desktop: 454, mobile: 380 },
-     { date: "2024-05-01", desktop: 165, mobile: 220 },
-     { date: "2024-05-02", desktop: 293, mobile: 310 },
-     { date: "2024-05-03", desktop: 247, mobile: 190 },
-     { date: "2024-05-04", desktop: 385, mobile: 420 },
-     { date: "2024-05-05", desktop: 481, mobile: 390 },
-     { date: "2024-05-06", desktop: 498, mobile: 520 },
-     { date: "2024-05-07", desktop: 388, mobile: 300 },
-     { date: "2024-05-08", desktop: 149, mobile: 210 },
-     { date: "2024-05-09", desktop: 227, mobile: 180 },
-     { date: "2024-05-10", desktop: 293, mobile: 330 },
-     { date: "2024-05-11", desktop: 335, mobile: 270 },
-     { date: "2024-05-12", desktop: 197, mobile: 240 },
-     { date: "2024-05-13", desktop: 197, mobile: 160 },
-     { date: "2024-05-14", desktop: 448, mobile: 490 },
-     { date: "2024-05-15", desktop: 473, mobile: 380 },
-     { date: "2024-05-16", desktop: 338, mobile: 400 },
-     { date: "2024-05-17", desktop: 499, mobile: 420 },
-     { date: "2024-05-18", desktop: 315, mobile: 350 },
-     { date: "2024-05-19", desktop: 235, mobile: 180 },
-     { date: "2024-05-20", desktop: 177, mobile: 230 },
-     { date: "2024-05-21", desktop: 82, mobile: 140 },
-     { date: "2024-05-22", desktop: 81, mobile: 120 },
-     { date: "2024-05-23", desktop: 252, mobile: 290 },
-     { date: "2024-05-24", desktop: 294, mobile: 220 },
-     { date: "2024-05-25", desktop: 201, mobile: 250 },
-     { date: "2024-05-26", desktop: 213, mobile: 170 },
-     { date: "2024-05-27", desktop: 420, mobile: 460 },
-     { date: "2024-05-28", desktop: 233, mobile: 190 },
-     { date: "2024-05-29", desktop: 78, mobile: 130 },
-     { date: "2024-05-30", desktop: 340, mobile: 280 },
-     { date: "2024-05-31", desktop: 178, mobile: 230 },
-     { date: "2024-06-01", desktop: 178, mobile: 200 },
-     { date: "2024-06-02", desktop: 470, mobile: 410 },
-     { date: "2024-06-03", desktop: 103, mobile: 160 },
-     { date: "2024-06-04", desktop: 439, mobile: 380 },
-     { date: "2024-06-05", desktop: 88, mobile: 140 },
-     { date: "2024-06-06", desktop: 294, mobile: 250 },
-     { date: "2024-06-07", desktop: 323, mobile: 370 },
-     { date: "2024-06-08", desktop: 385, mobile: 320 },
-     { date: "2024-06-09", desktop: 438, mobile: 480 },
-     { date: "2024-06-10", desktop: 155, mobile: 200 },
-     { date: "2024-06-11", desktop: 92, mobile: 150 },
-     { date: "2024-06-12", desktop: 492, mobile: 420 },
-     { date: "2024-06-13", desktop: 81, mobile: 130 },
-     { date: "2024-06-14", desktop: 426, mobile: 380 },
-     { date: "2024-06-15", desktop: 307, mobile: 350 },
-     { date: "2024-06-16", desktop: 371, mobile: 310 },
-     { date: "2024-06-17", desktop: 475, mobile: 520 },
-     { date: "2024-06-18", desktop: 107, mobile: 170 },
-     { date: "2024-06-19", desktop: 341, mobile: 290 },
-]
-
-const chartConfig = {
-     views: {
-          label: "Page Views",
-     },
-     desktop: {
-          label: "Desktop",
-          color: "var(--chart-4)",
-     },
-     mobile: {
-          label: "Mobile",
-          color: "var(--chart-1)",
-     },
-} satisfies ChartConfig
+import { useEffect, useState } from 'react';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Spinner } from '@/components/ui/spinner';
+import { withdrawalApi } from '@/lib/apis/withdrawalApi';
+import { WithdrawalStatistics } from '@/types/withdrawal';
+import { toast } from 'sonner';
+import { BarChart3, TrendingUp, Wallet, XCircle, Filter, Calendar, DollarSign } from 'lucide-react';
 
 export default function StatisticsPage() {
-     const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("desktop")
+     const [statistics, setStatistics] = useState<WithdrawalStatistics | null>(null);
+     const [selectedYear, setSelectedYear] = useState<string>('2025');
+     const [selectedMonth, setSelectedMonth] = useState<string>('all');
+     const [loading, setLoading] = useState(false);
+     const [monthlyData, setMonthlyData] = useState<any[]>([]);
 
-     const total = React.useMemo(
-          () => ({
-               desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
-               mobile: chartData.reduce((acc, curr) => acc + curr.mobile, 0),
-          }),
-          []
-     )
+     useEffect(() => {
+          fetchStatistics();
+          if (selectedMonth === 'all') {
+               fetchMonthlyData();
+          }
+     }, [selectedYear, selectedMonth]);
+
+     const fetchStatistics = async () => {
+          try {
+               setLoading(true);
+               const year = selectedYear !== 'all' ? parseInt(selectedYear) : undefined;
+               const month = selectedMonth !== 'all' ? parseInt(selectedMonth) : undefined;
+               const response = await withdrawalApi.getStatistics(year, month);
+               setStatistics(response.data);
+          } catch (error) {
+               console.error('Error fetching statistics:', error);
+               toast.error('Failed to fetch statistics');
+          } finally {
+               setLoading(false);
+          }
+     };
+
+     const fetchMonthlyData = async () => {
+          try {
+               const year = selectedYear !== 'all' ? parseInt(selectedYear) : new Date().getFullYear();
+               const monthlyStats = [];
+
+               for (let month = 1; month <= 12; month++) {
+                    const response = await withdrawalApi.getStatistics(year, month);
+                    monthlyStats.push({
+                         month: new Date(year, month - 1).toLocaleString('en-US', { month: 'short' }),
+                         amount: response.data.totalActualAmount,
+                         withdrawals: response.data.totalWithdrawals,
+                    });
+               }
+               setMonthlyData(monthlyStats);
+          } catch (error) {
+               console.error('Error fetching monthly data:', error);
+          }
+     };
+
+     const formatCurrency = (amount: number) => {
+          return new Intl.NumberFormat('vi-VN', {
+               style: 'currency',
+               currency: 'VND',
+          }).format(amount);
+     };
+
+     const currentYear = new Date().getFullYear();
+     const years = Array.from({ length: 5 }, (_, i) => currentYear - i);
 
      return (
-          <div className="p-5 space-y-5">
-               <Card className="py-0">
-                    <CardHeader className="flex flex-col items-stretch border-b !p-0 sm:flex-row">
-                         <div className="flex flex-1 flex-col justify-center gap-1 px-6 pt-4 pb-3 sm:!py-6">
-                              <CardTitle>Visitor Statistics</CardTitle>
-                              <CardDescription>
-                                   Showing total visitors for the last 3 months
-                              </CardDescription>
+          <div className="container mx-auto py-6 space-y-6 p-8">
+               {/* Header */}
+               <div>
+                    <h1 className="text-3xl font-bold flex items-center gap-2">
+                         <BarChart3 className="h-8 w-8" />
+                         Revenue Statistics
+                    </h1>
+                    <p className="text-muted-foreground mt-1">
+                         Track your withdrawal earnings and performance
+                    </p>
+               </div>
+
+               {/* Filters */}
+               <Card>
+                    <CardContent className="pt-6">
+                         <div className="flex items-center gap-3 flex-wrap">
+                              <div className="flex items-center gap-2">
+                                   <Filter className="h-4 w-4 text-muted-foreground" />
+                                   <span className="text-sm font-medium">Filters:</span>
+                              </div>
+                              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                                   <SelectTrigger className="w-[140px]">
+                                        <SelectValue placeholder="Year" />
+                                   </SelectTrigger>
+                                   <SelectContent>
+                                        <SelectItem value="all">All Years</SelectItem>
+                                        {years.map(year => (
+                                             <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
+                                        ))}
+                                   </SelectContent>
+                              </Select>
+                              <Select value={selectedMonth} onValueChange={setSelectedMonth} disabled={selectedYear === 'all'}>
+                                   <SelectTrigger className="w-[140px]">
+                                        <SelectValue placeholder="Month" />
+                                   </SelectTrigger>
+                                   <SelectContent>
+                                        <SelectItem value="all">All Months</SelectItem>
+                                        <SelectItem value="1">January</SelectItem>
+                                        <SelectItem value="2">February</SelectItem>
+                                        <SelectItem value="3">March</SelectItem>
+                                        <SelectItem value="4">April</SelectItem>
+                                        <SelectItem value="5">May</SelectItem>
+                                        <SelectItem value="6">June</SelectItem>
+                                        <SelectItem value="7">July</SelectItem>
+                                        <SelectItem value="8">August</SelectItem>
+                                        <SelectItem value="9">September</SelectItem>
+                                        <SelectItem value="10">October</SelectItem>
+                                        <SelectItem value="11">November</SelectItem>
+                                        <SelectItem value="12">December</SelectItem>
+                                   </SelectContent>
+                              </Select>
+                              <Button variant="outline" size="sm" onClick={fetchStatistics}>
+                                   Refresh
+                              </Button>
                          </div>
-                         <div className="flex">
-                              {["desktop", "mobile"].map((key) => {
-                                   const chart = key as keyof typeof chartConfig
-                                   return (
-                                        <button
-                                             key={chart}
-                                             data-active={activeChart === chart}
-                                             className="data-[active=true]:bg-muted/50 relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l sm:border-t-0 sm:border-l sm:px-8 sm:py-6"
-                                             onClick={() => setActiveChart(chart)}
-                                        >
-                                             <span className="text-muted-foreground text-xs">
-                                                  {chartConfig[chart].label}
-                                             </span>
-                                             <span className="text-lg leading-none font-bold sm:text-3xl">
-                                                  {total[key as keyof typeof total].toLocaleString()}
-                                             </span>
-                                        </button>
-                                   )
-                              })}
-                         </div>
-                    </CardHeader>
-                    <CardContent className="px-2 sm:p-6">
-                         <ChartContainer
-                              config={chartConfig}
-                              className="aspect-auto h-[250px] w-full"
-                         >
-                              <BarChart
-                                   accessibilityLayer
-                                   data={chartData}
-                                   margin={{
-                                        left: 12,
-                                        right: 12,
-                                   }}
-                              >
-                                   <CartesianGrid vertical={false} />
-                                   <XAxis
-                                        dataKey="date"
-                                        tickLine={false}
-                                        axisLine={false}
-                                        tickMargin={8}
-                                        minTickGap={32}
-                                        tickFormatter={(value) => {
-                                             const date = new Date(value)
-                                             return date.toLocaleDateString("en-US", {
-                                                  month: "short",
-                                                  day: "numeric",
-                                             })
-                                        }}
-                                   />
-                                   <ChartTooltip
-                                        content={
-                                             <ChartTooltipContent
-                                                  className="w-[150px]"
-                                                  nameKey="views"
-                                                  labelFormatter={(value) => {
-                                                       return new Date(value).toLocaleDateString("en-US", {
-                                                            month: "short",
-                                                            day: "numeric",
-                                                            year: "numeric",
-                                                       })
-                                                  }}
-                                             />
-                                        }
-                                   />
-                                   <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
-                              </BarChart>
-                         </ChartContainer>
                     </CardContent>
                </Card>
+
+               {/* Statistics Cards */}
+               {loading ? (
+                    <div className="flex justify-center items-center py-12">
+                         <Spinner className="h-8 w-8" />
+                    </div>
+               ) : statistics ? (
+                    <>
+                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                              <Card className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900 border-blue-200 dark:border-blue-800">
+                                   <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                             <div>
+                                                  <p className="text-sm font-medium text-blue-600 dark:text-blue-400">Total Withdrawals</p>
+                                                  <p className="text-3xl font-bold text-blue-900 dark:text-blue-100 mt-2">
+                                                       {statistics.totalWithdrawals}
+                                                  </p>
+                                             </div>
+                                             <TrendingUp className="h-10 w-10 text-blue-500" />
+                                        </div>
+                                   </CardContent>
+                              </Card>
+
+                              <Card className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900 border-green-200 dark:border-green-800">
+                                   <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                             <div>
+                                                  <p className="text-sm font-medium text-green-600 dark:text-green-400">Total Received</p>
+                                                  <p className="text-2xl font-bold text-green-900 dark:text-green-100 mt-2">
+                                                       {formatCurrency(statistics.totalActualAmount)}
+                                                  </p>
+                                             </div>
+                                             <Wallet className="h-10 w-10 text-green-500" />
+                                        </div>
+                                   </CardContent>
+                              </Card>
+
+                              <Card className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950 dark:to-purple-900 border-purple-200 dark:border-purple-800">
+                                   <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                             <div>
+                                                  <p className="text-sm font-medium text-purple-600 dark:text-purple-400">Total Amount</p>
+                                                  <p className="text-2xl font-bold text-purple-900 dark:text-purple-100 mt-2">
+                                                       {formatCurrency(statistics.totalAmount)}
+                                                  </p>
+                                             </div>
+                                             <DollarSign className="h-10 w-10 text-purple-500" />
+                                        </div>
+                                   </CardContent>
+                              </Card>
+
+                              <Card className="bg-gradient-to-br from-red-50 to-red-100 dark:from-red-950 dark:to-red-900 border-red-200 dark:border-red-800">
+                                   <CardContent className="p-6">
+                                        <div className="flex items-center justify-between">
+                                             <div>
+                                                  <p className="text-sm font-medium text-red-600 dark:text-red-400">Total Fees (17%)</p>
+                                                  <p className="text-2xl font-bold text-red-900 dark:text-red-100 mt-2">
+                                                       {formatCurrency(statistics.totalFee)}
+                                                  </p>
+                                             </div>
+                                             <XCircle className="h-10 w-10 text-red-500" />
+                                        </div>
+                                   </CardContent>
+                              </Card>
+                         </div>
+
+                         {/* Monthly Chart */}
+                         {selectedMonth === 'all' && monthlyData.length > 0 && (
+                              <Card>
+                                   <CardHeader>
+                                        <CardTitle>Monthly Revenue ({selectedYear})</CardTitle>
+                                        <CardDescription>
+                                             Withdrawal earnings breakdown by month
+                                        </CardDescription>
+                                   </CardHeader>
+                                   <CardContent>
+                                        <ResponsiveContainer width="100%" height={350}>
+                                             <BarChart data={monthlyData}>
+                                                  <CartesianGrid strokeDasharray="3 3" />
+                                                  <XAxis dataKey="month" />
+                                                  <YAxis tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`} />
+                                                  <Tooltip
+                                                       formatter={(value: any) => formatCurrency(value)}
+                                                       labelStyle={{ color: '#000' }}
+                                                  />
+                                                  <Bar dataKey="amount" fill="#10b981" radius={[8, 8, 0, 0]} />
+                                             </BarChart>
+                                        </ResponsiveContainer>
+                                   </CardContent>
+                              </Card>
+                         )}
+
+                         {/* Period Summary */}
+                         <Card>
+                              <CardHeader>
+                                   <CardTitle className="flex items-center gap-2">
+                                        <Calendar className="h-5 w-5" />
+                                        Period Summary
+                                   </CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                   <div className="space-y-4">
+                                        <div className="flex justify-between items-center p-4 bg-muted rounded-lg">
+                                             <span className="text-sm font-medium">Period:</span>
+                                             <span className="font-semibold">
+                                                  {statistics.filters.year === 'all' ? 'All Time' :
+                                                       statistics.filters.month === 'all' ? `Year ${statistics.filters.year}` :
+                                                            `${new Date(2025, parseInt(statistics.filters.month) - 1).toLocaleString('en-US', { month: 'long' })} ${statistics.filters.year}`
+                                                  }
+                                             </span>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                             <div className="p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+                                                  <p className="text-sm text-green-600 dark:text-green-400">Average Per Withdrawal</p>
+                                                  <p className="text-xl font-bold text-green-900 dark:text-green-100 mt-1">
+                                                       {statistics.totalWithdrawals > 0
+                                                            ? formatCurrency(statistics.totalActualAmount / statistics.totalWithdrawals)
+                                                            : formatCurrency(0)
+                                                       }
+                                                  </p>
+                                             </div>
+                                             <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
+                                                  <p className="text-sm text-blue-600 dark:text-blue-400">Fee Percentage</p>
+                                                  <p className="text-xl font-bold text-blue-900 dark:text-blue-100 mt-1">
+                                                       17%
+                                                  </p>
+                                             </div>
+                                        </div>
+                                   </div>
+                              </CardContent>
+                         </Card>
+                    </>
+               ) : null}
           </div>
-     )
+     );
 }

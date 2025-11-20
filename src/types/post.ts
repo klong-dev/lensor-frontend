@@ -42,6 +42,7 @@ export type PostType = {
           dateTimeDigitized?: string
           cameraSerialNumber?: string
      }
+     isNSFW: boolean
      voteCount: number
      isLiked: boolean
      commentCount: number

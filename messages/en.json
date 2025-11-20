@@ -16,6 +16,7 @@
     "viewDetail": "View detail",
     "report": "Report",
     "savePost": "Save post",
+    "unsavePost": "Unsave post",
     "deletePost": "Delete post",
     "cancel": "Cancel",
     "post": "Post"
@@ -64,7 +65,8 @@
     "missingTitleToast": "Please enter post title.",
     "missingImageToast": "Please select an image.",
     "postSuccessToast": "Post created successfully!",
-    "postFailToast": "Failed to create post"
+    "postFailToast": "Failed to create post",
+    "noComments": "No comments yet"
   },
   "Message": {},
   "Notification": {},
