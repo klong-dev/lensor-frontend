@@ -24,12 +24,29 @@ export type Product = {
      rating?: number
      reviewCount?: number
      sellCount?: number
+     originalPrice?: string
+     discount?: number
+     status?: 'active' | 'inactive' | 'blocked'
+     tags?: string[]
+     compatibility?: string[]
+     features?: string[]
+     specifications?: {
+          adjustments?: string[]
+          bestFor?: string[]
+          difficulty?: string
+     }
+     imagePairs?: Array<{ before: string; after: string }>
+     presetFiles?: Array<{ url: string; fileName: string; fileSize?: number; format: string }>
+     fileFormat?: string
+     fileSize?: string
+     thumbnail?: string
 }
 
 export const createProductColumns = (
      onEdit: (id: string) => void,
      onDelete: (id: string) => void,
-     onViewProduct: (id: string) => void
+     onViewProduct: (id: string) => void,
+     onBlockedProductClick: (id: string, title: string) => void
 ): ColumnDef<Product>[] => [
           {
                id: "select",
@@ -48,6 +65,7 @@ export const createProductColumns = (
                          checked={row.getIsSelected()}
                          onCheckedChange={(value) => row.toggleSelected(!!value)}
                          aria-label="Select row"
+                         disabled={row.original.status === 'blocked'}
                     />
                ),
                enableSorting: false,
@@ -65,7 +83,7 @@ export const createProductColumns = (
                     </Button>
                ),
                cell: ({ row }) => (
-                    <div className="font-medium">
+                    <div className={`font-medium ${row.original.status === 'blocked' ? 'opacity-40' : ''}`}>
                          {row.getValue("id")}
                     </div>
                ),
@@ -74,8 +92,9 @@ export const createProductColumns = (
                accessorKey: "imageAfter",
                header: "Image",
                cell: ({ row }) => {
+                    const isBlocked = row.original.status === 'blocked'
                     return (
-                         <div className="w-25 h-20 relative">
+                         <div className={`w-25 h-20 relative ${isBlocked ? 'opacity-40 blur-sm' : ''}`}>
                               <Image
                                    src={row.getValue("imageAfter")}
                                    alt="After"
@@ -98,7 +117,7 @@ export const createProductColumns = (
                     </Button>
                ),
                cell: ({ row }) => (
-                    <div className="truncate w-36">
+                    <div className={`truncate w-36 ${row.original.status === 'blocked' ? 'opacity-40' : ''}`}>
                          {row.getValue("title")}
                     </div>
                ),
@@ -115,7 +134,7 @@ export const createProductColumns = (
                     </Button>
                ),
                cell: ({ row }) => (
-                    <div className="font-medium">
+                    <div className={`font-medium ${row.original.status === 'blocked' ? 'opacity-40' : ''}`}>
                          {Number(row.getValue("price")).toLocaleString('vi-VN')} ₫
                     </div>
                ),
@@ -132,8 +151,8 @@ export const createProductColumns = (
                     </Button>
                ),
                cell: ({ row }) => (
-                    <div className="flex items-center gap-1">
-                         <span className="text-yellow-500"><Star fill="yellow" stroke="none" size={18}/></span>
+                    <div className={`flex items-center gap-1 ${row.original.status === 'blocked' ? 'opacity-40' : ''}`}>
+                         <span className="text-yellow-500"><Star fill="yellow" stroke="none" size={18} /></span>
                          <span>{row.getValue("rating") || 0}</span>
                     </div>
                ),
@@ -149,7 +168,11 @@ export const createProductColumns = (
                          <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                ),
-               cell: ({ row }) => <div>{row.getValue("reviewCount") || 0}</div>,
+               cell: ({ row }) => (
+                    <div className={row.original.status === 'blocked' ? 'opacity-40' : ''}>
+                         {row.getValue("reviewCount") || 0}
+                    </div>
+               ),
           },
           {
                accessorKey: "sellCount",
@@ -162,18 +185,36 @@ export const createProductColumns = (
                          <ArrowUpDown className="ml-2 h-4 w-4" />
                     </Button>
                ),
-               cell: ({ row }) => <div>{row.getValue("sellCount") || 0}</div>,
+               cell: ({ row }) => (
+                    <div className={row.original.status === 'blocked' ? 'opacity-40' : ''}>
+                         {row.getValue("sellCount") || 0}
+                    </div>
+               ),
           },
           {
                id: "actions",
                header: "Actions",
                cell: ({ row }) => {
                     const product = row.original
+                    const isBlocked = product.status === 'blocked'
+
+                    if (isBlocked) {
+                         return (
+                              <Button
+                                   variant="ghost"
+                                   size="sm"
+                                   className="opacity-40"
+                                   onClick={() => onBlockedProductClick(product.id, product.title)}
+                              >
+                                   <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                         )
+                    }
 
                     return (
                          <DropdownMenu>
                               <DropdownMenuTrigger asChild className="cursor-pointer">
-                                        <MoreHorizontal className="h-4 w-4" />
+                                   <MoreHorizontal className="h-4 w-4" />
                               </DropdownMenuTrigger>
                               <DropdownMenuContent align="end">
                                    <DropdownMenuItem

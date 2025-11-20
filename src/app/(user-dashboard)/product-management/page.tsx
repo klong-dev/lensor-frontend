@@ -10,6 +10,7 @@ import { useOwnProducts } from "@/lib/hooks/useMarketplaceHooks"
 import { MarketplaceItem } from "@/types/marketplace"
 import { EditProductDialog } from "./components/edit-product-dialog"
 import { DeleteProductDialog } from "./components/delete-product-dialog"
+import { BlockedProductDialog } from "./components/blocked-product-dialog"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
@@ -18,26 +19,63 @@ export default function ProductManagement() {
      const { data: marketplaceData, error, isLoading, mutate } = useOwnProducts()
      const [editDialogOpen, setEditDialogOpen] = useState(false)
      const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+     const [blockedDialogOpen, setBlockedDialogOpen] = useState(false)
      const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+     const [selectedProductId, setSelectedProductId] = useState<string>("")
+     const [blockedProductInfo, setBlockedProductInfo] = useState<{ id: string; title: string } | null>(null)
 
-     const data: Product[] = marketplaceData?.data?.map((item: MarketplaceItem & { reviewCount?: number, sellCount?: number }) => ({
+     const data: Product[] = marketplaceData?.data?.map((item: MarketplaceItem & {
+          reviewCount?: number,
+          sellCount?: number,
+          originalPrice?: number,
+          discount?: number,
+          tags?: string[],
+          compatibility?: string[],
+          features?: string[],
+          specifications?: {
+               adjustments?: string[]
+               bestFor?: string[]
+               difficulty?: string
+          },
+          fileFormat?: string,
+          fileSize?: string
+     }) => ({
           id: item?.id,
           imageBefore: `${BASE_URL}${item?.thumbnail}`,
-          imageAfter: `${BASE_URL}${item?.image}`,
+          imageAfter: `${BASE_URL}${item?.thumbnail}`,
           title: item?.title,
           price: item?.price.toString(),
+          originalPrice: item?.originalPrice?.toString(),
           description: item?.description,
           category: item?.category,
           author: item?.author?.name,
           rating: item?.rating || 0,
           reviewCount: item?.reviewCount || 0,
-          sellCount: item?.sellCount || 0
+          sellCount: item?.sellCount || 0,
+          status: item?.status,
+          discount: item?.discount,
+          tags: item?.tags,
+          compatibility: item?.compatibility,
+          features: item?.features,
+          specifications: item?.specifications,
+          imagePairs: item?.imagePairs?.map(pair => ({
+               before: `${BASE_URL}${pair.before}`,
+               after: `${BASE_URL}${pair.after}`
+          })),
+          presetFiles: item?.presetFiles,
+          fileFormat: item?.fileFormat,
+          fileSize: item?.fileSize
      })) || []
 
      const handleEdit = (id: string) => {
           const product = data.find(p => p.id === id)
           if (product) {
-               setSelectedProduct(product)
+               if (product.status === 'blocked') {
+                    setBlockedProductInfo({ id: product.id, title: product.title })
+                    setBlockedDialogOpen(true)
+                    return
+               }
+               setSelectedProductId(id)
                setEditDialogOpen(true)
           }
      }
@@ -45,9 +83,19 @@ export default function ProductManagement() {
      const handleDelete = (id: string) => {
           const product = data.find(p => p.id === id)
           if (product) {
+               if (product.status === 'blocked') {
+                    setBlockedProductInfo({ id: product.id, title: product.title })
+                    setBlockedDialogOpen(true)
+                    return
+               }
                setSelectedProduct(product)
                setDeleteDialogOpen(true)
           }
+     }
+
+     const handleBlockedProductClick = (id: string, title: string) => {
+          setBlockedProductInfo({ id, title })
+          setBlockedDialogOpen(true)
      }
 
      const handleEditSuccess = () => {
@@ -65,7 +113,8 @@ export default function ProductManagement() {
      const columns = createProductColumns(
           handleEdit,
           handleDelete,
-          handleViewProduct
+          handleViewProduct,
+          handleBlockedProductClick
      )
 
      if (isLoading) {
@@ -108,21 +157,30 @@ export default function ProductManagement() {
                     />
                </div>
 
+               {selectedProductId && (
+                    <EditProductDialog
+                         open={editDialogOpen}
+                         onOpenChange={setEditDialogOpen}
+                         productId={selectedProductId}
+                         onSuccess={handleEditSuccess}
+                    />
+               )}
+
                {selectedProduct && (
-                    <>
-                         <EditProductDialog
-                              open={editDialogOpen}
-                              onOpenChange={setEditDialogOpen}
-                              product={selectedProduct}
-                              onSuccess={handleEditSuccess}
-                         />
-                         <DeleteProductDialog
-                              open={deleteDialogOpen}
-                              onOpenChange={setDeleteDialogOpen}
-                              product={selectedProduct}
-                              onSuccess={handleDeleteSuccess}
-                         />
-                    </>
+                    <DeleteProductDialog
+                         open={deleteDialogOpen}
+                         onOpenChange={setDeleteDialogOpen}
+                         product={selectedProduct}
+                         onSuccess={handleDeleteSuccess}
+                    />
+               )}
+
+               {blockedProductInfo && (
+                    <BlockedProductDialog
+                         open={blockedDialogOpen}
+                         onOpenChange={setBlockedDialogOpen}
+                         productTitle={blockedProductInfo.title}
+                    />
                )}
           </div>
      )
