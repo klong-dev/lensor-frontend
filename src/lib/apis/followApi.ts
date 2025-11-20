@@ -21,29 +21,84 @@ const getCurrentUserId = async (): Promise<string | null> => {
 
 // Helper to normalize follow data structure
 // Backend sometimes returns flat structure (name, avatar) instead of nested (following.name, following.avatarUrl)
-const normalizeFollowData = (follow: Follow): Follow => {
-     // If flat structure, convert to nested
-     if (follow.name && !follow.following) {
-          return {
-               ...follow,
-               following: {
-                    id: follow.followingId,
-                    name: follow.name,
-                    avatarUrl: follow.avatar,
-                    email: follow.email || '',
-               },
-          };
+// type parameter: 'followers' or 'following' to know which nested object to create
+const normalizeFollowData = (follow: Follow, type: 'followers' | 'following' = 'following'): Follow => {
+     // For following list: create nested 'following' object
+     if (type === 'following') {
+          // If flat structure with name/avatar, convert to nested
+          if (follow.name && !follow.following) {
+               return {
+                    ...follow,
+                    following: {
+                         id: follow.followingId,
+                         name: follow.name,
+                         avatarUrl: follow.avatar,
+                         email: follow.email || '',
+                    },
+               };
+          }
+          // If nested structure exists but missing avatarUrl, try to use avatar
+          if (follow.following && !follow.following.avatarUrl && follow.avatar) {
+               return {
+                    ...follow,
+                    following: {
+                         ...follow.following,
+                         avatarUrl: follow.avatar,
+                    },
+               };
+          }
+          // If no user info at all, create placeholder
+          if (!follow.following) {
+               return {
+                    ...follow,
+                    following: {
+                         id: follow.followingId,
+                         name: follow.name || 'User',
+                         avatarUrl: follow.avatar,
+                         email: follow.email || '',
+                    },
+               };
+          }
      }
-     // If nested structure exists but missing avatarUrl, try to use avatar
-     if (follow.following && !follow.following.avatarUrl && follow.avatar) {
-          return {
-               ...follow,
-               following: {
-                    ...follow.following,
-                    avatarUrl: follow.avatar,
-               },
-          };
+     
+     // For followers list: create nested 'follower' object
+     if (type === 'followers') {
+          // If flat structure with name/avatar, convert to nested
+          if (follow.name && !follow.follower) {
+               return {
+                    ...follow,
+                    follower: {
+                         id: follow.followerId,
+                         name: follow.name,
+                         avatarUrl: follow.avatar,
+                         email: follow.email || '',
+                    },
+               };
+          }
+          // If nested structure exists but missing avatarUrl, try to use avatar
+          if (follow.follower && !follow.follower.avatarUrl && follow.avatar) {
+               return {
+                    ...follow,
+                    follower: {
+                         ...follow.follower,
+                         avatarUrl: follow.avatar,
+                    },
+               };
+          }
+          // If no user info at all, create placeholder
+          if (!follow.follower) {
+               return {
+                    ...follow,
+                    follower: {
+                         id: follow.followerId,
+                         name: follow.name || 'User',
+                         avatarUrl: follow.avatar,
+                         email: follow.email || '',
+                    },
+               };
+          }
      }
+     
      return follow;
 };
 
@@ -86,7 +141,7 @@ export const getMyFollowers = async (): Promise<FollowListResponse> => {
      // Normalize data structure
      const normalized = {
           data: Array.isArray(dataArray)
-               ? dataArray.map(normalizeFollowData)
+               ? dataArray.map(item => normalizeFollowData(item, 'followers'))
                : [],
      };
      return normalized;
@@ -105,7 +160,7 @@ export const getMyFollowing = async (): Promise<FollowListResponse> => {
      // Normalize data structure
      const normalized = {
           data: Array.isArray(dataArray)
-               ? dataArray.map(normalizeFollowData)
+               ? dataArray.map(item => normalizeFollowData(item, 'following'))
                : [],
      };
      return normalized;
@@ -129,7 +184,7 @@ export const getUserFollowers = async (userId: string): Promise<FollowListRespon
      // Normalize data structure
      const normalized = {
           data: Array.isArray(dataArray)
-               ? dataArray.map(normalizeFollowData)
+               ? dataArray.map(item => normalizeFollowData(item, 'followers'))
                : [],
      };
      return normalized;
@@ -153,7 +208,7 @@ export const getUserFollowing = async (userId: string): Promise<FollowListRespon
      // Normalize data structure
      const normalized = {
           data: Array.isArray(dataArray)
-               ? dataArray.map(normalizeFollowData)
+               ? dataArray.map(item => normalizeFollowData(item, 'following'))
                : [],
      };
      return normalized;
