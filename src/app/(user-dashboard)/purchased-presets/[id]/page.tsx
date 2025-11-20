@@ -2,13 +2,12 @@
 
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { useOrderProducts } from "@/lib/hooks/useOrderHooks"
-import { ArrowLeft, Calendar, Package, Loader2, Download } from "lucide-react"
+import { ArrowLeft, Calendar, Download, Loader2, Package } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
-import OrderProductsList from "./components/order-products-list"
-import ReportDialog from "../components/report-dialog"
 import { toast } from "sonner"
+import ReportDialog from "../components/report-dialog"
+import OrderProductsList from "./components/order-products-list"
 
 export default function OrderDetailPage() {
     const params = useParams()
@@ -18,20 +17,6 @@ export default function OrderDetailPage() {
     const { data, isLoading, error } = useOrderProducts(orderId)
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3005'
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case 'completed':
-                return 'bg-green-500/10 text-green-600 border-green-500/20'
-            case 'pending':
-                return 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'
-            case 'cancelled':
-                return 'bg-red-500/10 text-red-600 border-red-500/20'
-            case 'refunded':
-                return 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-            default:
-                return 'bg-gray-500/10 text-gray-600 border-gray-500/20'
-        }
-    }
 
     const handleDownloadAllOrderFiles = async () => {
         if (!data?.data?.products || data.data.products.length === 0) {
