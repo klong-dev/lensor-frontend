@@ -76,7 +76,7 @@
       "badge": "✨ Your Creative Journey Starts Here",
       "title": "Community for",
       "titleHighlight": "Photographers",
-      "description": "The ultimate platform for photographers to create stunning portfolios, build a personal brand, sell their work, and connect with a vibrant community.",
+      "description": "The ultimate platform for photographers to discover and share Lightroom presets, connect with a vibrant community through our forum, and elevate your photography with professional editing tools.",
       "startForFree": "Start for Free",
       "exploreMarketplace": "Explore Marketplace",
       "rating": "from 2000+ creators"
@@ -86,108 +86,81 @@
       "titleHighlight": "Succeed",
       "description": "All-in-one platform designed specifically for creative professionals",
       "portfolioBuilder": {
-        "title": "Portfolio Builder",
-        "description": "Create stunning, professional portfolios with customizable templates in minutes."
+        "title": "Vibrant Forum",
+        "description": "Connect with photographers worldwide, share techniques, get feedback, and grow together."
       },
       "customDomain": {
-        "title": "Custom Domain",
-        "description": "Get your own custom domain and showcase your brand professionally."
+        "title": "Preset Marketplace",
+        "description": "Discover thousands of professional Lightroom presets or sell your own to the community."
       },
       "digitalStore": {
-        "title": "Digital Store",
-        "description": "Sell your photos, presets, and digital products directly to your audience."
+        "title": "Buy & Sell Presets",
+        "description": "Access premium editing presets or monetize your creative work by selling to fellow photographers."
       },
       "community": {
-        "title": "Community Forum",
-        "description": "Connect with thousands of photographers, share tips, and grow together."
+        "title": "Active Community",
+        "description": "Join discussions, ask questions, and learn from experienced photographers in our forum."
       },
       "lightningFast": {
-        "title": "Lightning Fast",
-        "description": "Optimized performance ensures your portfolio loads instantly everywhere."
+        "title": "Instant Downloads",
+        "description": "Get your purchased presets instantly and start editing your photos right away."
       },
       "secure": {
-        "title": "Secure & Reliable",
-        "description": "Enterprise-grade security to protect your work and customer data."
+        "title": "Secure Transactions",
+        "description": "Enterprise-grade security protects your purchases and earnings on our platform."
       }
     },
     "howItWorks": {
       "title": "How It",
       "titleHighlight": "Works",
-      "description": "Get your professional portfolio online in 4 simple steps",
+      "description": "Start your photography journey in 4 simple steps",
       "step1": {
-        "title": "Choose Your Template",
-        "description": "Select from our collection of stunning, professionally designed templates tailored for photographers."
+        "title": "Join the Community",
+        "description": "Sign up for free and instantly access our forum to connect with photographers worldwide."
       },
       "step2": {
-        "title": "Customize Everything",
-        "description": "Make it yours with our intuitive drag-and-drop editor. No coding skills required."
+        "title": "Explore Presets",
+        "description": "Browse thousands of professional Lightroom presets in our marketplace. Find the perfect style for your photos."
       },
       "step3": {
-        "title": "Launch Your Site",
-        "description": "Go live in minutes with your custom domain or our free subdomain. It's that simple."
+        "title": "Engage & Share",
+        "description": "Share your work in the forum, get feedback, participate in discussions, and learn from the community."
       },
       "step4": {
-        "title": "Grow Your Business",
-        "description": "Start selling your work, connect with clients, and watch your photography business thrive."
+        "title": "Sell Your Presets",
+        "description": "Ready to monetize? Upload your own presets to our marketplace and start earning from your creativity."
       },
       "readyToStart": "Ready to get started?",
-      "createPortfolio": "Create Your Portfolio",
+      "createPortfolio": "Join the Community",
       "watchDemo": "Watch Demo"
     },
     "showcase": {
-      "title": "Beautiful Portfolios by",
+      "title": "Beautiful Presets by",
       "titleHighlight": "Real Creators",
-      "description": "Get inspired by stunning portfolios built with Lensor",
+      "description": "Get inspired by stunning presets created by our community",
       "viewMore": "View More Examples"
     },
     "stats": {
-      "activeCreators": "Active Creators",
-      "portfoliosCreated": "Portfolios Created",
+      "activeCreators": "Active Members",
+      "portfoliosCreated": "Presets Available",
       "creatorEarnings": "Creator Earnings",
       "averageRating": "Average Rating"
     },
     "pricing": {
       "title": "Simple, Transparent",
       "titleHighlight": "Pricing",
-      "description": "Choose the plan that fits your needs. Upgrade or downgrade anytime.",
-      "mostPopular": "Most Popular",
-      "getStarted": "Get Started",
-      "starter": {
-        "name": "Starter",
-        "price": "Free",
-        "period": "forever",
-        "description": "Perfect for getting started",
-        "feature1": "1 Portfolio site",
-        "feature2": "Basic templates",
-        "feature3": "Lensor subdomain",
-        "feature4": "Community access",
-        "feature5": "5GB storage"
-      },
-      "pro": {
-        "name": "Pro",
-        "price": "$12",
-        "period": "/month",
-        "description": "For serious creators",
-        "feature1": "Unlimited portfolios",
-        "feature2": "Premium templates",
-        "feature3": "Custom domain",
-        "feature4": "Digital store (5% fee)",
-        "feature5": "100GB storage",
-        "feature6": "Priority support",
-        "feature7": "Analytics"
-      },
-      "business": {
-        "name": "Business",
-        "price": "$29",
-        "period": "/month",
-        "description": "For agencies & teams",
-        "feature1": "Everything in Pro",
-        "feature2": "No store fees",
-        "feature3": "Team collaboration",
-        "feature4": "1TB storage",
-        "feature5": "White-label option",
-        "feature6": "API access",
-        "feature7": "Dedicated support"
+      "description": "No subscription fees. We only charge when you make a sale.",
+      "platformFee": "17% Platform Fee",
+      "feeDescription": "Only charged on successful sales",
+      "features": {
+        "title": "What You Get",
+        "feature1": "Full access to forum community",
+        "feature2": "Unlimited preset uploads",
+        "feature3": "Set your own prices",
+        "feature4": "Secure payment processing",
+        "feature5": "Seller dashboard & analytics",
+        "feature6": "Customer support",
+        "feature7": "Instant payouts"
       }
     },
     "testimonials": {
@@ -196,11 +169,11 @@
       "description": "See what photographers are saying about Lensor"
     },
     "cta": {
-      "title": "Ready to Showcase Your",
-      "titleHighlight": "Creativity?",
-      "description": "Join thousands of photographers who have already built their dream portfolio with Lensor",
-      "startBuilding": "Start Building for Free",
-      "joinCommunity": "Join Community"
+      "title": "Ready to Elevate Your",
+      "titleHighlight": "Photography?",
+      "description": "Join thousands of photographers who are already discovering amazing presets and connecting in our community",
+      "startBuilding": "Join for Free",
+      "joinCommunity": "Explore Marketplace"
     }
   }
 }

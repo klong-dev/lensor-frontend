@@ -9,7 +9,7 @@ import TestimonialsSection from "@/components/landing/testimonials-section"
 import MainFooter from "@/components/layout/footer/main-footer"
 import MainHeader from "@/components/layout/header/main-header"
 import { ROUTES } from "@/constants/path"
-import { Camera, Globe, MousePointerClick, Palette, Rocket, Shield, ShoppingBag, TrendingUp, Users, Zap } from "lucide-react"
+import { MessageSquare, ShoppingBag, UserPlus, TrendingUp, Download, Shield, Users, Palette, Rocket, Search } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 export default function Home() {
@@ -24,7 +24,7 @@ export default function Home() {
     startForFree: t('hero.startForFree'),
     exploreMarketplace: t('hero.exploreMarketplace'),
     rating: t('hero.rating'),
-    startForFreeHref: ROUTES.CREATE_PORTFOLIO,
+    startForFreeHref: ROUTES.FORUM,
     exploreMarketplaceHref: ROUTES.MARKETPLACE,
     videoSrc: "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/video-vzjr7k51nyB62iitsJPVrl9a6I8NKm.mp4"
   }
@@ -36,17 +36,17 @@ export default function Home() {
     description: t('features.description'),
     features: [
       {
-        icon: Camera,
+        icon: MessageSquare,
         title: t('features.portfolioBuilder.title'),
         description: t('features.portfolioBuilder.description')
       },
       {
-        icon: Globe,
+        icon: ShoppingBag,
         title: t('features.customDomain.title'),
         description: t('features.customDomain.description')
       },
       {
-        icon: ShoppingBag,
+        icon: TrendingUp,
         title: t('features.digitalStore.title'),
         description: t('features.digitalStore.description')
       },
@@ -56,7 +56,7 @@ export default function Home() {
         description: t('features.community.description')
       },
       {
-        icon: Zap,
+        icon: Download,
         title: t('features.lightningFast.title'),
         description: t('features.lightningFast.description')
       },
@@ -78,25 +78,25 @@ export default function Home() {
     watchDemo: t('howItWorks.watchDemo'),
     steps: [
       {
-        icon: MousePointerClick,
+        icon: UserPlus,
         number: "01",
         title: t('howItWorks.step1.title'),
         description: t('howItWorks.step1.description')
       },
       {
-        icon: Palette,
+        icon: Search,
         number: "02",
         title: t('howItWorks.step2.title'),
         description: t('howItWorks.step2.description')
       },
       {
-        icon: Rocket,
+        icon: MessageSquare,
         number: "03",
         title: t('howItWorks.step3.title'),
         description: t('howItWorks.step3.description')
       },
       {
-        icon: TrendingUp,
+        icon: Palette,
         number: "04",
         title: t('howItWorks.step4.title'),
         description: t('howItWorks.step4.description')
@@ -112,40 +112,40 @@ export default function Home() {
     viewMore: t('showcase.viewMore'),
     showcaseItems: [
       {
-        title: "Wedding Photography",
+        title: "Moody Film Preset",
         photographer: "Sarah Johnson",
-        image: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-        category: "Wedding"
+        image: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=800&q=80",
+        category: "Film"
       },
       {
-        title: "Travel & Landscape",
+        title: "Golden Hour Pack",
         photographer: "Michael Chen",
         image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
-        category: "Travel"
+        category: "Landscape"
       },
       {
-        title: "Portrait Studio",
+        title: "Portrait Pro Presets",
         photographer: "Emma Rodriguez",
         image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
         category: "Portrait"
       },
       {
-        title: "Fashion Editorial",
+        title: "Urban Street Tones",
         photographer: "Alex Turner",
-        image: "https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=800&q=80",
-        category: "Fashion"
+        image: "https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?w=800&q=80",
+        category: "Street"
       },
       {
-        title: "Wildlife Photography",
+        title: "Cinematic Color Grade",
         photographer: "David Miller",
-        image: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=800&q=80",
-        category: "Wildlife"
+        image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=800&q=80",
+        category: "Cinematic"
       },
       {
-        title: "Architecture",
+        title: "Vintage Film Look",
         photographer: "Lisa Anderson",
-        image: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=800&q=80",
-        category: "Architecture"
+        image: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800&q=80",
+        category: "Vintage"
       }
     ]
   }
@@ -165,54 +165,20 @@ export default function Home() {
     title: t('pricing.title'),
     titleHighlight: t('pricing.titleHighlight'),
     description: t('pricing.description'),
-    mostPopular: t('pricing.mostPopular'),
-    getStarted: t('pricing.getStarted'),
-    plans: [
-      {
-        name: t('pricing.starter.name'),
-        price: t('pricing.starter.price'),
-        period: t('pricing.starter.period'),
-        description: t('pricing.starter.description'),
-        features: [
-          t('pricing.starter.feature1'),
-          t('pricing.starter.feature2'),
-          t('pricing.starter.feature3'),
-          t('pricing.starter.feature4'),
-          t('pricing.starter.feature5')
-        ]
-      },
-      {
-        name: t('pricing.pro.name'),
-        price: t('pricing.pro.price'),
-        period: t('pricing.pro.period'),
-        description: t('pricing.pro.description'),
-        features: [
-          t('pricing.pro.feature1'),
-          t('pricing.pro.feature2'),
-          t('pricing.pro.feature3'),
-          t('pricing.pro.feature4'),
-          t('pricing.pro.feature5'),
-          t('pricing.pro.feature6'),
-          t('pricing.pro.feature7')
-        ],
-        popular: true
-      },
-      {
-        name: t('pricing.business.name'),
-        price: t('pricing.business.price'),
-        period: t('pricing.business.period'),
-        description: t('pricing.business.description'),
-        features: [
-          t('pricing.business.feature1'),
-          t('pricing.business.feature2'),
-          t('pricing.business.feature3'),
-          t('pricing.business.feature4'),
-          t('pricing.business.feature5'),
-          t('pricing.business.feature6'),
-          t('pricing.business.feature7')
-        ]
-      }
-    ]
+    platformFee: t('pricing.platformFee'),
+    feeDescription: t('pricing.feeDescription'),
+    features: {
+      title: t('pricing.features.title'),
+      list: [
+        t('pricing.features.feature1'),
+        t('pricing.features.feature2'),
+        t('pricing.features.feature3'),
+        t('pricing.features.feature4'),
+        t('pricing.features.feature5'),
+        t('pricing.features.feature6'),
+        t('pricing.features.feature7')
+      ]
+    }
   }
 
   // Testimonials Section Data
@@ -223,24 +189,24 @@ export default function Home() {
     testimonials: [
       {
         name: "Sarah Johnson",
-        role: "Wedding Photographer",
+        role: "Preset Creator",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
         rating: 5,
-        text: "Lensor transformed my online presence. Within a month, I doubled my bookings and finally have a portfolio that truly represents my style."
+        text: "I've sold over 500 presets on Lensor! The community is amazing and the marketplace makes it so easy to reach customers worldwide."
       },
       {
         name: "Michael Chen",
-        role: "Travel Photographer",
+        role: "Professional Photographer",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
         rating: 5,
-        text: "The best investment I've made for my photography business. The marketplace feature alone has paid for my subscription 10x over."
+        text: "The preset marketplace has completely elevated my editing workflow. I've discovered incredible tools and connected with talented photographers in the forum."
       },
       {
         name: "Emma Rodriguez",
-        role: "Portrait Photographer",
+        role: "Content Creator",
         avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
         rating: 5,
-        text: "I love how easy it is to update my portfolio. No coding knowledge needed, and the templates are absolutely stunning!"
+        text: "Best photography community I've found! The forum discussions are invaluable and I've learned so much from other creators. Plus, the presets are top-notch!"
       }
     ]
   }
@@ -252,8 +218,8 @@ export default function Home() {
     description: t('cta.description'),
     startBuilding: t('cta.startBuilding'),
     joinCommunity: t('cta.joinCommunity'),
-    startBuildingHref: ROUTES.CREATE_PORTFOLIO,
-    joinCommunityHref: ROUTES.FORUM
+    startBuildingHref: ROUTES.FORUM,
+    joinCommunityHref: ROUTES.MARKETPLACE
   }
 
   return (
