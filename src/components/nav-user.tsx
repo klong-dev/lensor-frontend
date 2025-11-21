@@ -1,12 +1,8 @@
 "use client"
 
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
 } from "lucide-react"
 
 import {
@@ -32,8 +28,6 @@ import {
 import { authHelpers } from "@/lib/supabase"
 import { User } from "@supabase/supabase-js"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
-import { ROUTES } from "@/constants/path"
 
 export function NavUser({
   user,
@@ -85,33 +79,6 @@ export function NavUser({
                 </div>
               </div>
             </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-            <DropdownMenuGroup>
-
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-
-            </DropdownMenuGroup>
-
-            <DropdownMenuSeparator />
-
-            <DropdownMenuGroup>
-              <Link href={ROUTES.CURRENT_PROFILE}>
-                <DropdownMenuItem>
-                  <BadgeCheck />
-                  Account
-                </DropdownMenuItem>
-              </Link>
-
-              <DropdownMenuItem>
-                <CreditCard />
-                Billing
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-
             <DropdownMenuSeparator />
 
             <DropdownMenuItem onClick={handleLogout}>

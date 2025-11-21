@@ -1,3 +1,5 @@
+import { PostType } from './post'
+
 export interface UserProfile {
      id: string
      email: string
@@ -7,7 +9,7 @@ export interface UserProfile {
      updatedAt: string
      emailConfirmedAt: string
      lastSignInAt: string
-     posts: UserPost[]
+     posts: UserPost[] | PostType[]
      products: UserProduct[]
      isFollowing?: boolean
      followerCount?: number
@@ -22,6 +24,9 @@ export interface UserPost {
      imageUrl: string
      thumbnailUrl: string
      isNSFW: boolean
+     voteCount: number
+     commentCount: number
+     isLiked: boolean
      createdAt: string
 }
 

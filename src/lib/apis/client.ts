@@ -25,8 +25,15 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(undefined, async (error) => {
      if (error.response?.status === 401) {
-          return apiClient(error.config)
+          // Chỉ redirect login nếu không phải GET (tức là các hành động cần login)
+          const method = error.config?.method?.toUpperCase();
+          if (method && method !== 'GET') {
+               if (typeof window !== 'undefined') {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search)
+                    window.location.href = '/(auth)/login'
+               }
+          }
+          return Promise.reject(error)
      }
-
      throw error
 })

@@ -9,15 +9,22 @@ import {
 } from '../apis/followApi';
 import type { FollowStats, Follow } from '@/types/follow';
 import { toast } from 'sonner';
+import { useUserStore } from '@/stores/user-store';
 
 export const useFollowUser = (userId: string) => {
      const [isFollowing, setIsFollowing] = useState(false);
      const [loading, setLoading] = useState(false);
      const [checking, setChecking] = useState(true);
+     const user = useUserStore(state => state.user);
 
      useEffect(() => {
-          checkFollowStatus();
-     }, [userId]);
+          if (user) {
+               checkFollowStatus();
+          } else {
+               setChecking(false);
+               setIsFollowing(false);
+          }
+     }, [userId, user]);
 
      const checkFollowStatus = async () => {
           try {

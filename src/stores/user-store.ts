@@ -7,6 +7,8 @@ interface UserState {
      loading: boolean
      setUser: (user: User | null) => void
      fetchUser: () => Promise<void>
+     getRedirectAfterLogin: () => string | null
+     clearRedirectAfterLogin: () => void
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -17,5 +19,16 @@ export const useUserStore = create<UserState>((set) => ({
           set({ loading: true })
           const response = await authHelpers.getCurrentUser()
           set({ user: response.data.user, loading: false })
+     },
+     getRedirectAfterLogin: () => {
+          if (typeof window !== 'undefined') {
+               return sessionStorage.getItem('redirectAfterLogin')
+          }
+          return null
+     },
+     clearRedirectAfterLogin: () => {
+          if (typeof window !== 'undefined') {
+               sessionStorage.removeItem('redirectAfterLogin')
+          }
      }
 }))

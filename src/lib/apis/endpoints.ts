@@ -16,7 +16,8 @@ export const endpoints = {
           byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/comments`
      },
      like: {
-          byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/like`
+          byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/like`,
+          likedPosts: (userId: string) => `${API_PREFIX}/posts/${userId}/likes`
      },
      payment: {
           paypal: `${API_PREFIX}/payment/paypal/create`,

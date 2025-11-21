@@ -83,5 +83,10 @@ export const postApi = {
                data: [],
                total: 0,
           }
+     },
+
+     getLikedPosts: async (userId: string) => {
+          const res = await apiClient.get(endpoints.like.likedPosts(userId))
+          return res.data
      }
 }

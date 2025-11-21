@@ -1,7 +1,6 @@
 "use client"
 
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -148,7 +147,12 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <div className="flex h-14 items-center px-4">
+          <div className="flex items-center gap-2">
+            <GalleryVerticalEnd className="size-6 text-primary" />
+            <span className="font-bold text-lg text-primary group-data-[collapsible=icon]:hidden">LENSOR</span>
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain title={t('personalSpace')} items={navMainsWithActive} />

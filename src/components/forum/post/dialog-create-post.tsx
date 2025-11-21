@@ -23,6 +23,9 @@ import { useTranslations } from "next-intl"
 import React, { ChangeEvent, useState } from 'react'
 import { toast } from "sonner"
 import CarouselPreview from "./carousel-preview"
+import { useUserStore } from "@/stores/user-store"
+import { useRouter } from "next/navigation"
+import { LoginRequiredDialog } from "@/components/ui/login-required-dialog"
 
 export default function DialogCreatePost({ children }: { children: React.ReactNode }) {
      const t = useTranslations("Forum")
@@ -31,11 +34,13 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
      const [filePreview, setFilePreview] = useState<string[] | undefined>()
      const [isOpen, setIsOpen] = useState(false)
      const [isLoading, setIsLoading] = useState(false)
+     const [showLoginDialog, setShowLoginDialog] = useState(false)
      const [title, setTitle] = useState('')
      const [content, setContent] = useState('')
      const [category, setCategory] = useState('general')
-
      const { mutate } = usePosts()
+     const user = useUserStore(state => state.user)
+     const router = useRouter();
 
      const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
           setTitle(e.target.value)
@@ -88,6 +93,14 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
           }
      }
 
+     const handleTriggerClick = () => {
+          if (!user) {
+               setShowLoginDialog(true)
+               return
+          }
+          setIsOpen(true)
+     }
+
      const handleDrop = async (files: File[]) => {
           setFiles(files)
           setIsLoading(true)
@@ -109,73 +122,83 @@ export default function DialogCreatePost({ children }: { children: React.ReactNo
      }
 
      return (
-          <Dialog open={isOpen} onOpenChange={setIsOpen}>
-               <DialogTrigger asChild>
+          <>
+               <div onClick={handleTriggerClick}>
                     {children}
-               </DialogTrigger>
-               <DialogOverlay className="backdrop-blur-[2px]">
-                    <DialogContent
-                         className='sm:max-w-[475px] max-h-[640px]'
-                         onInteractOutside={e => handleOnLoading(e)}
-                         onEscapeKeyDown={e => handleOnLoading(e)}
-                         showCloseButton={!isLoading}
-                    >
-                         <DialogHeader>
-                              <DialogTitle>{t('dialogCreateTitle')}</DialogTitle>
-                              <DialogDescription>
-                                   {t('dialogCreateDescription')}
-                              </DialogDescription>
-                         </DialogHeader>
-                         <div className="grid gap-4">
-                              <Input
-                                   placeholder={t('titleInputPlaceholder')}
-                                   value={title}
-                                   onChange={handleChangeTitle}
-                                   disabled={isLoading}
-                              />
-                              <InputGroup>
-                                   <InputGroupTextarea
-                                        className="h-30"
-                                        placeholder={t('descriptionInputPlaceholder')}
-                                        value={content}
-                                        onChange={handleChangeContent}
+               </div>
+
+               <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                    <DialogOverlay className="backdrop-blur-[2px]">
+                         <DialogContent
+                              className='sm:max-w-[475px] max-h-[640px]'
+                              onInteractOutside={e => handleOnLoading(e)}
+                              onEscapeKeyDown={e => handleOnLoading(e)}
+                              showCloseButton={!isLoading}
+                         >
+                              <DialogHeader>
+                                   <DialogTitle>{t('dialogCreateTitle')}</DialogTitle>
+                                   <DialogDescription>
+                                        {t('dialogCreateDescription')}
+                                   </DialogDescription>
+                              </DialogHeader>
+                              <div className="grid gap-4">
+                                   <Input
+                                        placeholder={t('titleInputPlaceholder')}
+                                        value={title}
+                                        onChange={handleChangeTitle}
                                         disabled={isLoading}
                                    />
-                              </InputGroup>
+                                   <InputGroup>
+                                        <InputGroupTextarea
+                                             className="h-30"
+                                             placeholder={t('descriptionInputPlaceholder')}
+                                             value={content}
+                                             onChange={handleChangeContent}
+                                             disabled={isLoading}
+                                        />
+                                   </InputGroup>
 
-                              {!filePreview
-                                   ?
-                                   <Dropzone
-                                        accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
-                                        onDrop={handleDrop}
-                                        onError={console.error}
-                                        src={files}
-                                        className="w-full aspect-[3/2]"
-                                        maxFiles={5}
-                                   >
-                                        <DropzoneEmptyState />
-                                        <DropzoneContent>
-                                             <div className="w-full aspect-[3/2] flex justify-center items-center gap-2">
-                                                  <Spinner /> {t('uploading')}....
-                                             </div>
-                                        </DropzoneContent>
-                                   </Dropzone>
-                                   :
-                                   <CarouselPreview files={filePreview} handleClearImage={handleClearImage} />}
-                         </div>
-                         <DialogFooter>
-                              <DialogClose asChild>
-                                   <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-                                        {tButton('cancel')}
+                                   {!filePreview
+                                        ?
+                                        <Dropzone
+                                             accept={{ 'image/*': ['.png', '.jpg', '.jpeg'] }}
+                                             onDrop={handleDrop}
+                                             onError={console.error}
+                                             src={files}
+                                             className="w-full aspect-[3/2]"
+                                             maxFiles={5}
+                                        >
+                                             <DropzoneEmptyState />
+                                             <DropzoneContent>
+                                                  <div className="w-full aspect-[3/2] flex justify-center items-center gap-2">
+                                                       <Spinner /> {t('uploading')}....
+                                                  </div>
+                                             </DropzoneContent>
+                                        </Dropzone>
+                                        :
+                                        <CarouselPreview files={filePreview} handleClearImage={handleClearImage} />}
+                              </div>
+                              <DialogFooter>
+                                   <DialogClose asChild>
+                                        <Button variant="outline" onClick={handleClose} disabled={isLoading}>
+                                             {tButton('cancel')}
+                                        </Button>
+                                   </DialogClose>
+                                   <Button onClick={handlePost} disabled={isLoading}>
+                                        {isLoading && <Spinner />}
+                                        {tButton('post')}
                                    </Button>
-                              </DialogClose>
-                              <Button onClick={handlePost} disabled={isLoading}>
-                                   {isLoading && <Spinner />}
-                                   {tButton('post')}
-                              </Button>
-                         </DialogFooter>
-                    </DialogContent>
-               </DialogOverlay>
-          </Dialog>
+                              </DialogFooter>
+                         </DialogContent>
+                    </DialogOverlay>
+               </Dialog>
+
+               <LoginRequiredDialog
+                    open={showLoginDialog}
+                    onOpenChange={setShowLoginDialog}
+                    title="Login Required"
+                    description="You need to be logged in to create a post. Please login to continue."
+               />
+          </>
      )
 }

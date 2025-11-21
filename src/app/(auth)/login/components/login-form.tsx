@@ -3,12 +3,14 @@
 import { authHelpers } from '@/lib/supabase'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Facebook, Github } from 'lucide-react';
+import { Facebook } from 'lucide-react';
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 import { useUserStore } from '@/stores/user-store'
+import { useCartStore } from '@/stores/cart-store'
+import { cartApi } from '@/lib/apis/cartApi'
 import { ROUTES } from '@/constants/path'
 import {
     Field,
@@ -40,11 +42,43 @@ export function LoginForm(props: Record<string, never>) {
         confirmPassword: ''
     })
     const { user } = useUserStore()
+    const { getPendingCart, clearPendingCart } = useCartStore()
+
+    // Hàm đồng bộ pending cart sau khi login
+    const syncPendingCart = async () => {
+        const pendingItems = getPendingCart();
+        if (pendingItems && pendingItems.length > 0) {
+            try {
+                // Gửi từng sản phẩm trong pending cart lên server
+                for (const item of pendingItems) {
+                    await cartApi.addItem({
+                        productId: item.productId,
+                        quantity: item.quantity
+                    });
+                }
+                clearPendingCart();
+                toast.success(`${pendingItems.length} item(s) added to your cart!`);
+            } catch (error) {
+                console.error('Error syncing pending cart:', error);
+                toast.error('Failed to sync cart items');
+            }
+        }
+    };
 
     useEffect(() => {
         if (user) {
-            router.replace(ROUTES.HOME)
-            toast.success('You are already logged in')
+            // Nếu đã login, đồng bộ pending cart
+            syncPendingCart().then(() => {
+                // Kiểm tra redirectAfterLogin
+                const redirectUrl = typeof window !== 'undefined' ? sessionStorage.getItem('redirectAfterLogin') : null
+                if (redirectUrl) {
+                    sessionStorage.removeItem('redirectAfterLogin')
+                    router.replace(redirectUrl)
+                } else {
+                    router.replace(ROUTES.HOME)
+                }
+                toast.success('You are already logged in')
+            });
         }
     }, [user, router])
 
@@ -118,7 +152,18 @@ export function LoginForm(props: Record<string, never>) {
                     toast.error(signInError.message)
                 } else if (data.user) {
                     toast.success('Login successful!')
-                    router.push(ROUTES.HOME)
+
+                    // Đồng bộ pending cart
+                    await syncPendingCart();
+
+                    // Kiểm tra redirectAfterLogin
+                    const redirectUrl = typeof window !== 'undefined' ? sessionStorage.getItem('redirectAfterLogin') : null
+                    if (redirectUrl) {
+                        sessionStorage.removeItem('redirectAfterLogin')
+                        router.replace(redirectUrl)
+                    } else {
+                        router.push(ROUTES.HOME)
+                    }
                 }
             } else {
                 const { data, error: signUpError } = await authHelpers.signUpWithEmail(
@@ -208,14 +253,6 @@ export function LoginForm(props: Record<string, never>) {
                     aria-label="Sign in with Facebook"
                 >
                     <Facebook className='text-white' size={20} />
-                </button>
-                <button
-                    className='cursor-pointer bg-gray-800 dark:bg-gray-800 hover:bg-gray-900 dark:hover:bg-gray-700 items-center justify-center w-11 h-11 flex rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed'
-                    onClick={() => handleSocialLogin('github')}
-                    disabled={loading}
-                    aria-label="Sign in with GitHub"
-                >
-                    <Github className='text-white' size={20} />
                 </button>
             </div>
 

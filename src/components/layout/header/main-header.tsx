@@ -54,6 +54,14 @@ export default function MainHeader() {
     { title: t('marketplace'), href: ROUTES.MARKETPLACE }
   ]
 
+  // Hàm xử lý lưu session và chuyển hướng login
+  const handleLoginRedirect = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search)
+      window.location.href = '/(auth)/login'
+    }
+  }
+
   return (
     <header className='z-30 backdrop-blur-2xl border-b-[0.5px] border-b-gray-300/10 pl-2 pr-2 sticky top-0'>
       <div className='flex justify-between gap-10 items-center h-16'>
@@ -68,8 +76,8 @@ export default function MainHeader() {
         <div className='w-64 flex justify-end items-center gap-5'>
           {!user
             ? <>
-              <Link href={ROUTES.LOGIN}><Button variant='secondary'>{tButton('register')}</Button></Link>
-              <Link href={ROUTES.LOGIN}><Button>{tButton('login')}</Button></Link>
+              <Button variant='secondary' onClick={handleLoginRedirect}>{tButton('register')}</Button>
+              <Button onClick={handleLoginRedirect}>{tButton('login')}</Button>
             </>
             : <>
               <Link href={ROUTES.WALLET}>
