@@ -66,14 +66,6 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
             className={`relative w-full aspect-square bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:opacity-80 transition-shadow h-min-[442px] h-full group ${item?.status === 'active' ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
                 }`}
         >
-            {item?.status !== 'active' && (
-                <div className="absolute inset-0 z-40 bg-black/60 flex items-center justify-center">
-                    <div className="text-center">
-                        <Ban className="w-16 h-16 text-red-500 mx-auto mb-2" />
-                        <p className="text-white font-semibold">Unavailable</p>
-                    </div>
-                </div>
-            )}
 
             {isInCart && (
                 <Badge className="absolute top-3 right-3 z-30 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1">

@@ -12,6 +12,7 @@ import { usePosts } from "@/lib/hooks/usePostHooks";
 import { useUserStore } from "@/stores/user-store";
 import { PostType } from "@/types/post";
 import { useTranslations } from "next-intl";
+import { useEffect } from "react";
 
 export default function ForumPage() {
   const t = useTranslations("Forum");
@@ -21,15 +22,23 @@ export default function ForumPage() {
 
   if (error) return <LostConnect refecth={mutate} />;
 
+  useEffect(() => {
+    console.log('check');
+    sessionStorage.setItem('redirectAfterLogin', '/forum')
+  }, [])
+
+
   return (
     <div className="w-[720px] mx-auto">
       <div className="p-5">
         <DialogCreatePost>
           <Card className="flex flex-row justify-center px-3 gap-3 py-3">
-            <Avatar>
-              <AvatarImage src={user?.user_metadata.avatar_url} />
-              <AvatarFallback>{user?.user_metadata.name}</AvatarFallback>
-            </Avatar>
+            {user &&
+              <Avatar>
+                <AvatarImage src={user?.user_metadata.avatar_url} />
+                <AvatarFallback>{user?.user_metadata.name}</AvatarFallback>
+              </Avatar>
+            }
             <Input disabled type="text" placeholder={t("placeholderInputCreatePost")} />
             <Button>{tButton("createPost")}</Button>
           </Card>

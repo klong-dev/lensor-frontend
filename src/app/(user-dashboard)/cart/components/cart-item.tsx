@@ -2,14 +2,14 @@
 
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Trash2, Package, FileType, HardDrive, Ban, AlertCircle } from 'lucide-react'
 import { CartItemProps } from '@/types/cart'
-import Link from 'next/link'
 import { ROUTES } from '@/constants/path'
-import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
-import { Checkbox } from '@/components/ui/checkbox'
 
 export function CartItem({
     id,
@@ -29,29 +29,27 @@ export function CartItem({
     onSelect,
     isSelected = false,
 }: CartItemProps) {
-    const isUnavailable = status !== 'active';
-
-    const handleClick = () => {
-        if (isUnavailable) {
-            toast.error('This product is currently unavailable for purchase');
-        }
-    };
+    const isUnavailable = status !== 'active'
 
     const handleCheckboxChange = (checked: boolean) => {
         if (isUnavailable) {
-            toast.error('Cannot select unavailable product');
-            return;
+            toast.error('Cannot select unavailable product')
+            return
         }
-        if (onSelect) {
-            onSelect(id, checked);
+        onSelect?.(id, checked)
+    }
+
+    const handleContainerClick = () => {
+        if (isUnavailable) {
+            toast.error('This product is currently unavailable for purchase')
         }
-    };
+    }
 
     return (
         <div
             className={`group flex gap-4 p-4 rounded-lg border bg-card hover:shadow-md transition-all duration-200 ${isUnavailable ? 'opacity-60 cursor-not-allowed' : ''
                 }`}
-            onClick={handleClick}
+            onClick={handleContainerClick}
         >
             {onSelect && (
                 <div className="flex items-center pt-2">
@@ -136,11 +134,9 @@ export function CartItem({
                 <div className="text-right space-y-1">
                     <p className="font-bold text-xl">{price.toLocaleString('vi-VN')} ₫</p>
                     {originalPrice && (
-                        <div className="space-y-0.5">
-                            <p className="text-sm text-muted-foreground line-through">
-                                {originalPrice.toLocaleString('vi-VN')} ₫
-                            </p>
-                        </div>
+                        <p className="text-sm text-muted-foreground line-through">
+                            {originalPrice.toLocaleString('vi-VN')} ₫
+                        </p>
                     )}
                 </div>
             </div>

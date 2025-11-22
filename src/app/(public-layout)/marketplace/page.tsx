@@ -17,96 +17,93 @@ import { useEffect, useState } from 'react';
 import FilterSidebar from './components/filter-sidebar';
 import MarketplaceItemCard from "./components/marketplace-item-card";
 
+const ITEMS_PER_PAGE = 12
+
+const DEFAULT_FILTERS = {
+    category: 'all',
+    price: 'all',
+    rating: 'all',
+}
+
+// Helper functions
+const isValidItem = (item: MarketplaceItem) => {
+    const hasValidThumbnail = item?.thumbnail?.trim() !== ''
+    const hasValidImage = item?.image?.trim() !== ''
+    const isActive = item?.status === 'active'
+    return hasValidThumbnail && hasValidImage && isActive
+}
+
+const matchesPriceRange = (price: number, range: string) => {
+    switch (range) {
+        case 'under-50000': return price < 50000
+        case '50000-200000': return price >= 50000 && price <= 200000
+        case '200000-500000': return price > 200000 && price <= 500000
+        case 'over-500000': return price > 500000
+        default: return true
+    }
+}
+
+const matchesFilters = (item: MarketplaceItem, searchQuery: string, filters: typeof DEFAULT_FILTERS) => {
+    const query = searchQuery.toLowerCase()
+    const matchesSearch = !searchQuery ||
+        item.title.toLowerCase().includes(query) ||
+        item.description.toLowerCase().includes(query)
+
+    const matchesCategory = filters.category === 'all' || item.category === filters.category
+    const matchesRating = filters.rating === 'all' || (item.rating !== undefined && item.rating >= parseFloat(filters.rating))
+    const matchesPrice = matchesPriceRange(item.price, filters.price)
+
+    return matchesSearch && matchesCategory && matchesPrice && matchesRating
+}
+
+const getUniqueCategories = (items: MarketplaceItem[]) =>
+    Array.from(new Set(items.map(item => item.category)))
+
+const isFiltersDefault = (searchInput: string, searchQuery: string, filters: typeof DEFAULT_FILTERS) =>
+    !searchInput && !searchQuery &&
+    filters.category === 'all' &&
+    filters.price === 'all' &&
+    filters.rating === 'all'
+
 export default function MarketplacePage() {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [searchInput, setSearchInput] = useState('');
-    const [filters, setFilters] = useState({
-        category: 'all',
-        price: 'all',
-        rating: 'all',
-    });
-    const [resetFilter, setResetFilter] = useState(false)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [searchInput, setSearchInput] = useState('')
+    const [filters, setFilters] = useState(DEFAULT_FILTERS)
     const [currentPage, setCurrentPage] = useState(1)
-    const itemPerPage = 12
 
     const { data: marketplaceItems, isLoading } = useMarketplace()
 
-    const categories: string[] = marketplaceItems?.data
-        ? Array.from(new Set(marketplaceItems.data.map((item: MarketplaceItem) => item.category)))
-        : [];
+    // Process data
+    const allItems = marketplaceItems?.data || []
+    const validItems = allItems.filter(isValidItem)
+    const categories = getUniqueCategories(allItems)
+    const filteredItems = validItems.filter((item: MarketplaceItem) => matchesFilters(item, searchQuery, filters))
 
-    const validItems = marketplaceItems?.data?.filter((item: MarketplaceItem) => {
-        const hasValidThumbnail = item?.thumbnail &&
-            typeof item.thumbnail === 'string' &&
-            item.thumbnail.trim() !== '';
+    // Pagination
+    const totalPages = Math.ceil(filteredItems.length / ITEMS_PER_PAGE)
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE
+    const paginatedItems = filteredItems.slice(startIndex, startIndex + ITEMS_PER_PAGE)
 
-        const hasValidImage = item?.image &&
-            typeof item.image === 'string' &&
-            item.image.trim() !== '';
+    const isFilterActive = !isFiltersDefault(searchInput, searchQuery, filters)
 
-        const isActive = item?.status === 'active';
-
-        return hasValidThumbnail && hasValidImage && isActive;
-    }) || []
-
-
-    const filteredItems = validItems?.filter((item: MarketplaceItem) => {
-        const query = searchQuery.toLowerCase();
-
-        const matchesSearch =
-            item.title.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query);
-
-        const matchesCategory = filters.category === 'all' || item.category === filters.category;
-
-        const matchesRating = filters.rating === 'all' || (item.rating !== undefined && item.rating >= parseFloat(filters.rating));
-
-        const priceValue = item.price
-        let matchesPrice = true;
-        if (filters.price === 'under-50000') matchesPrice = priceValue < 50000;
-        else if (filters.price === '50000-200000') matchesPrice = priceValue >= 50000 && priceValue <= 200000;
-        else if (filters.price === '200000-500000') matchesPrice = priceValue > 200000 && priceValue <= 500000;
-        else if (filters.price === 'over-500000') matchesPrice = priceValue > 500000;
-        return matchesSearch && matchesCategory && matchesPrice && matchesRating;
-    });
-
-
-    const totalPages = Math.ceil(filteredItems.length / itemPerPage)
-    const startIndex = (currentPage - 1) * itemPerPage
-    const endIndex = startIndex + itemPerPage
-    const paginationItems = filteredItems.slice(startIndex, endIndex)
-
-
+    // Handlers
     const handleResetFilter = () => {
-        if (resetFilter) {
-            setSearchInput('')
-            setSearchQuery('')
-            setFilters({
-                category: 'all',
-                price: 'all',
-                rating: 'all'
-            })
-        }
-        setResetFilter(false)
+        setSearchInput('')
+        setSearchQuery('')
+        setFilters(DEFAULT_FILTERS)
     }
 
-    useEffect(() => {
-        const isDefault =
-            searchInput === '' &&
-            searchQuery === '' &&
-            filters.category === 'all' &&
-            filters.price === 'all' &&
-            filters.rating === 'all';
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page)
+        }
+    }
 
-        setResetFilter(!isDefault);
-    }, [filters, searchInput, searchQuery])
-
+    // Effects
     useEffect(() => {
-        const timeout = setTimeout(() => {
-            setSearchQuery(searchInput);
-        }, 500);
-        return () => clearTimeout(timeout);
-    }, [searchInput]);
+        const timeout = setTimeout(() => setSearchQuery(searchInput), 500)
+        return () => clearTimeout(timeout)
+    }, [searchInput])
 
     useEffect(() => {
         setCurrentPage(1)
@@ -157,7 +154,7 @@ export default function MarketplacePage() {
                         <FilterSidebar
                             filters={filters}
                             onFilterChange={setFilters}
-                            resetFilter={resetFilter}
+                            resetFilter={isFilterActive}
                             onResetFilter={handleResetFilter}
                             categories={categories}
                         />
@@ -170,7 +167,7 @@ export default function MarketplacePage() {
                         :
 
                         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                            {paginationItems?.map((item: MarketplaceItem) => (
+                            {paginatedItems.map((item: MarketplaceItem) => (
                                 <MarketplaceItemCard {...item} key={item.id} />
                             ))}
                         </div>
@@ -182,7 +179,7 @@ export default function MarketplacePage() {
                                     href="#"
                                     onClick={(e) => {
                                         e.preventDefault()
-                                        if (currentPage > 1) setCurrentPage(currentPage - 1)
+                                        handlePageChange(currentPage - 1)
                                     }}
                                 />
                             </PaginationItem>
@@ -207,12 +204,11 @@ export default function MarketplacePage() {
                             )}
 
                             {Array.from({ length: totalPages }, (_, i) => i + 1)
-                                .filter(
-                                    (page) =>
-                                        page !== 1 &&
-                                        page !== totalPages &&
-                                        page >= currentPage - 1 &&
-                                        page <= currentPage + 1
+                                .filter(page =>
+                                    page !== 1 &&
+                                    page !== totalPages &&
+                                    page >= currentPage - 1 &&
+                                    page <= currentPage + 1
                                 )
                                 .map((page) => (
                                     <PaginationItem key={page}>
@@ -255,7 +251,7 @@ export default function MarketplacePage() {
                                     href="#"
                                     onClick={(e) => {
                                         e.preventDefault()
-                                        if (currentPage < totalPages) setCurrentPage(currentPage + 1)
+                                        handlePageChange(currentPage + 1)
                                     }}
                                 />
                             </PaginationItem>

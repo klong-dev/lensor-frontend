@@ -29,9 +29,18 @@ export function LoginRequiredDialog({
 
      const handleLogin = () => {
           if (typeof window !== 'undefined') {
-               sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search)
-               router.push('/(auth)/login')
+               if (!sessionStorage.getItem('tempCart')) {
+                    sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search)
+               } else {
+                    sessionStorage.setItem('redirectAfterLogin', '/cart')
+               }
+               router.push('/login')
           }
+          onOpenChange(false)
+     }
+
+     const handleCancle = () => {
+          sessionStorage.removeItem('tempCart')
           onOpenChange(false)
      }
 
@@ -50,7 +59,7 @@ export function LoginRequiredDialog({
                     <DialogFooter className="flex-row gap-2 sm:justify-end">
                          <Button
                               variant="outline"
-                              onClick={() => onOpenChange(false)}
+                              onClick={handleCancle}
                               className="flex-1 sm:flex-none"
                          >
                               <X className="h-4 w-4 mr-2" />

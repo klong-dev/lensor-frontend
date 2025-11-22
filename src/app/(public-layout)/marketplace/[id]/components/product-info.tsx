@@ -34,14 +34,15 @@ export default function ProductInfo({
         return cartData.items.some((item: CartItemData) => item.productId === id)
     }, [cartData?.items, id])
 
-    const user = useUserStore(state => state.user);
-    const router = useRouter();
+    const user = useUserStore(state => state.user)
+    const router = useRouter()
 
     const handleAddToCart = async () => {
         if (!user) {
             // Nếu chưa login, hiển thị dialog yêu cầu login
+            sessionStorage.setItem('tempCart', id)
             setShowLoginDialog(true)
-            return;
+            return
         }
 
         if (isInCart) {
@@ -161,7 +162,7 @@ export default function ProductInfo({
                 open={showLoginDialog}
                 onOpenChange={setShowLoginDialog}
                 title="Login Required"
-                description="You need to be logged in to add items to cart. Please login to continue."
+                description="Product has been added to cart, please login to continue."
             />
         </div>
     )
