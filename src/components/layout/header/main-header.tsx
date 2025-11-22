@@ -132,13 +132,13 @@ export default function MainHeader() {
           )}
         </div>
 
-        <div className='flex justify-end items-center gap-2 md:gap-5 w-44'>
+        <div className='flex justify-end items-center gap-1 sm:gap-2 md:gap-5 w-auto md:w-44'>
           {!user
             ? <>
               <Button variant='secondary' onClick={handleLoginRedirect} size='sm' className='hidden md:inline-flex'>
                 {tButton('register')}
               </Button>
-              <Button onClick={handleLoginRedirect} size='sm'>{tButton('login')}</Button>
+              <Button onClick={handleLoginRedirect} size='sm' className='h-8 md:h-9 text-xs md:text-sm'>{tButton('login')}</Button>
             </>
             : <>
               <div className='hidden md:flex justify-end items-center gap-1'>
@@ -161,7 +161,7 @@ export default function MainHeader() {
               <div className='flex gap-1'>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant='ghost' size='icon' className='relative h-9 w-9'>
+                    <Button variant='ghost' size='icon' className='relative h-9 w-9 hidden md:inline-flex'>
                       <Wallet className='h-4 w-4' />
                     </Button>
                   </PopoverTrigger>
