@@ -23,33 +23,33 @@ export default function ProductDetailsTabs({
     onReviewSuccess
 }: MarketplaceDetail & { onReviewSuccess?: () => void }) {
     return (
-        <div className='mt-12'>
+        <div className='mt-8 sm:mt-12'>
             <Tabs defaultValue="description" className="w-full">
-                <TabsList className="w-full justify-start">
-                    <TabsTrigger value="description">Description</TabsTrigger>
-                    <TabsTrigger value="warranty">Warranty Policy</TabsTrigger>
-                    <TabsTrigger value="reviews">Reviews ({reviewCount || 0})</TabsTrigger>
+                <TabsList className="w-full justify-start overflow-x-auto">
+                    <TabsTrigger value="description" className="text-xs sm:text-sm">Description</TabsTrigger>
+                    <TabsTrigger value="warranty" className="text-xs sm:text-sm whitespace-nowrap">Warranty Policy</TabsTrigger>
+                    <TabsTrigger value="reviews" className="text-xs sm:text-sm">Reviews ({reviewCount || 0})</TabsTrigger>
                 </TabsList>
 
 
-                <TabsContent value="description" className="mt-6">
-                    <div className='border rounded-lg p-6'>
-                        <h2 className='text-2xl font-bold mb-4'>Product Description</h2>
-                        <p className='text-muted-foreground leading-relaxed mb-4'>
+                <TabsContent value="description" className="mt-4 sm:mt-6">
+                    <div className='border rounded-lg p-4 sm:p-6'>
+                        <h2 className='text-xl sm:text-2xl font-bold mb-3 sm:mb-4'>Product Description</h2>
+                        <p className='text-sm sm:text-base text-muted-foreground leading-relaxed mb-4'>
                             {description || 'No description available'}
                         </p>
 
                         {tags && tags?.length > 0 && (
-                            <div className='mb-6'>
-                                <h3 className='font-semibold mb-3 flex items-center gap-2'>
-                                    <Tag className='w-4 h-4' />
+                            <div className='mb-4 sm:mb-6'>
+                                <h3 className='text-sm sm:text-base font-semibold mb-2 sm:mb-3 flex items-center gap-2'>
+                                    <Tag className='w-3 h-3 sm:w-4 sm:h-4' />
                                     Tags
                                 </h3>
                                 <div className='flex flex-wrap gap-2'>
                                     {tags?.map((tag, index) => (
                                         <span
                                             key={index}
-                                            className='px-3 py-1 bg-primary/10 text-primary rounded-full text-sm'
+                                            className='px-2 sm:px-3 py-1 bg-primary/10 text-primary rounded-full text-xs sm:text-sm'
                                         >
                                             #{tag}
                                         </span>
@@ -58,10 +58,10 @@ export default function ProductDetailsTabs({
                             </div>
                         )}
 
-                        <div className='grid grid-cols-2 gap-6 mt-6'>
+                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6'>
                             <div>
-                                <h3 className='font-semibold mb-3'>Product Information</h3>
-                                <ul className='space-y-2 text-sm text-muted-foreground'>
+                                <h3 className='text-sm sm:text-base font-semibold mb-2 sm:mb-3'>Product Information</h3>
+                                <ul className='space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground'>
                                     <li><strong>Category:</strong> {category || 'N/A'}</li>
                                     <li><strong>File Format:</strong> {fileFormat || 'N/A'}</li>
                                     <li><strong>File Size:</strong> {fileSize || 'N/A'}</li>
@@ -69,11 +69,11 @@ export default function ProductDetailsTabs({
                                 </ul>
                             </div>
                             <div>
-                                <h3 className='font-semibold mb-3'>Compatibility</h3>
-                                <ul className='space-y-2 text-sm text-muted-foreground'>
+                                <h3 className='text-sm sm:text-base font-semibold mb-2 sm:mb-3'>Compatibility</h3>
+                                <ul className='space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground'>
                                     {compatibility?.map((item, index) => (
-                                        <li key={index} className='flex items-center gap-2'>
-                                            <Check className='w-4 h-4 text-green-500' />
+                                        <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
+                                            <Check className='w-3 h-3 sm:w-4 sm:h-4 text-green-500 shrink-0' />
                                             {item}
                                         </li>
                                     ))}
@@ -82,16 +82,16 @@ export default function ProductDetailsTabs({
                         </div>
 
                         {specifications && (
-                            <div className='mt-6 pt-6 border-t'>
-                                <h3 className='font-semibold mb-4'>Technical Specifications</h3>
-                                <div className='grid grid-cols-2 gap-6'>
+                            <div className='mt-4 sm:mt-6 pt-4 sm:pt-6 border-t'>
+                                <h3 className='text-sm sm:text-base font-semibold mb-3 sm:mb-4'>Technical Specifications</h3>
+                                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6'>
                                     {specifications?.adjustments && specifications?.adjustments?.length > 0 && (
                                         <div>
-                                            <h4 className='text-sm font-medium mb-2'>Adjustments Included:</h4>
-                                            <ul className='space-y-1 text-sm text-muted-foreground'>
+                                            <h4 className='text-xs sm:text-sm font-medium mb-1.5 sm:mb-2'>Adjustments Included:</h4>
+                                            <ul className='space-y-1 text-xs sm:text-sm text-muted-foreground'>
                                                 {specifications?.adjustments?.map((adjustment, index) => (
-                                                    <li key={index} className='flex items-center gap-2'>
-                                                        <Check className='w-3 h-3 text-green-500' />
+                                                    <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
+                                                        <Check className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 shrink-0' />
                                                         {adjustment}
                                                     </li>
                                                 ))}
@@ -100,18 +100,18 @@ export default function ProductDetailsTabs({
                                     )}
                                     {specifications.bestFor && specifications.bestFor.length > 0 && (
                                         <div>
-                                            <h4 className='text-sm font-medium mb-2'>Best For:</h4>
-                                            <ul className='space-y-1 text-sm text-muted-foreground'>
+                                            <h4 className='text-xs sm:text-sm font-medium mb-1.5 sm:mb-2'>Best For:</h4>
+                                            <ul className='space-y-1 text-xs sm:text-sm text-muted-foreground'>
                                                 {specifications?.bestFor?.map((type, index) => (
-                                                    <li key={index} className='flex items-center gap-2'>
-                                                        <Check className='w-3 h-3 text-green-500' />
+                                                    <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
+                                                        <Check className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 shrink-0' />
                                                         {type}
                                                     </li>
                                                 ))}
                                             </ul>
                                             {specifications?.difficulty && (
-                                                <div className='mt-3'>
-                                                    <span className='text-sm'><strong>Difficulty:</strong> {specifications?.difficulty}</span>
+                                                <div className='mt-2 sm:mt-3'>
+                                                    <span className='text-xs sm:text-sm'><strong>Difficulty:</strong> {specifications?.difficulty}</span>
                                                 </div>
                                             )}
                                         </div>
@@ -123,20 +123,20 @@ export default function ProductDetailsTabs({
                 </TabsContent>
 
 
-                <TabsContent value="warranty" className="mt-6">
-                    <div className='border rounded-lg p-6'>
-                        <h2 className='text-2xl font-bold mb-4'>Warranty Policy</h2>
-                        <div className='space-y-4'>
-                            <div className='flex items-start gap-3'>
-                                <Shield className='w-8 h-8 text-primary' />
+                <TabsContent value="warranty" className="mt-4 sm:mt-6">
+                    <div className='border rounded-lg p-4 sm:p-6'>
+                        <h2 className='text-xl sm:text-2xl font-bold mb-3 sm:mb-4'>Warranty Policy</h2>
+                        <div className='space-y-3 sm:space-y-4'>
+                            <div className='flex items-start gap-2 sm:gap-3'>
+                                <Shield className='w-6 h-6 sm:w-8 sm:h-8 text-primary shrink-0' />
                                 <div>
-                                    <h3 className='font-semibold text-lg'>{warranty?.duration || 'N/A'} Money-Back Guarantee</h3>
-                                    <p className='text-muted-foreground'>Free update</p>
+                                    <h3 className='text-base sm:text-lg font-semibold'>{warranty?.duration || 'N/A'} Money-Back Guarantee</h3>
+                                    <p className='text-sm sm:text-base text-muted-foreground'>Free update</p>
                                 </div>
                             </div>
-                            <div className='mt-4'>
-                                <h4 className='font-semibold mb-2'>Terms & Conditions:</h4>
-                                <ul className='space-y-2 text-sm text-muted-foreground'>
+                            <div className='mt-3 sm:mt-4'>
+                                <h4 className='text-sm sm:text-base font-semibold mb-1.5 sm:mb-2'>Terms & Conditions:</h4>
+                                <ul className='space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground'>
                                     <li>• 3-day money back guarantee</li>
                                     <li>• Compatible with future Lightroom versions</li>
                                 </ul>
@@ -146,26 +146,26 @@ export default function ProductDetailsTabs({
                 </TabsContent>
 
 
-                <TabsContent value="reviews" className="mt-6">
-                    <div className='space-y-6'>
-                        <div className='border rounded-lg p-6 bg-gradient-to-br from-background to-muted/20'>
-                            <h2 className="text-2xl font-bold mb-6">Customer Reviews</h2>
-                            <div className='grid md:grid-cols-3 gap-6'>
-                                <div className='flex flex-col items-center justify-center p-6 bg-background rounded-lg border'>
+                <TabsContent value="reviews" className="mt-4 sm:mt-6">
+                    <div className='space-y-4 sm:space-y-6'>
+                        <div className='border rounded-lg p-4 sm:p-6 bg-gradient-to-br from-background to-muted/20'>
+                            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Customer Reviews</h2>
+                            <div className='grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6'>
+                                <div className='flex flex-col items-center justify-center p-4 sm:p-6 bg-background rounded-lg border'>
                                     {rating && rating > 0 ? (
                                         <>
-                                            <div className='text-5xl font-bold mb-2'>{rating.toFixed(1)}</div>
+                                            <div className='text-4xl sm:text-5xl font-bold mb-2'>{rating.toFixed(1)}</div>
                                             <div className="flex text-yellow-500 mb-2">
                                                 {[...Array(5)].map((_, i) => (
                                                     <Star
                                                         key={i}
-                                                        className="w-5 h-5"
+                                                        className="w-4 h-4 sm:w-5 sm:h-5"
                                                         fill={i < Math.floor(rating) ? 'currentColor' : 'none'}
                                                         stroke="currentColor"
                                                     />
                                                 ))}
                                             </div>
-                                            <p className='text-sm text-muted-foreground'>{reviewCount || 0} {reviewCount === 1 ? 'review' : 'reviews'}</p>
+                                            <p className='text-xs sm:text-sm text-muted-foreground'>{reviewCount || 0} {reviewCount === 1 ? 'review' : 'reviews'}</p>
                                         </>
                                     ) : (
                                         <>
@@ -175,16 +175,16 @@ export default function ProductDetailsTabs({
                                     )}
                                 </div>
 
-                                <div className='md:col-span-2 space-y-3'>
+                                <div className='md:col-span-2 space-y-2 sm:space-y-3'>
                                     {[5, 4, 3, 2, 1].map((star) => {
                                         const count = reviews?.filter(r => r.rating === star).length || 0
                                         const percentage = (reviewCount || 0) > 0 ? (count / (reviewCount || 1)) * 100 : 0
 
                                         return (
-                                            <div key={star} className='flex items-center gap-3'>
-                                                <div className='flex items-center gap-1 w-20'>
-                                                    <span className='text-sm font-medium'>{star}</span>
-                                                    <Star className='w-4 h-4 text-yellow-500 fill-yellow-500' />
+                                            <div key={star} className='flex items-center gap-2 sm:gap-3'>
+                                                <div className='flex items-center gap-1 w-14 sm:w-20'>
+                                                    <span className='text-xs sm:text-sm font-medium'>{star}</span>
+                                                    <Star className='w-3 h-3 sm:w-4 sm:h-4 text-yellow-500 fill-yellow-500' />
                                                 </div>
                                                 <div className='flex-1 h-2 bg-muted rounded-full overflow-hidden'>
                                                     <div
@@ -192,7 +192,7 @@ export default function ProductDetailsTabs({
                                                         style={{ width: `${percentage}%` }}
                                                     />
                                                 </div>
-                                                <span className='text-sm text-muted-foreground w-12 text-right'>{count}</span>
+                                                <span className='text-xs sm:text-sm text-muted-foreground w-8 sm:w-12 text-right'>{count}</span>
                                             </div>
                                         )
                                     })}
@@ -202,43 +202,43 @@ export default function ProductDetailsTabs({
 
                         <ReviewForm productId={id} onSuccess={onReviewSuccess} />
 
-                        <div className='border rounded-lg p-6'>
-                            <h3 className='text-xl font-semibold mb-6'>All Reviews ({reviewCount || 0})</h3>
+                        <div className='border rounded-lg p-4 sm:p-6'>
+                            <h3 className='text-lg sm:text-xl font-semibold mb-4 sm:mb-6'>All Reviews ({reviewCount || 0})</h3>
 
                             {reviews && reviews?.length > 0 ? (
-                                <div className='space-y-6'>
+                                <div className='space-y-4 sm:space-y-6'>
                                     {reviews?.map((review, index) => (
                                         <React.Fragment key={review?.id}>
-                                            <div className='flex items-start gap-4'>
-                                                <Avatar className='w-12 h-12'>
+                                            <div className='flex items-start gap-3 sm:gap-4'>
+                                                <Avatar className='w-10 h-10 sm:w-12 sm:h-12 shrink-0'>
                                                     <AvatarImage
                                                         src={review?.userAvatar || '/images/default_avatar.jpg'}
                                                         alt={review?.userName || 'User'}
                                                     />
                                                     <AvatarFallback>
-                                                        <User className='w-6 h-6' />
+                                                        <User className='w-5 h-5 sm:w-6 sm:h-6' />
                                                     </AvatarFallback>
                                                 </Avatar>
 
-                                                <div className='flex-1 space-y-3'>
-                                                    <div className='flex items-start justify-between gap-4'>
-                                                        <div>
+                                                <div className='flex-1 space-y-2 sm:space-y-3 min-w-0'>
+                                                    <div className='flex items-start justify-between gap-3 sm:gap-4'>
+                                                        <div className='min-w-0'>
                                                             <div className='flex items-center gap-2 mb-1'>
-                                                                <h4 className='font-semibold'>{review?.userName || 'Anonymous'}</h4>
+                                                                <h4 className='text-sm sm:text-base font-semibold truncate'>{review?.userName || 'Anonymous'}</h4>
                                                                 {/* <Badge variant='outline' className='text-xs'>Verified Purchase</Badge> */}
                                                             </div>
-                                                            <div className='flex items-center gap-3'>
+                                                            <div className='flex items-center gap-2 sm:gap-3'>
                                                                 <div className='flex text-yellow-500'>
                                                                     {[...Array(5)].map((_, i) => (
                                                                         <Star
                                                                             key={i}
-                                                                            className='w-4 h-4'
+                                                                            className='w-3 h-3 sm:w-4 sm:h-4'
                                                                             fill={i < (review?.rating || 0) ? 'currentColor' : 'none'}
                                                                             stroke="currentColor"
                                                                         />
                                                                     ))}
                                                                 </div>
-                                                                <span className='text-sm text-muted-foreground'>
+                                                                <span className='text-xs sm:text-sm text-muted-foreground'>
                                                                     {review?.date ? new Date(review?.date).toLocaleDateString('en-US', {
                                                                         year: 'numeric',
                                                                         month: 'short',
@@ -249,22 +249,22 @@ export default function ProductDetailsTabs({
                                                         </div>
                                                     </div>
 
-                                                    <p className='text-muted-foreground leading-relaxed'>
+                                                    <p className='text-xs sm:text-sm text-muted-foreground leading-relaxed break-words'>
                                                         {review?.comment || 'No comment provided'}
                                                     </p>
                                                 </div>
                                             </div>
-                                            {index < reviews?.length - 1 && <Separator className='my-6' />}
+                                            {index < reviews?.length - 1 && <Separator className='my-4 sm:my-6' />}
                                         </React.Fragment>
                                     ))}
                                 </div>
                             ) : (
-                                <div className='flex flex-col items-center justify-center py-12 text-center'>
-                                    <div className='w-20 h-20 rounded-full bg-muted flex items-center justify-center mb-4'>
-                                        <Star className='w-10 h-10 text-muted-foreground/50' />
+                                <div className='flex flex-col items-center justify-center py-8 sm:py-12 text-center px-4'>
+                                    <div className='w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-muted flex items-center justify-center mb-3 sm:mb-4'>
+                                        <Star className='w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground/50' />
                                     </div>
-                                    <h4 className='text-lg font-semibold mb-2'>No reviews yet</h4>
-                                    <p className='text-muted-foreground mb-4'>Be the first to share your experience with this preset!</p>
+                                    <h4 className='text-base sm:text-lg font-semibold mb-1.5 sm:mb-2'>No reviews yet</h4>
+                                    <p className='text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4'>Be the first to share your experience with this preset!</p>
                                 </div>
                             )}
                         </div>

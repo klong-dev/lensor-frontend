@@ -38,19 +38,19 @@ export default function ProductDetail() {
 
 
     return (
-        <div className='container pt-4 pb-8'>
-            <Breadcrumb>
+        <div className='container px-3 sm:px-4 md:px-6 pt-4 pb-8'>
+            <Breadcrumb className='mb-3 sm:mb-4'>
                 <BreadcrumbList>
                     <BreadcrumbItem>
-                        <BreadcrumbLink href={ROUTES.HOME}>Home</BreadcrumbLink>
+                        <BreadcrumbLink href={ROUTES.HOME} className='text-xs sm:text-sm'>Home</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href={ROUTES.MARKETPLACE}>Marketplace</BreadcrumbLink>
+                        <BreadcrumbLink href={ROUTES.MARKETPLACE} className='text-xs sm:text-sm'>Marketplace</BreadcrumbLink>
                     </BreadcrumbItem>
                     <BreadcrumbSeparator />
                     <BreadcrumbItem>
-                        <BreadcrumbLink href={`${ROUTES.MARKETPLACE}/${item?.id}`}>{item?.name}</BreadcrumbLink>
+                        <BreadcrumbLink href={`${ROUTES.MARKETPLACE}/${item?.id}`} className='text-xs sm:text-sm'>{item?.name}</BreadcrumbLink>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
@@ -58,15 +58,15 @@ export default function ProductDetail() {
             {isLoading ? (
                 <ProductSkeleton />
             ) : error ? (
-                <div className='mt-8 flex flex-col items-center justify-center min-h-[400px] text-center'>
+                <div className='mt-6 sm:mt-8 flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] text-center px-4'>
                     <div className='max-w-md'>
-                        <h2 className='text-2xl font-bold mb-4'>Something Went Wrong</h2>
-                        <p className='text-muted-foreground mb-6'>
+                        <h2 className='text-xl sm:text-2xl font-bold mb-3 sm:mb-4'>Something Went Wrong</h2>
+                        <p className='text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6'>
                             We couldn&apos;t load the product details. Please try again later.
                         </p>
                         <button
                             onClick={() => window.location.reload()}
-                            className='px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors'
+                            className='px-4 sm:px-6 py-2 text-sm sm:text-base bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors'
                         >
                             Retry
                         </button>
@@ -74,7 +74,7 @@ export default function ProductDetail() {
                 </div>
             ) : (
                 <>
-                    <div className='mt-3 grid grid-cols-14 gap-6'>
+                    <div className='mt-3 flex flex-col lg:grid lg:grid-cols-14 gap-4 sm:gap-6'>
                         <ImageGallery imagePairs={item?.imagePairs} name={item?.name} />
 
                         <ProductInfo {...item} />

@@ -25,7 +25,7 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
 
 
     return (
-        <div className='col-span-9 flex flex-col gap-2'>
+        <div className='w-full flex flex-col gap-2 sm:gap-3'>
 
             <div className='relative aspect-video'>
                 <ImageComparison className='aspect-16/10 w-full rounded-lg border border-zinc-200 dark:border-zinc-800'>
@@ -46,10 +46,10 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
                         </div>
                     </ImageComparisonSlider>
 
-                    <div className='absolute top-5 left-5 text-sm font-semibold text-white pointer-events-none' data-position="right">
+                    <div className='absolute top-3 sm:top-5 left-3 sm:left-5 text-xs sm:text-sm font-semibold text-white pointer-events-none' data-position="right">
                         Normal
                     </div>
-                    <div className='absolute top-5 right-5 text-sm font-semibold text-white pointer-events-none' data-position="left">
+                    <div className='absolute top-3 sm:top-5 right-3 sm:right-5 text-xs sm:text-sm font-semibold text-white pointer-events-none' data-position="left">
                         {
                             imagePairs && imagePairs.length > 1
                                 ? (name ? `${name} - Preset ${selectedImage + 1}` : 'Product')
@@ -60,11 +60,11 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
             </div>
 
 
-            <div className='flex gap-2'>
+            <div className='flex gap-2 overflow-x-auto pb-1'>
                 {imagePairs?.map((image, index) => (
                     <div
                         key={index}
-                        className={`aspect-square relative w-20 h-20 cursor-pointer ${selectedImage === index
+                        className={`aspect-square relative w-16 h-16 sm:w-20 sm:h-20 cursor-pointer shrink-0 ${selectedImage === index
                             ? 'ring-2 ring-offset-2 rounded-md'
                             : ''
                             }`}
@@ -74,7 +74,7 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
                             src={getImageSrc(image?.after)}
                             alt={`${name || 'Product'} - Preview ${index + 1}`}
                             fill
-                            sizes="80px"
+                            sizes="(max-width: 640px) 64px, 80px"
                             loading='lazy'
                             className='rounded-md object-cover hover:opacity-80 transition-opacity'
                             onError={(e) => {

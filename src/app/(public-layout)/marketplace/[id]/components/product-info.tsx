@@ -69,18 +69,18 @@ export default function ProductInfo({
     }
 
     return (
-        <div className='col-span-5 flex flex-col gap-6'>
+        <div className='w-full flex flex-col gap-4 sm:gap-6'>
 
-            <h1 className='text-3xl font-bold'>{name}</h1>
+            <h1 className='text-2xl sm:text-3xl font-bold'>{name}</h1>
             <Link href={ROUTES.PROFILE(author?.id)}>
                 {author && (
-                    <div className='flex items-center gap-3'>
-                        <Avatar className='size-8'>
+                    <div className='flex items-center gap-2 sm:gap-3'>
+                        <Avatar className='size-7 sm:size-8'>
                             <AvatarImage src={author?.avatar} alt={author?.name} />
                             <AvatarFallback>{author?.name?.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div>
-                            <p className='font-semibold hover:text-primary'>{author?.name}</p>
+                            <p className='text-sm sm:text-base font-semibold hover:text-primary'>{author?.name}</p>
                         </div>
                     </div>
                 )}
@@ -91,31 +91,31 @@ export default function ProductInfo({
                     {[...Array(5)].map((_, i) => (
                         <Star
                             key={i}
-                            className='w-5 h-5'
+                            className='w-4 h-4 sm:w-5 sm:h-5'
                             fill={i < Math.floor(rating || 0) ? 'currentColor' : 'none'}
                             stroke="currentColor"
                         />
                     ))}
                 </div>
-                <span className='font-medium'>{rating}</span>
-                <span className='text-muted-foreground'>({reviewCount} reviews)</span>
+                <span className='text-sm sm:text-base font-medium'>{rating}</span>
+                <span className='text-sm sm:text-base text-muted-foreground'>({reviewCount} reviews)</span>
             </div>
 
-            <div className='flex items-center gap-3'>
-                <span className='text-3xl font-bold'>{price?.toLocaleString('vi-VN') || 0} ₫</span>
+            <div className='flex items-center gap-2 sm:gap-3'>
+                <span className='text-2xl sm:text-3xl font-bold'>{price?.toLocaleString('vi-VN') || 0} ₫</span>
                 {price != originalPrice && (
-                    <span className='text-xl text-muted-foreground line-through'>{originalPrice?.toLocaleString('vi-VN') || 0} ₫</span>
+                    <span className='text-lg sm:text-xl text-muted-foreground line-through'>{originalPrice?.toLocaleString('vi-VN') || 0} ₫</span>
                 )}
             </div>
 
-            <div className='border-t pt-6'>
+            <div className='border-t pt-4 sm:pt-6'>
                 <div className='mb-4'>
-                    <label className='text-sm font-medium mb-2 block'>Features:</label>
+                    <label className='text-xs sm:text-sm font-medium mb-2 block'>Features:</label>
                     <div className='flex flex-wrap gap-2'>
                         {features?.map((feature, index) => (
                             <button
                                 key={index}
-                                className='px-4 py-2 border rounded-md text-sm hover:bg-accent transition-colors'
+                                className='px-3 sm:px-4 py-1.5 sm:py-2 border rounded-md text-xs sm:text-sm hover:bg-accent transition-colors'
                             >
                                 {feature}
                             </button>
@@ -124,34 +124,34 @@ export default function ProductInfo({
                 </div>
             </div>
             {isInCart && (
-                <div className='flex items-center gap-2 p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg'>
-                    <CheckCircle2 className='w-5 h-5 text-green-600 dark:text-green-500' />
-                    <div className='flex-1'>
-                        <p className='text-sm font-medium text-green-900 dark:text-green-100'>Already in your cart</p>
-                        <p className='text-xs text-green-700 dark:text-green-300'>This preset is ready for checkout</p>
+                <div className='flex items-center gap-2 p-2.5 sm:p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg'>
+                    <CheckCircle2 className='w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-500 shrink-0' />
+                    <div className='flex-1 min-w-0'>
+                        <p className='text-xs sm:text-sm font-medium text-green-900 dark:text-green-100'>Already in your cart</p>
+                        <p className='text-[10px] sm:text-xs text-green-700 dark:text-green-300'>This preset is ready for checkout</p>
                     </div>
                     <Link href={ROUTES.CART}>
-                        <Button variant='outline' size='sm' className='border-green-300 dark:border-green-700'>
+                        <Button variant='outline' size='sm' className='border-green-300 dark:border-green-700 text-xs sm:text-sm h-7 sm:h-8 px-2 sm:px-3'>
                             View Cart
                         </Button>
                     </Link>
                 </div>
             )}
-            <div className='flex gap-3'>
+            <div className='flex gap-2 sm:gap-3'>
                 <Button
                     onClick={handleAddToCart}
                     size={'lg'}
-                    className='flex-1 bg-primary text-primary-foreground py-3 rounded-md font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50'
+                    className='flex-1 bg-primary text-primary-foreground py-2.5 sm:py-3 rounded-md text-sm sm:text-base font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50'
                     disabled={isSubmitting || isInCart}
                 >
                     {isInCart ? (
                         <>
-                            <CheckCircle2 className='w-5 h-5' />
+                            <CheckCircle2 className='w-4 h-4 sm:w-5 sm:h-5' />
                             In Cart
                         </>
                     ) : (
                         <>
-                            <ShoppingCart className='w-5 h-5' />
+                            <ShoppingCart className='w-4 h-4 sm:w-5 sm:h-5' />
                             {isSubmitting ? 'Adding...' : 'Add to Cart'}
                         </>
                     )}

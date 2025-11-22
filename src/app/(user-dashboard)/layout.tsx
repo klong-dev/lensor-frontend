@@ -13,7 +13,7 @@ import React from 'react'
 export default function UserDashboardLayout({ children }: { children: React.ReactNode }) {
      return (
           <SocketProvider>
-               <SidebarProvider defaultOpen={false}>
+               <SidebarProvider defaultOpen={true}>
                     <UserDashboardSidebar />
                     <SidebarInset>
                          <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4 md:hidden">
