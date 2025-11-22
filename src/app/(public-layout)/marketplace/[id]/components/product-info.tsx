@@ -69,7 +69,7 @@ export default function ProductInfo({
     }
 
     return (
-        <div className='w-full flex flex-col gap-4 sm:gap-6'>
+        <div className='w-full lg:col-span-5 flex flex-col gap-4 sm:gap-6'>
 
             <h1 className='text-2xl sm:text-3xl font-bold'>{name}</h1>
             <Link href={ROUTES.PROFILE(author?.id)}>

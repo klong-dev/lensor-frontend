@@ -20,11 +20,12 @@ import { toast } from 'sonner'
 interface OrderSummaryProps {
     subtotal: number
     itemCount: number
+    selectedCartItemIds: string[]
     onCheckoutSuccess?: () => void
     disabled?: boolean
 }
 
-export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled = false }: OrderSummaryProps) {
+export function OrderSummary({ subtotal, itemCount, selectedCartItemIds, onCheckoutSuccess, disabled = false }: OrderSummaryProps) {
     const router = useRouter()
     const [isCheckingOut, setIsCheckingOut] = useState(false)
     const [showCheckoutDialog, setShowCheckoutDialog] = useState(false)
@@ -47,7 +48,7 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
         setShowCheckoutDialog(false)
 
         try {
-            const response = await orderApi.checkout()
+            const response = await orderApi.checkout(selectedCartItemIds)
 
             if (response.data) {
                 toast.success('Order placed successfully!')
@@ -132,8 +133,8 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
                         </div>
 
                         <div className={`flex items-center justify-between p-4 rounded-lg border-2 ${hasInsufficientFunds
-                                ? 'bg-destructive/10 border-destructive'
-                                : 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-800'
+                            ? 'bg-destructive/10 border-destructive'
+                            : 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-800'
                             }`}>
                             <div className="flex items-center gap-2">
                                 {hasInsufficientFunds && <AlertCircle className="h-5 w-5 text-destructive" />}
@@ -142,8 +143,8 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
                                 </span>
                             </div>
                             <span className={`font-bold text-lg ${hasInsufficientFunds
-                                    ? 'text-destructive'
-                                    : 'text-green-600 dark:text-green-400'
+                                ? 'text-destructive'
+                                : 'text-green-600 dark:text-green-400'
                                 }`}>
                                 {remainingBalance.toLocaleString('vi-VN')} ₫
                             </span>

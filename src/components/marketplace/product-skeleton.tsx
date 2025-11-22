@@ -23,8 +23,8 @@ export default function ProductSkeleton() {
                         <Skeleton className="h-3 sm:h-4 w-2/3" />
                         <Skeleton className="h-5 sm:h-6 w-2/3" />
                         <div className='flex flex-col border-t pt-4 sm:pt-6 gap-2'>\n                            <div className='flex gap-2'>\n                                <Skeleton className="h-5 sm:h-6 w-3/6" />
-                                <Skeleton className="h-5 sm:h-6 w-3/6" />
-                            </div>
+                            <Skeleton className="h-5 sm:h-6 w-3/6" />
+                        </div>
                             <div className='flex gap-2'>
                                 <Skeleton className="h-5 sm:h-6 w-4/6" />
                                 <Skeleton className="h-5 sm:h-6 w-2/6" />

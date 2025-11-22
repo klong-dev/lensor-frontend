@@ -92,10 +92,11 @@ export default function Cart() {
 
   useEffect(() => {
     const tempCartItem = sessionStorage.getItem('tempCart')
-    if (tempCartItem) {
+    const exits = cartData?.items.some((item: CartItemData) => item.productId === tempCartItem)
+    if (tempCartItem && !exits) {
       addToCart(tempCartItem)
     }
-  }, [])
+  }, [cartData?.items])
 
   if (isLoading) {
     return (
@@ -204,6 +205,7 @@ export default function Cart() {
               <OrderSummary
                 subtotal={subtotal}
                 itemCount={totalQuantity}
+                selectedCartItemIds={Array.from(selectedItems)}
                 onCheckoutSuccess={mutate}
                 disabled={selectedItems.size === 0 || selectedCartItems.some((item: CartItemData) => item.product?.status !== 'active')}
               />
