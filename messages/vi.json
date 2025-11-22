@@ -26,7 +26,21 @@
   "Header": {
     "forum": "Diễn đàn",
     "marketplace": "Chợ",
-    "createPortfolio": "Tạo hồ sơ"
+    "createPortfolio": "Tạo hồ sơ",
+    "notifications": "Thông báo",
+    "viewAll": "Xem tất cả",
+    "noNotifications": "Chưa có thông báo",
+    "seeAllNotifications": "Xem tất cả thông báo",
+    "shoppingCart": "Giỏ hàng",
+    "viewCart": "Xem giỏ hàng",
+    "cartEmpty": "Giỏ hàng của bạn đang trống",
+    "continueShopping": "Tiếp tục mua sắm",
+    "unavailable": "Không khả dụng",
+    "untitled": "Không có tiêu đề",
+    "unknown": "Không rõ",
+    "by": "bởi",
+    "subtotal": "Tạm tính",
+    "goToCart": "Đến giỏ hàng"
   },
   "Sidebar": {
     "publicSpaces": "Không gian công cộng",

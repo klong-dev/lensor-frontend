@@ -27,7 +27,21 @@
   "Header": {
     "forum": "Forum",
     "marketplace": "Marketplace",
-    "createPortfolio": "Create portfolio"
+    "createPortfolio": "Create portfolio",
+    "notifications": "Notifications",
+    "viewAll": "View All",
+    "noNotifications": "No notifications yet",
+    "seeAllNotifications": "See All Notifications",
+    "shoppingCart": "Shopping Cart",
+    "viewCart": "View Cart",
+    "cartEmpty": "Your cart is empty",
+    "continueShopping": "Continue Shopping",
+    "unavailable": "Unavailable",
+    "untitled": "Untitled",
+    "unknown": "Unknown",
+    "by": "by",
+    "subtotal": "Subtotal",
+    "goToCart": "Go to Cart"
   },
   "Sidebar": {
     "publicSpaces": "Public Spaces",

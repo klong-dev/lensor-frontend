@@ -18,6 +18,8 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { NotificationPopover } from './notification-popover'
+import { CartPopover } from './cart-popover'
 
 export default function MainHeader() {
   const t = useTranslations('Header')
@@ -179,32 +181,43 @@ export default function MainHeader() {
                   </PopoverContent>
                 </Popover>
 
-                <Button variant='ghost' size='icon' className='relative h-9 w-9'>
-                  <Link href={ROUTES.CART}>
-                    <ShoppingCart className='h-4 w-4' />
-                    {itemCount > 0 && (
-                      <Badge
-                        variant='destructive'
-                        className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
-                      >
-                        {itemCount > 99 ? '99+' : itemCount}
-                      </Badge>
-                    )}
-                  </Link>
-                </Button>
-                <Button variant='ghost' size='icon' className='relative h-9 w-9' onClick={handleNotificationClick}>
-                  <Link href={ROUTES.NOTIFICATION}>
-                    <Bell className='h-4 w-4' />
-                    {unreadCount > 0 && (
-                      <Badge
-                        variant='destructive'
-                        className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
-                      >
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </Badge>
-                    )}
-                  </Link>
-                </Button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant='ghost' size='icon' className='relative h-9 w-9'>
+                      <ShoppingCart className='h-4 w-4' />
+                      {itemCount > 0 && (
+                        <Badge
+                          variant='destructive'
+                          className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
+                        >
+                          {itemCount > 99 ? '99+' : itemCount}
+                        </Badge>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='p-0 w-[380px]' align='end' sideOffset={5}>
+                    <CartPopover />
+                  </PopoverContent>
+                </Popover>
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant='ghost' size='icon' className='relative h-9 w-9' onClick={handleNotificationClick}>
+                      <Bell className='h-4 w-4' />
+                      {unreadCount > 0 && (
+                        <Badge
+                          variant='destructive'
+                          className='absolute -top-0.5 right-0.5 h-4 w-4 flex items-center justify-center p-0 text-[10px] bg-violet-600 hover:bg-violet-600'
+                        >
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </Badge>
+                      )}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className='p-0 w-[380px]' align='end' sideOffset={5}>
+                    <NotificationPopover />
+                  </PopoverContent>
+                </Popover>
 
                 <Link href={ROUTES.CURRENT_PROFILE} className='md:hidden'>
                   <Avatar className='h-9 w-9'>

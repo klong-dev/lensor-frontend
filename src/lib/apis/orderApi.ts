@@ -3,8 +3,8 @@ import { apiClient } from "./client"
 import { endpoints } from "./endpoints"
 
 export const orderApi = {
-    checkout: async () => {
-        const res = await apiClient.post(endpoints.orders.checkout)
+    checkout: async (cartItemIds: string[]) => {
+        const res = await apiClient.post(endpoints.orders.checkout, { cartItemIds })
         return res.data
     },
 
@@ -23,13 +23,13 @@ export const orderApi = {
         return res.data
     },
 
-     getSoldOrders: async (): Promise<SoldOrdersResponse> => {
-          const res = await apiClient.get(endpoints.order.sold)
-          return res.data
-     },
-  
-     withdrawOrder: async (orderId: string): Promise<WithdrawOrderResponse> => {
-          const res = await apiClient.post(endpoints.order.withdraw(orderId))
-          return res.data
-     }
+    getSoldOrders: async (): Promise<SoldOrdersResponse> => {
+        const res = await apiClient.get(endpoints.order.sold)
+        return res.data
+    },
+
+    withdrawOrder: async (orderId: string): Promise<WithdrawOrderResponse> => {
+        const res = await apiClient.post(endpoints.order.withdraw(orderId))
+        return res.data
+    }
 }

@@ -26,7 +26,21 @@
   "Header": {
     "forum": "フォーラム",
     "marketplace": "マーケットプレイス",
-    "createPortfolio": "ポートフォリオを作成"
+    "createPortfolio": "ポートフォリオを作成",
+    "notifications": "通知",
+    "viewAll": "すべて表示",
+    "noNotifications": "通知はまだありません",
+    "seeAllNotifications": "すべての通知を見る",
+    "shoppingCart": "ショッピングカート",
+    "viewCart": "カートを見る",
+    "cartEmpty": "カートは空です",
+    "continueShopping": "買い物を続ける",
+    "unavailable": "利用不可",
+    "untitled": "タイトルなし",
+    "unknown": "不明",
+    "by": "作成者",
+    "subtotal": "小計",
+    "goToCart": "カートへ"
   },
   "Sidebar": {
     "publicSpaces": "パブリックスペース",

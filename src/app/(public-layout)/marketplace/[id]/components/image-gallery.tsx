@@ -25,7 +25,7 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
 
 
     return (
-        <div className='w-full flex flex-col gap-2 sm:gap-3'>
+        <div className='w-full lg:col-span-9 flex flex-col gap-2 sm:gap-3'>
 
             <div className='relative aspect-video'>
                 <ImageComparison className='aspect-16/10 w-full rounded-lg border border-zinc-200 dark:border-zinc-800'>
