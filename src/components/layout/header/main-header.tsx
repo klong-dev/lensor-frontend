@@ -23,6 +23,7 @@ export default function MainHeader() {
   const t = useTranslations('Header')
   const tButton = useTranslations('Button')
   const currentPath = usePathname()
+  const router = useRouter()
   const user = useUserStore(state => state.user)
   const { walletData, fetchWallet } = useWalletStore()
   const { itemCount, setCart } = useCartStore()
@@ -72,7 +73,7 @@ export default function MainHeader() {
   const handleLoginRedirect = () => {
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search)
-      window.location.href = '/(auth)/login'
+      router.push('/login')
     }
   }
 
