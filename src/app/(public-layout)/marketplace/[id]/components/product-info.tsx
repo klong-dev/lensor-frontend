@@ -11,6 +11,9 @@ import { ShoppingCart, Star, CheckCircle2 } from 'lucide-react'
 import Link from 'next/link'
 import { useState, useMemo } from 'react'
 import { toast } from 'sonner'
+import { useUserStore } from '@/stores/user-store'
+import { useRouter } from 'next/navigation'
+import { LoginRequiredDialog } from '@/components/ui/login-required-dialog'
 
 export default function ProductInfo({
     id,
@@ -23,6 +26,7 @@ export default function ProductInfo({
     author }:
     MarketplaceDetail) {
     const [isSubmitting, setIsSubmitting] = useState(false)
+    const [showLoginDialog, setShowLoginDialog] = useState(false)
     const { data: cartData, mutate: mutateCart } = useCart()
 
     const isInCart = useMemo(() => {
@@ -30,7 +34,17 @@ export default function ProductInfo({
         return cartData.items.some((item: CartItemData) => item.productId === id)
     }, [cartData?.items, id])
 
+    const user = useUserStore(state => state.user)
+    const router = useRouter()
+
     const handleAddToCart = async () => {
+        if (!user) {
+            // Nếu chưa login, hiển thị dialog yêu cầu login
+            sessionStorage.setItem('tempCart', id)
+            setShowLoginDialog(true)
+            return
+        }
+
         if (isInCart) {
             toast.info('This product is already in your cart')
             return
@@ -143,6 +157,13 @@ export default function ProductInfo({
                     )}
                 </Button>
             </div>
+
+            <LoginRequiredDialog
+                open={showLoginDialog}
+                onOpenChange={setShowLoginDialog}
+                title="Login Required"
+                description="Product has been added to cart, please login to continue."
+            />
         </div>
     )
 }

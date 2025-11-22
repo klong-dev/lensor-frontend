@@ -7,13 +7,13 @@ import { ROUTES } from '@/constants/path';
 
 export default function Page() {
   return (
-    <div className="flex justify-center items-center h-screen w-screen bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 py-0 px-2 overflow-hidden">
-      <div className="flex flex-col md:flex-row gap-6 justify-center items-center backdrop-blur-xl bg-black/40 border border-purple-500/30 shadow-2xl shadow-purple-500/20 h-[650px] w-[1200px] rounded-4xl overflow-hidden p-6">
-        <div className="flex flex-col justify-center items-center w-full md:w-5/12 h-full bg-card backdrop-blur-sm rounded-3xl border border-purple-500/20 text-center py-8 md:py-0 shadow-lg">
+    <div className="flex justify-center items-center min-h-screen w-full bg-gradient-to-br from-slate-950 via-purple-950 to-slate-900 py-4 sm:py-6 md:py-8 px-3 sm:px-4 md:px-6 overflow-auto">
+      <div className="flex flex-col md:flex-row gap-4 sm:gap-5 md:gap-6 justify-center items-center backdrop-blur-xl bg-black/40 border border-purple-500/30 shadow-2xl shadow-purple-500/20 w-full max-w-[95vw] sm:max-w-[90vw] md:max-w-[1200px] h-auto md:h-[650px] rounded-3xl sm:rounded-4xl overflow-hidden p-4 sm:p-5 md:p-6">
+        <div className="flex flex-col justify-center items-center w-full md:w-5/12 min-h-[500px] md:h-full bg-card backdrop-blur-sm rounded-2xl sm:rounded-3xl border border-purple-500/20 text-center py-4 sm:py-6 md:py-8 shadow-lg">
           <LoginForm />
         </div>
 
-        <div className='flex flex-col w-full md:w-7/12 gap-2 justify-between items-center h-full'>
+        <div className='hidden md:flex md:flex-col w-7/12 gap-2 justify-between items-center h-full'>
           <div className='w-full h-1/2 relative flex justify-center items-center overflow-hidden'>
             <InfiniteSlider speedOnHover={80} gap={18}>
               <Image
@@ -108,12 +108,13 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <Link href={ROUTES.HOME} className='absolute inset-5 w-14 h-14'>
+      <Link href={ROUTES.HOME} className='absolute top-3 left-3 sm:top-4 sm:left-4 md:top-5 md:left-5 w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 hover:scale-110 transition-transform'>
         <Image
           src="/Lensor-removebg-preview.png"
           alt="Lensor Logo"
-          width={50}
-          height={50}
+          width={56}
+          height={56}
+          className="w-full h-full object-contain"
         />
       </Link>
     </div >

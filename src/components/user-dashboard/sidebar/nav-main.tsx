@@ -15,6 +15,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
+import { Badge } from "@/components/ui/badge"
 import {
   Folder,
   MoreHorizontal,
@@ -32,6 +33,7 @@ export function NavMain({
     url: string
     icon: LucideIcon
     isActive?: boolean
+    badge?: number
   }[]
 }) {
   const { isMobile } = useSidebar()
@@ -46,6 +48,14 @@ export function NavMain({
               <Link href={item.url}>
                 <item.icon />
                 <span>{item.name}</span>
+                {item.badge && item.badge > 0 && (
+                  <Badge
+                    variant="destructive"
+                    className="ml-auto h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-violet-600"
+                  >
+                    {item.badge > 99 ? '99+' : item.badge}
+                  </Badge>
+                )}
               </Link>
             </SidebarMenuButton>
             <DropdownMenu>

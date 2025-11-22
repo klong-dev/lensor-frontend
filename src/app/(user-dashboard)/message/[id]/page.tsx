@@ -11,6 +11,8 @@ import { useUserStore } from '@/stores/user-store'
 import { useChatStore } from '@/stores/chat-store'
 import { useRoomMessages } from '@/lib/hooks/useMessageHooks'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ROUTES } from '@/constants/path'
+import Link from 'next/link'
 
 export default function MessageDetail({ params }: { params: Promise<{ id: string }> }) {
      const { id: roomId } = use(params)
@@ -154,7 +156,10 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                {/* Header - Cố định */}
                <div className="sticky top-0 z-10 border-b px-6 py-4 bg-card">
                     <div className="flex items-center justify-between">
-                         <div className="flex items-center gap-3">
+                         <Link
+                              href={otherUser?.id ? ROUTES.PROFILE(otherUser.id) : '#'}
+                              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                         >
                               <Avatar className="w-10 h-10">
                                    <AvatarImage src={otherUser?.avatar} />
                                    <AvatarFallback>
@@ -169,7 +174,7 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                                         {isTyping ? 'Typing...' : isConnected ? 'Online' : 'Offline'}
                                    </p>
                               </div>
-                         </div>
+                         </Link>
                          <Button variant="ghost" size="icon">
                               <MoreVertical className="w-5 h-5" />
                          </Button>

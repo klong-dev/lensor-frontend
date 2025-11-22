@@ -66,19 +66,11 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
             className={`relative w-full aspect-square bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl hover:opacity-80 transition-shadow h-min-[442px] h-full group ${item?.status === 'active' ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
                 }`}
         >
-            {item?.status !== 'active' && (
-                <div className="absolute inset-0 z-40 bg-black/60 flex items-center justify-center">
-                    <div className="text-center">
-                        <Ban className="w-16 h-16 text-red-500 mx-auto mb-2" />
-                        <p className="text-white font-semibold">Unavailable</p>
-                    </div>
-                </div>
-            )}
 
             {isInCart && (
-                <Badge className="absolute top-3 right-3 z-30 bg-green-600 hover:bg-green-700 text-white flex items-center gap-1">
-                    <ShoppingCart className="w-3 h-3" />
-                    In Cart
+                <Badge className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 md:top-3 md:right-3 z-30 bg-green-600 hover:bg-green-700 text-white flex items-center gap-0.5 sm:gap-1 px-1.5 py-0.5 sm:px-2 sm:py-1 text-[10px] sm:text-xs">
+                    <ShoppingCart className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
+                    <span className="hidden xs:inline">In Cart</span>
                 </Badge>
             )}
 
@@ -98,21 +90,21 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
                 unoptimized={imageError}
             />
 
-            <div className="p-4 absolute inset-0 z-10 flex flex-col justify-end bg-gradient-to-t from-black/40 to-transparent opacity-100 transition duration-200 ease-in-out group-hover:opacity-0">
-                <h3 className="text-lg text-white font-semibold mb-2 truncate">{item?.title}</h3>
-                <p className="text-lg text-white font-bold">{item?.price ? item.price.toLocaleString('vi-VN') : '0'} ₫</p>
+            <div className="p-2 sm:p-3 md:p-4 absolute inset-0 z-10 flex flex-col justify-end bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-100 transition duration-200 ease-in-out group-hover:opacity-0">
+                <h3 className="text-xs sm:text-sm md:text-base lg:text-lg text-white font-semibold mb-0.5 sm:mb-1 md:mb-2 truncate">{item?.title}</h3>
+                <p className="text-sm sm:text-base md:text-lg text-white font-bold">{item?.price ? item.price.toLocaleString('vi-VN') : '0'} ₫</p>
             </div>
 
-            <div className='absolute p-4 inset-0 z-20 flex flex-col justify-end bg-gradient-to-t from-black to-transparent transition opacity-0 duration-200 ease-in-out group-hover:opacity-100'>
-                <h3 className="text-lg text-white font-semibold mb-2 truncate hover:opacity-80">{item?.title}</h3>
-                <p className="text-sm text-white mb-4 line-clamp-2">{item?.description}</p>
+            <div className='absolute p-2 sm:p-3 md:p-4 inset-0 z-20 flex flex-col justify-end bg-gradient-to-t from-black/90 via-black/50 to-transparent transition opacity-0 duration-200 ease-in-out group-hover:opacity-100'>
+                <h3 className="text-xs sm:text-sm md:text-base lg:text-lg text-white font-semibold mb-1 sm:mb-2 truncate hover:opacity-80">{item?.title}</h3>
+                <p className="text-[10px] sm:text-xs md:text-sm text-white/90 mb-2 sm:mb-3 md:mb-4 line-clamp-2">{item?.description}</p>
 
                 {item?.author && (
                     <div
                         onClick={handleProfileClick}
-                        className="flex items-center gap-2 mb-3 cursor-pointer w-fit"
+                        className="flex items-center gap-1 sm:gap-1.5 md:gap-2 mb-1.5 sm:mb-2 md:mb-3 cursor-pointer w-fit"
                     >
-                        <Avatar className='size-8'>
+                        <Avatar className='size-5 sm:size-6 md:size-8'>
                             <AvatarImage
                                 src={getAvatarSrc()}
                                 alt={item?.author.name}
@@ -122,23 +114,23 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
                                     }
                                 }}
                             />
-                            <AvatarFallback className="bg-card text-xs">
+                            <AvatarFallback className="bg-card text-[8px] sm:text-[10px] md:text-xs">
                                 {item?.author.name?.charAt(0).toUpperCase() || '?'}
                             </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm text-white hover:opacity-80">{item?.author.name}</span>
+                        <span className="text-[10px] sm:text-xs md:text-sm text-white hover:opacity-80 truncate max-w-[100px] sm:max-w-none">{item?.author.name}</span>
                     </div>
                 )}
 
-                <div className="flex items-center justify-between">
-                    <div>
-                        <p className="text-xs text-white">Price</p>
-                        <p className="text-lg text-white font-bold">{item?.price ? item.price.toLocaleString('vi-VN') : '0'} ₫</p>
+                <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                        <p className="text-[8px] sm:text-[10px] md:text-xs text-white/80">Price</p>
+                        <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white font-bold truncate">{item?.price ? item.price.toLocaleString('vi-VN') : '0'} ₫</p>
                     </div>
                     {item?.rating !== null && item?.rating !== undefined && (
-                        <div className="flex items-center gap-1">
-                            <Star fill="currentColor" stroke="currentColor" className="text-yellow-500 w-5 h-5" />
-                            <span className="text-lg text-white font-semibold">{item?.rating.toFixed(1)}</span>
+                        <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
+                            <Star fill="currentColor" stroke="currentColor" className="text-yellow-500 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 lg:w-5 lg:h-5" />
+                            <span className="text-xs sm:text-sm md:text-base lg:text-lg text-white font-semibold">{item?.rating.toFixed(1)}</span>
                         </div>
                     )}
                 </div>

@@ -4,6 +4,7 @@ import { LostConnect } from '@/components/empty/lost-connect'
 import Post from '@/components/forum/post/post'
 import PostSkeleton from '@/components/forum/post/post-skeleton'
 import { userApi } from '@/lib/apis/userApi'
+import { postApi } from '@/lib/apis/postApi'
 import { useUserStore } from '@/stores/user-store'
 import { PostType } from '@/types/post'
 import { UserPost } from '@/types'
@@ -38,19 +39,40 @@ export default function PostSection({ onPostsCountChange }: PostSectionProps) {
       setIsLoading(true)
       setError(false)
       const { data } = await userApi.getUserProfile(user.id)
-      const userPosts = data.posts.map((post: UserPost) => ({
-        ...post,
-        user: {
-          id: data.id,
-          name: data.name,
-          avatarUrl: data.avatarUrl,
-          isFollowed: false
-        },
-        voteCount: 0,
-        commentCount: 0,
-        isLiked: false
-      })) as PostType[]
-      setPosts(userPosts)
+
+      // Enrich posts with full data from posts API to get accurate voteCount, commentCount, isLiked
+      const enrichedPosts = await Promise.all(
+        data.posts.map(async (post: UserPost) => {
+          try {
+            // Fetch full post data from posts endpoint
+            const fullPostData = await postApi.getById(post.id)
+
+            return {
+              ...fullPostData.data,
+              user: {
+                id: data.id,
+                name: data.name,
+                avatarUrl: data.avatarUrl,
+                isFollowed: false
+              }
+            } as PostType
+          } catch (err) {
+            // Fallback to basic post data if enrichment fails
+            console.error(`Failed to enrich post ${post.id}:`, err)
+            return {
+              ...post,
+              user: {
+                id: data.id,
+                name: data.name,
+                avatarUrl: data.avatarUrl,
+                isFollowed: false
+              }
+            } as PostType
+          }
+        })
+      )
+
+      setPosts(enrichedPosts)
     } catch (err) {
       console.error('Error fetching user posts:', err)
       setError(true)

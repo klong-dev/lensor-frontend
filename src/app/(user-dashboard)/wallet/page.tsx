@@ -41,31 +41,31 @@ export default function Wallet() {
      }
 
      return (
-          <div className='p-5'>
+          <div className='p-3 sm:p-5'>
                {/* Balance Card */}
-               <div className='bg-primary/15 w-full flex items-center justify-between py-8 px-12 rounded-2xl shadow-2xl border'>
-                    <div className='flex flex-col gap-2'>
-                         <div className='flex items-center gap-2'>
+               <div className='bg-primary/15 w-full flex flex-col sm:flex-row items-center justify-between py-6 sm:py-8 px-4 sm:px-12 rounded-2xl shadow-2xl border gap-4 sm:gap-0'>
+                    <div className='flex flex-col gap-2 w-full sm:w-auto'>
+                         <div className='flex items-center gap-2 justify-center sm:justify-start'>
                               {isLoading ? (
-                                   <span className='text-5xl font-bold tracking-tight text-balance pb-0.5 select-none'>
+                                   <span className='text-3xl sm:text-5xl font-bold tracking-tight text-balance pb-0.5 select-none'>
                                         Loading...
                                    </span>
                               ) : (
-                                   <span className='text-5xl font-bold tracking-tight text-balance pb-0.5 select-none'>
+                                   <span className='text-3xl sm:text-5xl font-bold tracking-tight text-balance pb-0.5 select-none'>
                                         {hideBallance ? '*******' : balance.toLocaleString('vi-VN')} ₫
                                    </span>
                               )}
                               <div className='cursor-pointer' onClick={() => setHideBallance(!hideBallance)}>
-                                   {hideBallance ? <EyeOff /> : <Eye />}
+                                   {hideBallance ? <EyeOff className='h-5 w-5 sm:h-6 sm:w-6' /> : <Eye className='h-5 w-5 sm:h-6 sm:w-6' />}
                               </div>
                          </div>
-                         <span className='select-none'>Current Wallet Ballance</span>
+                         <span className='select-none text-sm sm:text-base text-center sm:text-left'>Current Wallet Ballance</span>
                     </div>
 
-                    <div className='flex gap-3'>
+                    <div className='flex gap-2 sm:gap-3 w-full sm:w-auto'>
                          <DialogDeposit>
-                              <Button>
-                                   <Plus />
+                              <Button className='flex-1 sm:flex-none'>
+                                   <Plus className='h-4 w-4' />
                                    Deposit
                               </Button>
                          </DialogDeposit>
@@ -73,8 +73,8 @@ export default function Wallet() {
                </div>
 
                {/* Transactions Table */}
-               <div className='bg-accent w-full p-5 rounded-2xl shadow-2xl border mt-5'>
-                    <h1 className='text-2xl font-bold mb-4'>Transaction History</h1>
+               <div className='bg-accent w-full p-3 sm:p-5 rounded-2xl shadow-2xl border mt-3 sm:mt-5'>
+                    <h1 className='text-xl sm:text-2xl font-bold mb-4'>Transaction History</h1>
                     <div className='overflow-x-auto'>
                          {historyLoading ? (
                               <p className="text-muted-foreground text-sm">Loading transactions...</p>

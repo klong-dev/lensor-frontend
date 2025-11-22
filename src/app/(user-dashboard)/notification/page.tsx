@@ -4,21 +4,24 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { Bell, AlertCircle, CheckCircle, Clock, MoreVertical, Settings, X } from "lucide-react"
+import { Bell, AlertCircle, CheckCircle, Clock, MoreVertical, Settings } from "lucide-react"
 import { useNotifications, useMarkAsRead, useMarkAllAsRead } from "@/lib/hooks/useNotificationHooks"
 import { useNotificationStore } from "@/stores/notification-store"
+import { useUserStore } from "@/stores/user-store"
 import { useEffect } from "react"
 import { formatDistanceToNow } from "date-fns"
 import { vi } from "date-fns/locale"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import { Notification as NotificationType } from "@/types/notification"
+import { notificationApi } from "@/lib/apis/notificationApi"
 
 export default function Notification() {
      const { data, isLoading } = useNotifications()
-     const { notifications, unreadCount, setNotifications, markAsRead: markAsReadStore } = useNotificationStore()
+     const { notifications, unreadCount, setNotifications, markAsRead: markAsReadStore, markAllAsRead: markAllAsReadStore } = useNotificationStore()
      const { mutate: markAsRead } = useMarkAsRead()
      const { mutate: markAllAsRead } = useMarkAllAsRead()
+     const user = useUserStore(state => state.user)
 
      useEffect(() => {
           if (data?.data) {
@@ -26,13 +29,32 @@ export default function Notification() {
           }
      }, [data, setNotifications])
 
-     const handleMarkAsRead = (id: string) => {
-          markAsRead(id)
-          markAsReadStore(id)
+     useEffect(() => {
+          if (user && unreadCount > 0) {
+               notificationApi.markAllAsRead()
+          }
+     }, [user])
+
+     const handleMarkAsRead = async (notification: NotificationType) => {
+          if (!user?.id || notification.read) return
+
+          try {
+               await markAsRead(notification.id, user.id)
+               markAsReadStore(notification.id)
+          } catch (error) {
+               console.error('Failed to mark as read:', error)
+          }
      }
 
-     const handleMarkAllAsRead = () => {
-          markAllAsRead()
+     const handleMarkAllAsRead = async () => {
+          if (!user) return
+
+          try {
+               await markAllAsRead()
+               markAllAsReadStore()
+          } catch (error) {
+               console.error('Failed to mark all as read:', error)
+          }
      }
 
      const getNotificationIcon = (type: string) => {
@@ -78,28 +100,28 @@ export default function Notification() {
      }
 
      return (
-          <div className="p-6">
+          <div className="p-3 sm:p-6">
                <Card className="overflow-hidden">
                     {/* Header */}
-                    <div className="flex items-center justify-between border-b px-6 py-4">
-                         <div className="flex items-center gap-3">
-                              <Bell className="h-5 w-5 text-foreground" />
-                              <h1 className="text-2xl font-bold text-foreground">Thông báo</h1>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b px-4 sm:px-6 py-4 gap-3 sm:gap-0">
+                         <div className="flex items-center gap-2 sm:gap-3">
+                              <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
+                              <h1 className="text-xl sm:text-2xl font-bold text-foreground">Thông báo</h1>
                               {unreadCount > 0 && (
-                                   <Badge variant="default" className="rounded-full">
+                                   <Badge variant="default" className="rounded-full text-xs">
                                         {unreadCount}
                                    </Badge>
                               )}
                          </div>
 
-                         <div className="flex gap-2">
+                         <div className="flex gap-2 w-full sm:w-auto">
                               {unreadCount > 0 && (
-                                   <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
+                                   <Button variant="outline" size="sm" onClick={handleMarkAllAsRead} className='text-xs sm:text-sm flex-1 sm:flex-none'>
                                         Đánh dấu tất cả đã đọc
                                    </Button>
                               )}
-                              <Button variant="ghost" size="icon">
-                                   <Settings className="h-5 w-5" />
+                              <Button variant="ghost" size="icon" className='h-9 w-9'>
+                                   <Settings className="h-4 w-4 sm:h-5 sm:w-5" />
                               </Button>
                          </div>
                     </div>
@@ -107,19 +129,19 @@ export default function Notification() {
                     {/* Notifications List */}
                     <div className="divide-y">
                          {notifications.length === 0 ? (
-                              <div className="px-6 py-12 text-center text-muted-foreground">
-                                   <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                                   <p>Không có thông báo nào</p>
+                              <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">
+                                   <Bell className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-4 opacity-50" />
+                                   <p className='text-sm sm:text-base'>Không có thông báo nào</p>
                               </div>
                          ) : (
                               notifications.map((notification: NotificationType) => (
                                    <div
                                         key={notification.id}
                                         className={cn(
-                                             "flex items-start gap-4 px-6 py-4 transition-colors hover:bg-accent cursor-pointer",
+                                             "flex items-start gap-3 sm:gap-4 px-4 sm:px-6 py-4 transition-colors hover:bg-accent cursor-pointer",
                                              !notification.read && "bg-accent/50"
                                         )}
-                                        onClick={() => !notification.read && handleMarkAsRead(notification.id)}
+                                        onClick={() => handleMarkAsRead(notification)}
                                    >
                                         {/* Icon */}
                                         <div className="flex-shrink-0 mt-1">
@@ -129,7 +151,7 @@ export default function Notification() {
                                         {/* Content */}
                                         <div className="flex-1 min-w-0 space-y-1">
                                              <div className="flex items-start justify-between gap-2">
-                                                  <h3 className="font-semibold text-sm text-foreground">
+                                                  <h3 className="font-semibold text-xs sm:text-sm text-foreground">
                                                        {notification.title}
                                                   </h3>
                                                   {!notification.read && (
@@ -137,14 +159,14 @@ export default function Notification() {
                                                   )}
                                              </div>
 
-                                             <p className="text-sm text-muted-foreground whitespace-pre-line">
+                                             <p className="text-xs sm:text-sm text-muted-foreground whitespace-pre-line">
                                                   {notification.message}
                                              </p>
 
                                              {notification.actionUrl && (
                                                   <Link
                                                        href={notification.actionUrl}
-                                                       className="text-sm text-primary hover:underline inline-block mt-1"
+                                                       className="text-xs sm:text-sm text-primary hover:underline inline-block mt-1"
                                                   >
                                                        Xem chi tiết →
                                                   </Link>
@@ -160,7 +182,7 @@ export default function Notification() {
                                         <Button
                                              variant="ghost"
                                              size="icon"
-                                             className="h-8 w-8 flex-shrink-0"
+                                             className="h-8 w-8 flex-shrink-0 hidden sm:flex"
                                              onClick={(e) => {
                                                   e.stopPropagation()
                                              }}

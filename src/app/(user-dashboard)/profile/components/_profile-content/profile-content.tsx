@@ -3,6 +3,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import PostSection from './post-section'
 import SavedPostsSection from './saved-posts-section'
+import LikedPostsSection from './liked-posts-section'
 
 interface ProfileContentProps {
      onPostsCountChange?: (count: number) => void
@@ -40,9 +41,7 @@ export default function ProfileContent({ onPostsCountChange }: ProfileContentPro
                          <SavedPostsSection />
                     </TabsContent>
                     <TabsContent value="loved">
-                         <div className='text-center py-16 text-muted-foreground'>
-                              Loved posts coming soon...
-                         </div>
+                         <LikedPostsSection />
                     </TabsContent>
                </Tabs>
           </div>

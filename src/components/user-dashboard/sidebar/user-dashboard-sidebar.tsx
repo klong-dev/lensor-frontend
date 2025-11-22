@@ -1,7 +1,6 @@
 "use client"
 
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +11,8 @@ import {
 import { NavMain } from "@/components/user-dashboard/sidebar/nav-main"
 import { ROUTES } from "@/constants/path"
 import { useUserStore } from "@/stores/user-store"
+import { useCartStore } from "@/stores/cart-store"
+import { useNotificationStore } from "@/stores/notification-store"
 import {
   AudioWaveform,
   Bell,
@@ -36,6 +37,8 @@ import * as React from "react"
 export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const user = useUserStore(state => state.user)
+  const itemCount = useCartStore(state => state.itemCount)
+  const unreadCount = useNotificationStore(state => state.unreadCount)
   const t = useTranslations('Sidebar')
 
   const data = {
@@ -76,11 +79,13 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
         name: t('notification'),
         url: ROUTES.NOTIFICATION,
         icon: Bell,
+        badge: unreadCount > 0 ? unreadCount : undefined,
       },
       {
         name: t('cart'),
         url: ROUTES.CART,
         icon: ShoppingCart,
+        badge: itemCount > 0 ? itemCount : undefined,
       },
       {
         name: t("wallet"),
@@ -148,7 +153,12 @@ export function UserDashboardSidebar({ ...props }: React.ComponentProps<typeof S
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <div className="flex h-14 items-center px-4">
+          <div className="flex items-center gap-2">
+            <GalleryVerticalEnd className="size-6 text-primary" />
+            <span className="font-bold text-lg text-primary group-data-[collapsible=icon]:hidden">LENSOR</span>
+          </div>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain title={t('personalSpace')} items={navMainsWithActive} />

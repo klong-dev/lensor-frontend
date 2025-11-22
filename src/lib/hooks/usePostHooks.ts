@@ -54,3 +54,11 @@ export const useCheckSavedPost = (postId: string) => {
      )
      return { data, error, isLoading, mutate }
 }
+
+export const useLikedPosts = () => {
+     const { data, error, isLoading, mutate } = useSWR(
+          endpoints.like.allLikedPosts,
+          postApi.getAllLikedPosts
+     )
+     return { data, error, isLoading, mutate }
+}

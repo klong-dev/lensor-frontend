@@ -19,10 +19,10 @@ export const useNotifications = () => {
 export const useMarkAsRead = () => {
      const { mutate } = useNotifications()
 
-     const markAsRead = useCallback(async (id: string) => {
+     const markAsRead = useCallback(async (id: string, accountId: string) => {
           try {
-               await notificationApi.markAsRead(id)
-               mutate() // Revalidate notifications
+               await notificationApi.markAsRead(id, accountId)
+               mutate()
           } catch (error) {
                console.error('Failed to mark notification as read:', error)
                throw error

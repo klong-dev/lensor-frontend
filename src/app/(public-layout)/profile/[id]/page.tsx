@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { BASE_URL } from '@/constants'
 import { ROUTES } from '@/constants/path'
 import { userApi } from '@/lib/apis/userApi'
+import { postApi } from '@/lib/apis/postApi'
 import { messageApi } from '@/lib/apis/messageApi'
 import { useUserStore } from '@/stores/user-store'
 import { UserProfile, UserPost } from '@/types'
@@ -52,7 +53,40 @@ export default function PublicProfile() {
     try {
       setLoading(true)
       const { data } = await userApi.getUserProfile(userId)
-      setProfile(data)
+
+      // Enrich posts with full data to get accurate voteCount, commentCount, isLiked
+      const enrichedPosts = await Promise.all(
+        data.posts.map(async (post: UserPost) => {
+          try {
+            const fullPostData = await postApi.getById(post.id)
+            return {
+              ...fullPostData.data,
+              user: {
+                id: data.id,
+                name: data.name,
+                avatarUrl: data.avatarUrl,
+                isFollowed: false
+              }
+            } as PostType
+          } catch (err) {
+            console.error(`Failed to enrich post ${post.id}:`, err)
+            return {
+              ...post,
+              user: {
+                id: data.id,
+                name: data.name,
+                avatarUrl: data.avatarUrl,
+                isFollowed: false
+              }
+            } as PostType
+          }
+        })
+      )
+
+      setProfile({
+        ...data,
+        posts: enrichedPosts
+      })
     } catch (error) {
       console.error('Error fetching profile:', error)
       toast.error('Failed to load profile')
@@ -200,22 +234,9 @@ export default function PublicProfile() {
             </Card>
           ) : (
             <div className='space-y-0'>
-              {profile.posts.map((post: UserPost, index) => (
+              {(profile.posts as PostType[]).map((post, index) => (
                 <div key={post.id}>
-                  <Post
-                    dataPost={{
-                      ...post,
-                      user: {
-                        id: profile.id,
-                        name: profile.name,
-                        avatarUrl: profile.avatarUrl,
-                        isFollowed: false
-                      },
-                      voteCount: 0,
-                      commentCount: 0,
-                      isLiked: false
-                    } as PostType}
-                  />
+                  <Post dataPost={post} />
                   {index < profile.posts.length - 1 && <hr className='solid' />}
                 </div>
               ))}

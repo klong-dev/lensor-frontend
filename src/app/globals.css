@@ -144,7 +144,6 @@ body {
   --sidebar-ring: oklch(0.541 0.281 293.009);
 }
 
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -156,4 +155,21 @@ body {
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+}
+
+/* React Medium Image Zoom - Dark Mode Support */
+[data-rmiz-modal-overlay="visible"] {
+  background-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+.dark [data-rmiz-modal-overlay="visible"] {
+  background-color: rgba(0, 0, 0, 0.95) !important;
+}
+
+[data-rmiz-modal-content] {
+  transition: transform 0.3s ease-in-out;
+}
+
+[data-rmiz-modal-img] {
+  cursor: zoom-out;
 }

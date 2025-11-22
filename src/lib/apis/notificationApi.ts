@@ -8,8 +8,11 @@ export const notificationApi = {
           return res.data
      },
 
-     markAsRead: async (id: string) => {
-          const res = await apiClient.patch(endpoints.notification.markAsRead(id))
+     markAsRead: async (id: string, accountId: string) => {
+          const res = await apiClient.patch(endpoints.notification.markAsRead, {
+               id,
+               accountId
+          })
           return res.data
      },
 

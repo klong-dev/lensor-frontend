@@ -23,6 +23,7 @@ import { formatDistanceToNow } from 'date-fns'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { FollowButton } from '../FollowButton'
+import { LoginRequiredDialog } from '@/components/ui/login-required-dialog'
 
 const getTimeAgo = (dateString: string) => {
      try {
@@ -44,6 +45,8 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      const [isSaved, setIsSaved] = useState(false)
      const [showNSFWContent, setShowNSFWContent] = useState(false)
      const [showMetadata, setShowMetadata] = useState(false)
+     const [showLoginDialog, setShowLoginDialog] = useState(false)
+     const [loginAction, setLoginAction] = useState<string>('')
      const { mutate } = usePosts()
      const user = useUserStore(state => state.user)
      const { data: savedData, mutate: mutateSaved } = useCheckSavedPost(dataPost?.id)
@@ -61,6 +64,12 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      }
 
      const handleVotePost = async () => {
+          if (!user) {
+               setLoginAction('like this post')
+               setShowLoginDialog(true)
+               return
+          }
+
           const previousState = isVoted
           const previousCount = voteCount
 
@@ -92,6 +101,12 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      }
 
      const handleSavePost = async () => {
+          if (!user) {
+               setLoginAction('save this post')
+               setShowLoginDialog(true)
+               return
+          }
+
           const previousState = isSaved
 
           try {
@@ -120,40 +135,46 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      }
 
      return (
-          <div className='p-5 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-0 rounded-2xl duration-300 my-3'>
-               <div className='flex items-center justify-between'>
-                    <div className='flex items-center'>
+          <div className='p-2 sm:p-3 md:p-5 hover:backdrop-brightness-95 dark:hover:backdrop-brightness-0 rounded-xl sm:rounded-2xl duration-300 my-2 sm:my-3'>
+               <div className='flex items-start sm:items-center justify-between gap-2'>
+                    <div className='flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1'>
                          {dataPost?.user?.id ? (
-                              <Link href={ROUTES.PROFILE(dataPost.user.id)} className="hover:opacity-80 duration-300">
-                                   <Avatar>
+                              <Link href={ROUTES.PROFILE(dataPost.user.id)} className="hover:opacity-80 duration-300 shrink-0">
+                                   <Avatar className='h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10'>
                                         <AvatarImage src={dataPost?.user?.avatarUrl} />
-                                        <AvatarFallback>{dataPost?.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+                                        <AvatarFallback className="text-xs sm:text-sm">{dataPost?.user?.name?.charAt(0) || 'U'}</AvatarFallback>
                                    </Avatar>
                               </Link>
                          ) : (
-                              <Avatar>
+                              <Avatar className='h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 shrink-0'>
                                    <AvatarImage src={dataPost?.user?.avatarUrl} />
-                                   <AvatarFallback>U</AvatarFallback>
+                                   <AvatarFallback className="text-xs sm:text-sm">U</AvatarFallback>
                               </Avatar>
                          )}
-                         {dataPost?.user?.id ? (
-                              <Link href={ROUTES.PROFILE(dataPost.user.id)} className='font-bold ml-2 text-[var(--c-text-title)] hover:opacity-80 duration-300'>
-                                   {dataPost?.user?.name || 'Unknown User'}
-                              </Link>
-                         ) : (
-                              <span className='font-bold ml-2 text-[var(--c-text-title)]'>
-                                   {dataPost?.user?.name || 'Unknown User'}
-                              </span>
-                         )}
-                         <Dot />
-                         <span className='text-[var(--color-text-muted)]'>{getTimeAgo(dataPost?.createdAt)}</span>
+                         <div className='flex flex-col sm:flex-row sm:items-center gap-0 sm:gap-1 min-w-0 flex-1'>
+                              {dataPost?.user?.id ? (
+                                   <Link href={ROUTES.PROFILE(dataPost.user.id)} className='font-bold text-[var(--c-text-title)] hover:opacity-80 duration-300 text-xs sm:text-sm md:text-base truncate'>
+                                        {dataPost?.user?.name || 'Unknown User'}
+                                   </Link>
+                              ) : (
+                                   <span className='font-bold text-[var(--c-text-title)] text-xs sm:text-sm md:text-base truncate'>
+                                        {dataPost?.user?.name || 'Unknown User'}
+                                   </span>
+                              )}
+                              <div className="flex items-center gap-0.5 sm:gap-1">
+                                   <Dot className='hidden sm:block h-4 w-4' />
+                                   <span className='text-[var(--color-text-muted)] text-[10px] sm:text-xs truncate'>{getTimeAgo(dataPost?.createdAt)}</span>
+                              </div>
+                         </div>
                     </div>
-                    <div className='flex items-center gap-3'>
+                    <div className='flex items-center gap-1 sm:gap-1.5 md:gap-2 shrink-0'>
                          {dataPost?.user?.id && dataPost.user.id !== user?.id && (
                               <FollowButton
                                    userId={dataPost.user.id}
                                    size="sm"
                                    variant="default"
+                                   className="h-6 sm:h-7 md:h-8 px-2 sm:px-2.5 md:px-3 text-[10px] sm:text-xs"
+                                   showIcon={false}
                               />
                          )}
                          <DropdownMenuPost
@@ -164,22 +185,22 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                               isSaved={isSaved}
                               isOwner={dataPost?.user?.id === user?.id}
                          >
-                              <Button variant='ghost'>
-                                   <Ellipsis />
+                              <Button variant='ghost' size='sm' className='h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 p-0'>
+                                   <Ellipsis className='h-3.5 w-3.5 sm:h-4 sm:w-4 md:h-4.5 md:w-4.5' />
                               </Button>
                          </DropdownMenuPost>
                     </div>
                </div>
 
-               <h1 className='font-bold mt-2 text-[var(--c-text-title)]'>{dataPost?.title}</h1>
+               <h1 className='font-bold mt-1.5 sm:mt-2 text-[var(--c-text-title)] text-xs sm:text-sm md:text-base line-clamp-2 sm:line-clamp-none'>{dataPost?.title}</h1>
                <p
-                    className={clsx('text-base/5 text-justify my-1 duration-300 cursor-pointer', !expanded && 'line-clamp-3')}
+                    className={clsx('text-xs sm:text-sm md:text-base text-justify my-1 duration-300 cursor-pointer', !expanded && 'line-clamp-2 sm:line-clamp-3')}
                     onClick={() => setExpanded(!expanded)}
                >
                     {dataPost?.content}
                </p>
 
-               <Card className='relative w-full aspect-[3/2] flex justify-center items-center mt-3 bg-muted/30 overflow-hidden'>
+               <Card className='relative w-full aspect-[3/2] flex justify-center items-center mt-2 sm:mt-3 bg-muted/30 overflow-hidden rounded-lg sm:rounded-xl'>
                     {dataPost?.imageUrl && !imageError ? (
                          <>
                               <Zoom>
@@ -200,14 +221,16 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                               </Zoom>
                               {dataPost?.isNSFW && !showNSFWContent && (
                                    <div className="absolute inset-0 flex flex-col items-center justify-center z-10 bg-background/80 pointer-events-none">
-                                        <div className="flex flex-col items-center gap-3 pointer-events-auto">
-                                             <AlertTriangle className="h-12 w-12 text-red-500" />
-                                             <h3 className="text-lg font-semibold">18+ Sensitive Content</h3>
+                                        <div className="flex flex-col items-center gap-2 sm:gap-3 pointer-events-auto px-3">
+                                             <AlertTriangle className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-red-500" />
+                                             <h3 className="text-sm sm:text-base md:text-lg font-semibold text-center">18+ Sensitive Content</h3>
                                              <Button
                                                   variant="destructive"
                                                   onClick={() => setShowNSFWContent(true)}
+                                                  size="sm"
+                                                  className="h-8 sm:h-9 text-xs sm:text-sm"
                                              >
-                                                  <Eye className="mr-2 h-4 w-4" />
+                                                  <Eye className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                                                   View Content
                                              </Button>
                                         </div>
@@ -217,22 +240,22 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                                    <Button
                                         variant="secondary"
                                         size="sm"
-                                        className="absolute top-4 right-4 z-10"
+                                        className="absolute top-2 right-2 sm:top-3 sm:right-3 md:top-4 md:right-4 z-10 h-7 sm:h-8 text-xs sm:text-sm px-2 sm:px-3"
                                         onClick={() => setShowNSFWContent(false)}
                                    >
-                                        <EyeOff className="mr-2 h-4 w-4" />
-                                        Hide
+                                        <EyeOff className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                                        <span className="hidden sm:inline">Hide</span>
                                    </Button>
                               )}
                               {dataPost?.imageMetadata && (
                                    <Button
                                         variant="secondary"
                                         size="sm"
-                                        className="absolute bottom-4 right-4 z-10"
+                                        className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 md:bottom-4 md:right-4 z-10 h-7 sm:h-8 text-xs sm:text-sm px-2 sm:px-3"
                                         onClick={() => setShowMetadata(true)}
                                    >
-                                        <Info className="mr-2 h-4 w-4" />
-                                        Image Info
+                                        <Info className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                                        <span className="hidden sm:inline">Image Info</span>
                                    </Button>
                               )}
                          </>
@@ -245,33 +268,33 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                </Card>
 
                <Dialog open={showMetadata} onOpenChange={setShowMetadata}>
-                    <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                         <DialogHeader>
-                              <DialogTitle>Image Metadata</DialogTitle>
+                    <DialogContent className="w-[calc(100vw-1rem)] sm:max-w-2xl max-h-[85vh] overflow-y-auto p-4 sm:p-6">
+                         <DialogHeader className="space-y-2">
+                              <DialogTitle className="text-base sm:text-lg">Image Metadata</DialogTitle>
                          </DialogHeader>
-                         <div className="space-y-4 text-sm">
+                         <div className="space-y-3 sm:space-y-4 text-xs sm:text-sm">
                               {dataPost?.imageMetadata && (
                                    <>
                                         {/* Camera Information */}
                                         {(dataPost.imageMetadata.cameraMake || dataPost.imageMetadata.cameraModel) && (
-                                             <div className="space-y-2">
-                                                  <h3 className="font-semibold text-base">Camera</h3>
+                                             <div className="space-y-1.5 sm:space-y-2">
+                                                  <h3 className="font-semibold text-sm sm:text-base">Camera</h3>
                                                   {dataPost.imageMetadata.cameraMake && (
-                                                       <div className="grid grid-cols-[120px_1fr] gap-2">
-                                                            <span className="text-muted-foreground">Make:</span>
-                                                            <span>{dataPost.imageMetadata.cameraMake}</span>
+                                                       <div className="grid grid-cols-[80px_1fr] sm:grid-cols-[120px_1fr] gap-2">
+                                                            <span className="text-muted-foreground text-xs sm:text-sm">Make:</span>
+                                                            <span className="text-xs sm:text-sm">{dataPost.imageMetadata.cameraMake}</span>
                                                        </div>
                                                   )}
                                                   {dataPost.imageMetadata.cameraModel && (
-                                                       <div className="grid grid-cols-[120px_1fr] gap-2">
-                                                            <span className="text-muted-foreground">Model:</span>
-                                                            <span>{dataPost.imageMetadata.cameraModel}</span>
+                                                       <div className="grid grid-cols-[80px_1fr] sm:grid-cols-[120px_1fr] gap-2">
+                                                            <span className="text-muted-foreground text-xs sm:text-sm">Model:</span>
+                                                            <span className="text-xs sm:text-sm">{dataPost.imageMetadata.cameraModel}</span>
                                                        </div>
                                                   )}
                                                   {dataPost.imageMetadata.cameraSerialNumber && (
-                                                       <div className="grid grid-cols-[120px_1fr] gap-2">
-                                                            <span className="text-muted-foreground">Serial:</span>
-                                                            <span>{dataPost.imageMetadata.cameraSerialNumber}</span>
+                                                       <div className="grid grid-cols-[80px_1fr] sm:grid-cols-[120px_1fr] gap-2">
+                                                            <span className="text-muted-foreground text-xs sm:text-sm">Serial:</span>
+                                                            <span className="text-xs sm:text-sm truncate">{dataPost.imageMetadata.cameraSerialNumber}</span>
                                                        </div>
                                                   )}
                                              </div>
@@ -279,11 +302,11 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
 
                                         {/* Lens Information */}
                                         {dataPost.imageMetadata.lensModel && (
-                                             <div className="space-y-2">
-                                                  <h3 className="font-semibold text-base">Lens</h3>
-                                                  <div className="grid grid-cols-[120px_1fr] gap-2">
-                                                       <span className="text-muted-foreground">Model:</span>
-                                                       <span>{dataPost.imageMetadata.lensModel}</span>
+                                             <div className="space-y-1.5 sm:space-y-2">
+                                                  <h3 className="font-semibold text-sm sm:text-base">Lens</h3>
+                                                  <div className="grid grid-cols-[80px_1fr] sm:grid-cols-[120px_1fr] gap-2">
+                                                       <span className="text-muted-foreground text-xs sm:text-sm">Model:</span>
+                                                       <span className="text-xs sm:text-sm">{dataPost.imageMetadata.lensModel}</span>
                                                   </div>
                                                   {dataPost.imageMetadata.lensSerialNumber && (
                                                        <div className="grid grid-cols-[120px_1fr] gap-2">
@@ -471,24 +494,32 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                     </DialogContent>
                </Dialog>
 
-               <div className='flex gap-3 mt-2'>
-                    <Button variant='ghost' size='lg' onClick={handleVotePost}>
-                         <Heart className={clsx(isVoted && 'fill-red-600 text-red-600')} />
-                         <span className={clsx(isVoted && 'text-red-600')}>{voteCount}</span>
+               <div className='flex gap-1.5 sm:gap-2 md:gap-3 mt-2'>
+                    <Button variant='ghost' size='sm' onClick={handleVotePost} className="h-8 sm:h-9 md:h-10 px-2 sm:px-3">
+                         <Heart className={clsx('h-4 w-4 sm:h-5 sm:w-5', isVoted && 'fill-red-600 text-red-600')} />
+                         <span className={clsx('text-xs sm:text-sm ml-1 sm:ml-2', isVoted && 'text-red-600')}>{voteCount}</span>
                     </Button>
 
                     <DialogComment postId={dataPost?.id} handleUpdateCommentCount={handleUpdateCommentCount}>
-                         <Button variant='ghost' size='lg' >
-                              <MessageCircle size={92} /> {commentCount}
+                         <Button variant='ghost' size='sm' className="h-8 sm:h-9 md:h-10 px-2 sm:px-3">
+                              <MessageCircle className="h-4 w-4 sm:h-5 sm:w-5" />
+                              <span className="text-xs sm:text-sm ml-1 sm:ml-2">{commentCount}</span>
                          </Button>
                     </DialogComment>
 
                     <DialogShare linkShare={`${process.env.NEXT_PUBLIC_FRONTEND_URL}${ROUTES.FORUM}/${dataPost?.id}`}>
-                         <Button variant="ghost" size="sm">
-                              <Share2 />
+                         <Button variant="ghost" size="sm" className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 p-0">
+                              <Share2 className="h-4 w-4 sm:h-4.5 sm:w-4.5 md:h-5 md:w-5" />
                          </Button>
                     </DialogShare>
                </div>
+
+               <LoginRequiredDialog
+                    open={showLoginDialog}
+                    onOpenChange={setShowLoginDialog}
+                    title="Login Required"
+                    description={`You need to be logged in to ${loginAction}. Please login to continue.`}
+               />
           </div>
      )
 }
