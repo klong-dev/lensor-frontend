@@ -23,6 +23,7 @@ import { formatDistanceToNow } from 'date-fns'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { FollowButton } from '../FollowButton'
+import { LoginRequiredDialog } from '@/components/ui/login-required-dialog'
 
 const getTimeAgo = (dateString: string) => {
      try {
@@ -44,6 +45,8 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      const [isSaved, setIsSaved] = useState(false)
      const [showNSFWContent, setShowNSFWContent] = useState(false)
      const [showMetadata, setShowMetadata] = useState(false)
+     const [showLoginDialog, setShowLoginDialog] = useState(false)
+     const [loginAction, setLoginAction] = useState<string>('')
      const { mutate } = usePosts()
      const user = useUserStore(state => state.user)
      const { data: savedData, mutate: mutateSaved } = useCheckSavedPost(dataPost?.id)
@@ -61,6 +64,12 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      }
 
      const handleVotePost = async () => {
+          if (!user) {
+               setLoginAction('like this post')
+               setShowLoginDialog(true)
+               return
+          }
+
           const previousState = isVoted
           const previousCount = voteCount
 
@@ -92,6 +101,12 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      }
 
      const handleSavePost = async () => {
+          if (!user) {
+               setLoginAction('save this post')
+               setShowLoginDialog(true)
+               return
+          }
+
           const previousState = isSaved
 
           try {
@@ -489,6 +504,13 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
                          </Button>
                     </DialogShare>
                </div>
+
+               <LoginRequiredDialog
+                    open={showLoginDialog}
+                    onOpenChange={setShowLoginDialog}
+                    title="Login Required"
+                    description={`You need to be logged in to ${loginAction}. Please login to continue.`}
+               />
           </div>
      )
 }

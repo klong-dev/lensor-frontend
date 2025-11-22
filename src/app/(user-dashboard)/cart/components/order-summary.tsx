@@ -25,14 +25,13 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled = false }: OrderSummaryProps) {
-    const total = subtotal
     const router = useRouter()
     const [isCheckingOut, setIsCheckingOut] = useState(false)
     const [showCheckoutDialog, setShowCheckoutDialog] = useState(false)
     const { data: walletData, isLoading: isLoadingWallet } = useWallet()
 
-    const walletBalance = walletData?.data?.balance ? parseFloat(walletData.data.balance) : 0
-    const remainingBalance = walletBalance - total
+    const walletBalance = parseFloat(walletData?.data?.balance || '0')
+    const remainingBalance = walletBalance - subtotal
     const hasInsufficientFunds = remainingBalance < 0
 
     const handleOpenCheckoutDialog = () => {
@@ -46,23 +45,22 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
     const handleCheckout = async () => {
         setIsCheckingOut(true)
         setShowCheckoutDialog(false)
+
         try {
             const response = await orderApi.checkout()
 
             if (response.data) {
                 toast.success('Order placed successfully!')
-                if (onCheckoutSuccess) {
-                    await onCheckoutSuccess()
-                }
+                await onCheckoutSuccess?.()
                 router.push('/purchased-presets')
             } else {
                 toast.error(response.message || 'Checkout failed')
             }
         } catch (error) {
             console.error('Checkout failed:', error)
-            const errorMessage = error instanceof Error
-                ? (error as { response?: { data?: { message?: string } } }).response?.data?.message || error.message
-                : 'Failed to complete checkout. Please check your wallet balance.'
+            const errorMessage = (error as any)?.response?.data?.message
+                || (error as Error)?.message
+                || 'Failed to complete checkout. Please check your wallet balance.'
             toast.error(errorMessage)
         } finally {
             setIsCheckingOut(false)
@@ -86,7 +84,7 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
                     <div className="border-t pt-4 mb-4">
                         <div className="flex justify-between items-center">
                             <span className="font-semibold text-lg">Total</span>
-                            <span className="font-bold text-xl">{total.toLocaleString('vi-VN')} ₫</span>
+                            <span className="font-bold text-xl">{subtotal.toLocaleString('vi-VN')} ₫</span>
                         </div>
                     </div>
 
@@ -129,13 +127,13 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
                             </div>
                             <div className="border-t pt-2 flex justify-between font-semibold">
                                 <span>Total Amount</span>
-                                <span className="text-lg">{total.toLocaleString('vi-VN')} ₫</span>
+                                <span className="text-lg">{subtotal.toLocaleString('vi-VN')} ₫</span>
                             </div>
                         </div>
 
                         <div className={`flex items-center justify-between p-4 rounded-lg border-2 ${hasInsufficientFunds
-                            ? 'bg-destructive/10 border-destructive'
-                            : 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-800'
+                                ? 'bg-destructive/10 border-destructive'
+                                : 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-800'
                             }`}>
                             <div className="flex items-center gap-2">
                                 {hasInsufficientFunds && <AlertCircle className="h-5 w-5 text-destructive" />}
@@ -143,7 +141,9 @@ export function OrderSummary({ subtotal, itemCount, onCheckoutSuccess, disabled 
                                     {hasInsufficientFunds ? 'Insufficient Funds' : 'Balance After Purchase'}
                                 </span>
                             </div>
-                            <span className={`font-bold text-lg ${hasInsufficientFunds ? 'text-destructive' : 'text-green-600 dark:text-green-400'
+                            <span className={`font-bold text-lg ${hasInsufficientFunds
+                                    ? 'text-destructive'
+                                    : 'text-green-600 dark:text-green-400'
                                 }`}>
                                 {remainingBalance.toLocaleString('vi-VN')} ₫
                             </span>

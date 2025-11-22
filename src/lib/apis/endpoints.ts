@@ -16,7 +16,8 @@ export const endpoints = {
           byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/comments`
      },
      like: {
-          byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/like`
+          byPostId: (postId: string) => `${API_PREFIX}/posts/${postId}/like`,
+          likedPosts: (userId: string) => `${API_PREFIX}/posts/${userId}/likes`
      },
      payment: {
           paypal: `${API_PREFIX}/payment/paypal/create`,
@@ -30,6 +31,7 @@ export const endpoints = {
           detail: (roomId: string) => `${API_PREFIX}/chat/rooms/${roomId}`,
           allMessage: (roomId: string, limit: number = 50) => `${API_PREFIX}/chat/rooms/${roomId}/messages?limit=${limit}`,
           createDirect: (otherUserId: string) => `${API_PREFIX}/chat/direct/${otherUserId}`,
+          markAsRead: (roomId: string) => `${API_PREFIX}/chat/rooms/${roomId}/read`,
      },
      cart: createEndpoints('cart'),
      review: {
@@ -74,7 +76,7 @@ export const endpoints = {
      },
      notification: {
           all: `${API_PREFIX}/notifications`,
-          markAsRead: (id: string) => `${API_PREFIX}/notifications/${id}/read`,
+          markAsRead: `${API_PREFIX}/notifications/mark-as-read`,
           markAllAsRead: `${API_PREFIX}/notifications/read-all`
      },
      userFollows: {

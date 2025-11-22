@@ -1,31 +1,25 @@
 import { Button } from "@/components/ui/button"
-import { Check } from "lucide-react"
-
-export interface PricingPlan {
-     name: string
-     price: string
-     period: string
-     description: string
-     features: string[]
-     popular?: boolean
-}
+import { Check, Tag } from "lucide-react"
 
 interface PricingSectionProps {
      title: string
      titleHighlight: string
      description: string
-     plans: PricingPlan[]
-     mostPopular: string
-     getStarted: string
+     platformFee: string
+     feeDescription: string
+     features: {
+          title: string
+          list: string[]
+     }
 }
 
 export default function PricingSection({
      title,
      titleHighlight,
      description,
-     plans,
-     mostPopular,
-     getStarted
+     platformFee,
+     feeDescription,
+     features
 }: PricingSectionProps) {
      return (
           <section id="pricing" className="py-20 lg:py-32 bg-neutral-950">
@@ -42,35 +36,34 @@ export default function PricingSection({
                          </p>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                         {plans.map((plan, index) => (
-                              <div key={index} className={`relative p-8 rounded-2xl ${plan.popular ? 'bg-gradient-to-br from-purple-900/50 to-blue-900/50 border-2 border-purple-500' : 'bg-neutral-900/50 border border-gray-800'}`}>
-                                   {plan.popular && (
-                                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full text-sm font-medium text-white">
-                                             {mostPopular}
-                                        </div>
-                                   )}
-                                   <div className="mb-6">
-                                        <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                                        <p className="text-gray-400 text-sm">{plan.description}</p>
+                    <div className="max-w-4xl mx-auto">
+                         <div className="bg-gradient-to-br from-purple-900/30 to-blue-900/30 border-2 border-purple-500/50 rounded-2xl p-12">
+                              <div className="text-center mb-12">
+                                   <div className="inline-flex items-center gap-3 mb-4">
+                                        <Tag className="w-8 h-8 text-purple-400" />
+                                        <h3 className="text-5xl font-bold text-white">{platformFee}</h3>
                                    </div>
-                                   <div className="mb-6">
-                                        <span className="text-5xl font-bold text-white">{plan.price}</span>
-                                        <span className="text-gray-400 ml-2">{plan.period}</span>
-                                   </div>
-                                   <ul className="space-y-4 mb-8">
-                                        {plan.features.map((feature, i) => (
-                                             <li key={i} className="flex items-start gap-3">
+                                   <p className="text-xl text-gray-300">{feeDescription}</p>
+                              </div>
+
+                              <div className="mb-8">
+                                   <h4 className="text-2xl font-bold text-white mb-6 text-center">{features.title}</h4>
+                                   <div className="grid md:grid-cols-2 gap-4">
+                                        {features.list.map((feature, i) => (
+                                             <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-neutral-900/50">
                                                   <Check className="w-5 h-5 text-purple-400 flex-shrink-0 mt-0.5" />
                                                   <span className="text-gray-300">{feature}</span>
-                                             </li>
+                                             </div>
                                         ))}
-                                   </ul>
-                                   <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
-                                        {getStarted}
+                                   </div>
+                              </div>
+
+                              <div className="text-center">
+                                   <Button size="lg" className="bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white px-8">
+                                        Start Selling Today
                                    </Button>
                               </div>
-                         ))}
+                         </div>
                     </div>
                </div>
           </section>

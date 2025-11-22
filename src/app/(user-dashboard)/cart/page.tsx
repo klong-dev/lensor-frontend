@@ -8,7 +8,7 @@ import { useCart } from '@/lib/hooks/useCartHooks'
 import { CartItemData } from '@/types/cart'
 import { ChevronLeft, ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 import { CartItem } from './components/cart-item'
 import { OrderSummary } from './components/order-summary'
@@ -18,15 +18,27 @@ export default function Cart() {
   const [isUpdating, setIsUpdating] = useState(false)
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
 
+  const cartItems = cartData?.items || []
+  const selectedCartItems = cartItems.filter((item: CartItemData) => selectedItems.has(item.id))
+  const activeItems = cartItems.filter((item: CartItemData) => item.product?.status === 'active')
+  const hasUnavailableItems = activeItems.length < cartItems.length
+
+  const subtotal = selectedCartItems.reduce(
+    (sum: number, item: CartItemData) => sum + parseFloat(item.price) * item.quantity,
+    0
+  )
+  const totalQuantity = selectedCartItems.reduce(
+    (sum: number, item: CartItemData) => sum + item.quantity,
+    0
+  )
+
   const handleRemoveItem = async (cartItemId: string) => {
     setIsUpdating(true)
     try {
       await cartApi.removeCartItem(cartItemId)
-      setSelectedItems(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(cartItemId);
-        return newSet;
-      });
+      const newSelected = new Set(selectedItems)
+      newSelected.delete(cartItemId)
+      setSelectedItems(newSelected)
       mutate()
       toast.success('Item removed from cart')
     } catch (error) {
@@ -38,22 +50,20 @@ export default function Cart() {
   }
 
   const handleSelectItem = (itemId: string, selected: boolean) => {
-    setSelectedItems(prev => {
-      const newSet = new Set(prev);
-      if (selected) {
-        newSet.add(itemId);
-      } else {
-        newSet.delete(itemId);
-      }
-      return newSet;
-    });
-  };
+    const newSelected = new Set(selectedItems)
+    if (selected) {
+      newSelected.add(itemId)
+    } else {
+      newSelected.delete(itemId)
+    }
+    setSelectedItems(newSelected)
+  }
 
   const handleClearCart = async () => {
     setIsUpdating(true)
     try {
       await cartApi.clearCart()
-      setSelectedItems(new Set());
+      setSelectedItems(new Set())
       mutate()
       toast.success('Cart cleared successfully')
     } catch (error) {
@@ -64,10 +74,28 @@ export default function Cart() {
     }
   }
 
-  const cartItems = cartData?.items || []
-  const activeItems = cartItems.filter((item: CartItemData) => item.product?.status === 'active')
-  const selectedCartItems = cartItems.filter((item: CartItemData) => selectedItems.has(item.id))
-  const subtotal = selectedCartItems.reduce((sum: number, item: CartItemData) => sum + parseFloat(item.price) * item.quantity, 0)
+  const addToCart = async (id: string) => {
+    try {
+      const res = await cartApi.addItem({
+        productId: id,
+        quantity: 1
+      })
+      if (res) {
+        mutate()
+      }
+    } catch (error) {
+      console.error('Error adding product:', error)
+    } finally {
+      sessionStorage.removeItem('tempCart')
+    }
+  }
+
+  useEffect(() => {
+    const tempCartItem = sessionStorage.getItem('tempCart')
+    if (tempCartItem) {
+      addToCart(tempCartItem)
+    }
+  }, [])
 
   if (isLoading) {
     return (
@@ -96,16 +124,15 @@ export default function Cart() {
   return (
     <div className="min-h-screen container px-6">
       <div className="max-w-7xl mx-auto px-4 py-8">
-
-        <Link href={'/marketplace'} className="mb-6">
-          <Button variant="ghost" className="mb-4 -ml-2">
+        <Link href="/marketplace">
+          <Button variant="ghost" className="mb-10 -ml-2">
             <ChevronLeft className="h-4 w-4 mr-1" />
             Continue Shopping
           </Button>
         </Link>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
@@ -133,7 +160,7 @@ export default function Cart() {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    {activeItems.length < cartItems.length && (
+                    {hasUnavailableItems && (
                       <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-md">
                         <p className="text-sm text-yellow-800 dark:text-yellow-200">
                           Some products in your cart are currently unavailable and cannot be purchased.
@@ -141,8 +168,8 @@ export default function Cart() {
                       </div>
                     )}
                     {cartItems.map((item: CartItemData) => {
-                      const imagePath = item.product?.thumbnail || ''
-                      const imageUrl = imagePath.startsWith('http') ? imagePath : `${BASE_URL}${imagePath}`
+                      const thumbnail = item.product?.thumbnail || ''
+                      const imageUrl = thumbnail.startsWith('http') ? thumbnail : `${BASE_URL}${thumbnail}`
 
                       return (
                         <CartItem
@@ -152,17 +179,17 @@ export default function Cart() {
                           image={imageUrl}
                           title={item.product?.title || 'Untitled'}
                           author={item.product?.owner?.name || 'Unknown'}
-                          authorId={item?.product?.owner?.id || 'Unknown'}
+                          authorId={item.product?.owner?.id || 'Unknown'}
                           price={parseFloat(item.product?.price || item.price)}
                           originalPrice={item.product?.originalPrice ? parseFloat(item.product.originalPrice) : undefined}
                           category={item.product?.category}
                           fileFormat={item.product?.fileFormat}
                           fileSize={item.product?.fileSize}
-                          onRemove={handleRemoveItem}
-                          disabled={isUpdating}
                           status={item.product?.status || 'active'}
+                          onRemove={handleRemoveItem}
                           onSelect={handleSelectItem}
                           isSelected={selectedItems.has(item.id)}
+                          disabled={isUpdating}
                         />
                       )
                     })}
@@ -176,7 +203,7 @@ export default function Cart() {
             <div className="sticky top-20">
               <OrderSummary
                 subtotal={subtotal}
-                itemCount={selectedCartItems.reduce((sum: number, item: CartItemData) => sum + item.quantity, 0)}
+                itemCount={totalQuantity}
                 onCheckoutSuccess={mutate}
                 disabled={selectedItems.size === 0 || selectedCartItems.some((item: CartItemData) => item.product?.status !== 'active')}
               />

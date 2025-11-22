@@ -15,6 +15,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useCart } from '@/lib/hooks/useCartHooks'
 import { useNotifications } from '@/lib/hooks/useNotificationHooks'
+import { notificationApi } from '@/lib/apis/notificationApi'
 
 export default function MainHeader() {
   const t = useTranslations('Header')
@@ -46,6 +47,16 @@ export default function MainHeader() {
     }
   }, [notificationData, setNotifications])
 
+  const handleNotificationClick = async () => {
+    if (user && unreadCount > 0) {
+      try {
+        await notificationApi.markAllAsRead()
+      } catch (error) {
+        console.error('Failed to mark all as read:', error)
+      }
+    }
+  }
+
   const balance = walletData?.balance || 0
   const formattedBalance = balance.toLocaleString('vi-VN')
 
@@ -53,6 +64,14 @@ export default function MainHeader() {
     { title: t('forum'), href: ROUTES.FORUM },
     { title: t('marketplace'), href: ROUTES.MARKETPLACE }
   ]
+
+  // Hàm xử lý lưu session và chuyển hướng login
+  const handleLoginRedirect = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('redirectAfterLogin', window.location.pathname + window.location.search)
+      window.location.href = '/(auth)/login'
+    }
+  }
 
   return (
     <header className='z-30 backdrop-blur-2xl border-b-[0.5px] border-b-gray-300/10 pl-2 pr-2 sticky top-0'>
@@ -68,8 +87,8 @@ export default function MainHeader() {
         <div className='w-64 flex justify-end items-center gap-5'>
           {!user
             ? <>
-              <Link href={ROUTES.LOGIN}><Button variant='secondary'>{tButton('register')}</Button></Link>
-              <Link href={ROUTES.LOGIN}><Button>{tButton('login')}</Button></Link>
+              <Button variant='secondary' onClick={handleLoginRedirect}>{tButton('register')}</Button>
+              <Button onClick={handleLoginRedirect}>{tButton('login')}</Button>
             </>
             : <>
               <Link href={ROUTES.WALLET}>
@@ -104,7 +123,7 @@ export default function MainHeader() {
                     )}
                   </Link>
                 </Button>
-                <Button variant='ghost' size='icon' className='relative'>
+                <Button variant='ghost' size='icon' className='relative' onClick={handleNotificationClick}>
                   <Link href={ROUTES.NOTIFICATION}>
                     <Bell className='h-4 w-4' />
                     {unreadCount > 0 && (

@@ -4,21 +4,24 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { Bell, AlertCircle, CheckCircle, Clock, MoreVertical, Settings, X } from "lucide-react"
+import { Bell, AlertCircle, CheckCircle, Clock, MoreVertical, Settings } from "lucide-react"
 import { useNotifications, useMarkAsRead, useMarkAllAsRead } from "@/lib/hooks/useNotificationHooks"
 import { useNotificationStore } from "@/stores/notification-store"
+import { useUserStore } from "@/stores/user-store"
 import { useEffect } from "react"
 import { formatDistanceToNow } from "date-fns"
 import { vi } from "date-fns/locale"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import { Notification as NotificationType } from "@/types/notification"
+import { notificationApi } from "@/lib/apis/notificationApi"
 
 export default function Notification() {
      const { data, isLoading } = useNotifications()
-     const { notifications, unreadCount, setNotifications, markAsRead: markAsReadStore } = useNotificationStore()
+     const { notifications, unreadCount, setNotifications, markAsRead: markAsReadStore, markAllAsRead: markAllAsReadStore } = useNotificationStore()
      const { mutate: markAsRead } = useMarkAsRead()
      const { mutate: markAllAsRead } = useMarkAllAsRead()
+     const user = useUserStore(state => state.user)
 
      useEffect(() => {
           if (data?.data) {
@@ -26,13 +29,32 @@ export default function Notification() {
           }
      }, [data, setNotifications])
 
-     const handleMarkAsRead = (id: string) => {
-          markAsRead(id)
-          markAsReadStore(id)
+     useEffect(() => {
+          if (user && unreadCount > 0) {
+               notificationApi.markAllAsRead()
+          }
+     }, [user])
+
+     const handleMarkAsRead = async (notification: NotificationType) => {
+          if (!user?.id || notification.read) return
+
+          try {
+               await markAsRead(notification.id, user.id)
+               markAsReadStore(notification.id)
+          } catch (error) {
+               console.error('Failed to mark as read:', error)
+          }
      }
 
-     const handleMarkAllAsRead = () => {
-          markAllAsRead()
+     const handleMarkAllAsRead = async () => {
+          if (!user) return
+
+          try {
+               await markAllAsRead()
+               markAllAsReadStore()
+          } catch (error) {
+               console.error('Failed to mark all as read:', error)
+          }
      }
 
      const getNotificationIcon = (type: string) => {
@@ -119,7 +141,7 @@ export default function Notification() {
                                              "flex items-start gap-4 px-6 py-4 transition-colors hover:bg-accent cursor-pointer",
                                              !notification.read && "bg-accent/50"
                                         )}
-                                        onClick={() => !notification.read && handleMarkAsRead(notification.id)}
+                                        onClick={() => handleMarkAsRead(notification)}
                                    >
                                         {/* Icon */}
                                         <div className="flex-shrink-0 mt-1">

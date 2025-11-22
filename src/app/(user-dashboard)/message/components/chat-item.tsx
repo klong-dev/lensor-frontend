@@ -6,11 +6,15 @@ import { ROUTES } from "@/constants/path"
 import { useUserStore } from "@/stores/user-store"
 import { useChatStore } from "@/stores/chat-store"
 import { DataMessageProps } from "@/types/message"
+import { messageApi } from "@/lib/apis/messageApi"
+import { endpoints } from "@/lib/apis/endpoints"
+import { useSWRConfig } from "swr"
 import Link from "next/link"
 
 export default function ChatItem({ data }: { data: DataMessageProps }) {
      const user = useUserStore(state => state.user)
      const setSelectedConversation = useChatStore(state => state.setSelectedConversation)
+     const { mutate } = useSWRConfig()
 
      // Tìm user đối diện
      const otherUser = data?.participants?.find((p) => p.id !== user?.id)
@@ -32,12 +36,25 @@ export default function ChatItem({ data }: { data: DataMessageProps }) {
           }
      }
 
+     const handleClick = async () => {
+          setSelectedConversation(data)
+
+          if (data.unreadCount > 0) {
+               try {
+                    await messageApi.markAsRead(data.id)
+                    await mutate(endpoints.message.all)
+               } catch (error) {
+                    console.error('Failed to mark as read:', error)
+               }
+          }
+     }
+
      if (!data?.id) return null
 
      return (
           <Link
                href={`${ROUTES.MESSAGE}/${data.id}`}
-               onClick={() => setSelectedConversation(data)}
+               onClick={handleClick}
                className="border-b flex justify-between p-4 cursor-pointer hover:bg-accent duration-200"
           >
                <div className="flex items-center gap-3 min-w-0 flex-1">

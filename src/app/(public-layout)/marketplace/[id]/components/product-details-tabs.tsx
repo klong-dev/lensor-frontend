@@ -131,15 +131,14 @@ export default function ProductDetailsTabs({
                                 <Shield className='w-8 h-8 text-primary' />
                                 <div>
                                     <h3 className='font-semibold text-lg'>{warranty?.duration || 'N/A'} Money-Back Guarantee</h3>
-                                    <p className='text-muted-foreground'>{warranty?.coverage || 'No coverage information available'}</p>
+                                    <p className='text-muted-foreground'>Free update</p>
                                 </div>
                             </div>
                             <div className='mt-4'>
                                 <h4 className='font-semibold mb-2'>Terms & Conditions:</h4>
                                 <ul className='space-y-2 text-sm text-muted-foreground'>
-                                    {warranty?.terms?.map((term, index) => (
-                                        <li key={index}>• {term}</li>
-                                    ))}
+                                    <li>• 3-day money back guarantee</li>
+                                    <li>• Compatible with future Lightroom versions</li>
                                 </ul>
                             </div>
                         </div>
