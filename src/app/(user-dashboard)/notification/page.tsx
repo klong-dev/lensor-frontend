@@ -3,12 +3,19 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import {
+     Dialog,
+     DialogContent,
+     DialogDescription,
+     DialogHeader,
+     DialogTitle,
+} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { Bell, AlertCircle, CheckCircle, Clock, MoreVertical, Settings } from "lucide-react"
 import { useNotifications, useMarkAsRead, useMarkAllAsRead } from "@/lib/hooks/useNotificationHooks"
 import { useNotificationStore } from "@/stores/notification-store"
 import { useUserStore } from "@/stores/user-store"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { formatDistanceToNow } from "date-fns"
 import { vi } from "date-fns/locale"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -22,6 +29,8 @@ export default function Notification() {
      const { mutate: markAsRead } = useMarkAsRead()
      const { mutate: markAllAsRead } = useMarkAllAsRead()
      const user = useUserStore(state => state.user)
+     const [selectedNotification, setSelectedNotification] = useState<NotificationType | null>(null)
+     const [isModalOpen, setIsModalOpen] = useState(false)
 
      useEffect(() => {
           if (data?.data) {
@@ -44,6 +53,12 @@ export default function Notification() {
           } catch (error) {
                console.error('Failed to mark as read:', error)
           }
+     }
+
+     const handleNotificationClick = (notification: NotificationType) => {
+          handleMarkAsRead(notification)
+          setSelectedNotification(notification)
+          setIsModalOpen(true)
      }
 
      const handleMarkAllAsRead = async () => {
@@ -138,20 +153,20 @@ export default function Notification() {
                                    <div
                                         key={notification.id}
                                         className={cn(
-                                             "flex items-start gap-3 sm:gap-4 px-4 sm:px-6 py-4 transition-colors hover:bg-accent cursor-pointer",
+                                             "flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 transition-colors hover:bg-accent cursor-pointer h-[80px]",
                                              !notification.read && "bg-accent/50"
                                         )}
-                                        onClick={() => handleMarkAsRead(notification)}
+                                        onClick={() => handleNotificationClick(notification)}
                                    >
                                         {/* Icon */}
-                                        <div className="flex-shrink-0 mt-1">
+                                        <div className="flex-shrink-0">
                                              {getNotificationIcon(notification.type)}
                                         </div>
 
                                         {/* Content */}
-                                        <div className="flex-1 min-w-0 space-y-1">
+                                        <div className="flex-1 min-w-0 space-y-1 overflow-hidden">
                                              <div className="flex items-start justify-between gap-2">
-                                                  <h3 className="font-semibold text-xs sm:text-sm text-foreground">
+                                                  <h3 className="font-semibold text-xs sm:text-sm text-foreground line-clamp-1">
                                                        {notification.title}
                                                   </h3>
                                                   {!notification.read && (
@@ -159,20 +174,11 @@ export default function Notification() {
                                                   )}
                                              </div>
 
-                                             <p className="text-xs sm:text-sm text-muted-foreground whitespace-pre-line">
+                                             <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">
                                                   {notification.message}
                                              </p>
 
-                                             {notification.actionUrl && (
-                                                  <Link
-                                                       href={notification.actionUrl}
-                                                       className="text-xs sm:text-sm text-primary hover:underline inline-block mt-1"
-                                                  >
-                                                       Xem chi tiết →
-                                                  </Link>
-                                             )}
-
-                                             <div className="flex items-center gap-2 text-xs text-muted-foreground mt-2">
+                                             <div className="flex items-center gap-2 text-xs text-muted-foreground">
                                                   <Clock className="h-3 w-3" />
                                                   <span>{formatTime(notification.time)}</span>
                                              </div>
@@ -194,6 +200,31 @@ export default function Notification() {
                          )}
                     </div>
                </Card>
+
+               {/* Notification Detail Modal */}
+               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                    <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto">
+                         <DialogHeader>
+                              <div className="flex items-center gap-2 mb-2">
+                                   {selectedNotification && getNotificationIcon(selectedNotification.type)}
+                                   <DialogTitle className="text-lg sm:text-xl">
+                                        {selectedNotification?.title}
+                                   </DialogTitle>
+                              </div>
+                              <DialogDescription className="flex items-center gap-2 text-xs sm:text-sm">
+                                   <Clock className="h-3 w-3" />
+                                   <span>{selectedNotification && formatTime(selectedNotification.time)}</span>
+                              </DialogDescription>
+                         </DialogHeader>
+
+                         <div className="space-y-4 pt-4">
+                              <div className="text-sm sm:text-base text-foreground whitespace-pre-line leading-relaxed">
+                                   {selectedNotification?.message}
+                              </div>
+
+                         </div>
+                    </DialogContent>
+               </Dialog>
           </div>
      )
 }
