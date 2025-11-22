@@ -9,10 +9,19 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { AlertTriangle } from "lucide-react"
+import { AlertTriangle, MessageSquare } from "lucide-react"
 import { BlockedProductDialogProps } from "@/types/marketplace"
+import { ROUTES } from "@/constants/path"
+import { useRouter } from "next/navigation"
 
 export function BlockedProductDialog({ open, onOpenChange, productTitle }: BlockedProductDialogProps) {
+    const router = useRouter()
+
+    const handleContactSupport = () => {
+        onOpenChange(false)
+        router.push(ROUTES.SUPPORT)
+    }
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[500px]">
@@ -34,7 +43,15 @@ export function BlockedProductDialog({ open, onOpenChange, productTitle }: Block
                         </p>
                     </DialogDescription>
                 </DialogHeader>
-                <DialogFooter>
+                <DialogFooter className="flex-col sm:flex-row gap-2">
+                    <Button
+                        variant="outline"
+                        onClick={handleContactSupport}
+                        className="w-full sm:w-auto"
+                    >
+                        <MessageSquare className="h-4 w-4 mr-2" />
+                        Contact Support
+                    </Button>
                     <Button onClick={() => onOpenChange(false)} className="w-full sm:w-auto">
                         I Understand
                     </Button>
