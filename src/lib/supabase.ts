@@ -24,6 +24,7 @@ export const authHelpers = {
         data: {
           full_name,
         },
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_FRONTEND_URL}/callback`
       },
     });
     return { data, error };
