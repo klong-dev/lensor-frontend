@@ -10,8 +10,10 @@ import { withdrawalApi } from '@/lib/apis/withdrawalApi';
 import { WithdrawalStatistics } from '@/types/withdrawal';
 import { toast } from 'sonner';
 import { BarChart3, TrendingUp, Wallet, XCircle, Filter, Calendar, DollarSign } from 'lucide-react';
+import { useDiscountRate } from '@/lib/hooks/useDiscountRate';
 
 export default function StatisticsPage() {
+     const { discountRate, discountRateNum } = useDiscountRate();
      const [statistics, setStatistics] = useState<WithdrawalStatistics | null>(null);
      const [selectedYear, setSelectedYear] = useState<string>('2025');
      const [selectedMonth, setSelectedMonth] = useState<string>('all');
@@ -182,7 +184,7 @@ export default function StatisticsPage() {
                                    <CardContent className="p-6">
                                         <div className="flex items-center justify-between">
                                              <div>
-                                                  <p className="text-sm font-medium text-red-600 dark:text-red-400">Total Fees (17%)</p>
+                                                  <p className="text-sm font-medium text-red-600 dark:text-red-400">Total Fees ({discountRate}%)</p>
                                                   <p className="text-2xl font-bold text-red-900 dark:text-red-100 mt-2">
                                                        {formatCurrency(statistics.totalFee)}
                                                   </p>
@@ -251,7 +253,7 @@ export default function StatisticsPage() {
                                              <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg">
                                                   <p className="text-sm text-blue-600 dark:text-blue-400">Fee Percentage</p>
                                                   <p className="text-xl font-bold text-blue-900 dark:text-blue-100 mt-1">
-                                                       17%
+                                                       {discountRate}%
                                                   </p>
                                              </div>
                                         </div>

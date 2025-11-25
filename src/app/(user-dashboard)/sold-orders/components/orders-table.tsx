@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { SoldOrder, OrderStatus } from "@/types/order";
+import { OrderStatusBadge } from "@/components/ui/status-badges";
+import { SoldOrder } from "@/types/order";
 import { Withdrawal } from "@/types/withdrawal";
-import { CheckCircle, XCircle, Clock, AlertTriangle, MoreVertical, Wallet, Eye, CalendarClock } from "lucide-react";
+import { formatCurrency, formatDate } from "@/utils/formatters";
+import { getTimeUntilWithdrawable } from "@/utils/orderUtils";
+import { CheckCircle, AlertTriangle, MoreVertical, Wallet, Eye, CalendarClock, Clock, XCircle } from "lucide-react";
 
 interface OrdersTableProps {
   orders: SoldOrder[];
@@ -18,108 +21,6 @@ interface OrdersTableProps {
 }
 
 export function OrdersTable({ orders, withdrawals, onViewDetails, onWithdraw, selectedOrders = [], onOrderSelect, showCheckboxes = false }: OrdersTableProps) {
-  const getStatusBadge = (status: OrderStatus) => {
-    const statusConfig: Record<OrderStatus, { variant: any; label: string; icon: React.ReactNode; className?: string }> = {
-      ready_for_withdrawal: {
-        variant: "default",
-        label: "Ready for Withdrawal",
-        icon: <CheckCircle className="h-3 w-3" />,
-        className: "bg-green-500 hover:bg-green-600",
-      },
-      pending: {
-        variant: "secondary",
-        label: "Pending",
-        icon: <Clock className="h-3 w-3" />,
-      },
-      completed: {
-        variant: "default",
-        label: "Completed",
-        icon: <CheckCircle className="h-3 w-3" />,
-        className: "bg-blue-500 hover:bg-blue-600",
-      },
-      failed: {
-        variant: "destructive",
-        label: "Failed",
-        icon: <XCircle className="h-3 w-3" />,
-      },
-      refunded: {
-        variant: "secondary",
-        label: "Refunded",
-        icon: <AlertTriangle className="h-3 w-3" />,
-      },
-      reported: {
-        variant: "secondary",
-        label: "Reported",
-        icon: <AlertTriangle className="h-3 w-3" />,
-        className: "bg-yellow-500 hover:bg-yellow-600",
-      },
-      withdrawn: {
-        variant: "default",
-        label: "Withdrawn",
-        icon: <Wallet className="h-3 w-3" />,
-        className: "bg-purple-500 hover:bg-purple-600",
-      },
-      withdrawing: {
-        variant: "secondary",
-        label: "Withdrawing",
-        icon: <CalendarClock className="h-3 w-3" />,
-        className: "bg-orange-500 hover:bg-orange-600",
-      },
-    };
-
-    const config = statusConfig[status];
-
-    if (!config) {
-      return (
-        <Badge variant="secondary" className="flex items-center gap-1">
-          <Clock className="h-3 w-3" />
-          {status}
-        </Badge>
-      );
-    }
-
-    return (
-      <Badge variant={config.variant} className={`flex items-center gap-1 ${config.className || ""}`}>
-        {config.icon}
-        {config.label}
-      </Badge>
-    );
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const formatCurrency = (amount: number | string) => {
-    const num = typeof amount === "string" ? parseFloat(amount) : amount;
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(num);
-  };
-
-  const getTimeUntilWithdrawable = (withdrawableAt: string) => {
-    const now = new Date();
-    const withdrawDate = new Date(withdrawableAt);
-    const diff = withdrawDate.getTime() - now.getTime();
-
-    if (diff <= 0) return "Available now";
-
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-
-    if (days > 0) return `${days}d ${hours}h`;
-    if (hours > 0) return `${hours}h ${minutes}m`;
-    return `${minutes}m`;
-  };
-
   // Check if order is already withdrawn
   const isOrderWithdrawn = (orderId: string) => {
     return withdrawals.some((w) => w.orderIds.includes(orderId) && (w.status === "approved" || w.status === "pending"));

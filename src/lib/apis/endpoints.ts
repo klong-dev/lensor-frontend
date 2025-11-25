@@ -81,6 +81,9 @@ export const endpoints = {
           markAsRead: `${API_PREFIX}/notifications/mark-as-read`,
           markAllAsRead: `${API_PREFIX}/notifications/read-all`
      },
+     systemVariables: {
+          discountRate: `${API_PREFIX}/system-variables/discount-rate`
+     },
      userFollows: {
           follow: (userId: string) => `${API_PREFIX}/user-follows/${userId}`,
           unfollow: (userId: string) => `${API_PREFIX}/user-follows/${userId}`,

@@ -2,14 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { DollarSign, Wallet, Clock } from 'lucide-react';
 import { SoldOrder } from '@/types/order';
 import { WithdrawalStatistics } from '@/types/withdrawal';
+import { formatCurrency } from '@/utils/formatters';
 
 interface OrderStatsProps {
      orders: SoldOrder[];
      statistics: WithdrawalStatistics | null;
+     discountRate: string | number
 }
 
-export function OrderStats({ orders, statistics }: OrderStatsProps) {
-     const totalEarnings = orders.reduce((sum, order) => sum + order.sellerEarnings, 0);
+export function OrderStats({ orders, statistics, discountRate }: OrderStatsProps) {
 
      const stats = {
           total: orders.length,
@@ -17,16 +18,9 @@ export function OrderStats({ orders, statistics }: OrderStatsProps) {
           waiting: orders.filter(o => o.status === 'completed').length,
           withdrawing: orders.filter(o => o.status === 'withdrawing').length,
           withdrawn: orders.filter(o => o.status === 'withdrawn').length,
-          totalEarnings: totalEarnings,
+          totalEarnings: statistics?.totalAmount || 0,
           actualAmount: statistics?.totalActualAmount || 0,
-     };
-
-     const formatCurrency = (amount: number) => {
-          return new Intl.NumberFormat('vi-VN', {
-               style: 'currency',
-               currency: 'VND',
-          }).format(amount);
-     };
+     }
 
      return (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -70,7 +64,7 @@ export function OrderStats({ orders, statistics }: OrderStatsProps) {
                               {formatCurrency(stats.actualAmount)}
                          </div>
                          <p className="text-xs text-muted-foreground mt-1">
-                              From {formatCurrency(stats.totalEarnings)} (17% fee)
+                              From {formatCurrency(stats.totalEarnings)} ({discountRate}% fee)
                          </p>
                     </CardContent>
                </Card>

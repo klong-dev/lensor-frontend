@@ -43,3 +43,9 @@ export interface UserProduct {
      status?: string
      createdAt: string
 }
+
+export interface DiscountRateResponse {
+     data: {
+          discountRate: string
+     }
+}

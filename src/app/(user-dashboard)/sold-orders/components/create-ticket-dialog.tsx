@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/button'
 import {
      Dialog,
      DialogContent,
@@ -10,86 +9,87 @@ import {
      DialogHeader,
      DialogTitle,
 } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
      Select,
      SelectContent,
      SelectItem,
      SelectTrigger,
      SelectValue,
-} from '@/components/ui/select';
-import { Loader2, Upload, X, FileIcon } from 'lucide-react';
-import { toast } from 'sonner';
-import { ticketApi } from '@/lib/apis/ticketApi';
-import { TicketPriority } from '@/types/ticket';
+} from '@/components/ui/select'
+import { ticketApi } from '@/lib/apis/ticketApi'
+import { TicketPriority } from '@/types/ticket'
+import { FileIcon, Loader2, Upload, X } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
 
 interface CreateTicketDialogProps {
-     open: boolean;
-     onOpenChange: (open: boolean) => void;
-     onSuccess?: () => void;
+     open: boolean
+     onOpenChange: (open: boolean) => void
+     onSuccess?: () => void
 }
 
 export function CreateTicketDialog({ open, onOpenChange, onSuccess }: CreateTicketDialogProps) {
-     const [title, setTitle] = useState('');
-     const [description, setDescription] = useState('');
-     const [priority, setPriority] = useState<TicketPriority>('medium');
-     const [category, setCategory] = useState('');
-     const [attachments, setAttachments] = useState<File[]>([]);
-     const [isSubmitting, setIsSubmitting] = useState(false);
+     const [title, setTitle] = useState('')
+     const [description, setDescription] = useState('')
+     const [priority, setPriority] = useState<TicketPriority>('medium')
+     const [category, setCategory] = useState('')
+     const [attachments, setAttachments] = useState<File[]>([])
+     const [isSubmitting, setIsSubmitting] = useState(false)
 
      const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-          const files = Array.from(e.target.files || []);
+          const files = Array.from(e.target.files || [])
           if (attachments.length + files.length > 5) {
-               toast.error('Maximum 5 files allowed');
+               toast.error('Maximum 5 files allowed')
                return;
           }
-          setAttachments([...attachments, ...files]);
-     };
+          setAttachments([...attachments, ...files])
+     }
 
      const removeFile = (index: number) => {
-          setAttachments(attachments.filter((_, i) => i !== index));
-     };
+          setAttachments(attachments.filter((_, i) => i !== index))
+     }
 
      const handleSubmit = async () => {
           if (!title.trim()) {
                toast.error('Please enter a title');
-               return;
+               return
           }
           if (!description.trim()) {
                toast.error('Please enter a description');
-               return;
+               return
           }
           if (!category.trim()) {
                toast.error('Please select a category');
-               return;
+               return
           }
 
           try {
-               setIsSubmitting(true);
+               setIsSubmitting(true)
                await ticketApi.createTicket({
                     title,
                     description,
                     priority,
                     category,
                     attachments: attachments.length > 0 ? attachments : undefined,
-               });
+               })
 
-               toast.success('Support ticket created successfully');
-               setTitle('');
-               setDescription('');
-               setPriority('medium');
-               setCategory('');
-               setAttachments([]);
-               onOpenChange(false);
-               if (onSuccess) onSuccess();
+               toast.success('Support ticket created successfully')
+               setTitle('')
+               setDescription('')
+               setPriority('medium')
+               setCategory('')
+               setAttachments([])
+               onOpenChange(false)
+               if (onSuccess) onSuccess()
           } catch (error: any) {
-               console.error('Error creating ticket:', error);
-               toast.error(error.response?.data?.message || 'Failed to create ticket');
+               console.error('Error creating ticket:', error)
+               toast.error(error.response?.data?.message || 'Failed to create ticket')
           } finally {
-               setIsSubmitting(false);
+               setIsSubmitting(false)
           }
-     };
+     }
 
      return (
           <Dialog open={open} onOpenChange={onOpenChange}>
@@ -233,5 +233,5 @@ export function CreateTicketDialog({ open, onOpenChange, onSuccess }: CreateTick
                     </DialogFooter>
                </DialogContent>
           </Dialog>
-     );
+     )
 }

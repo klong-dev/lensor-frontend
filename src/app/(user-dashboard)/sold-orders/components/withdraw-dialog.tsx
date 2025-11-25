@@ -4,37 +4,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { SoldOrder } from "@/types/order";
-import { Wallet, AlertCircle, Plus, CreditCard, Trash2 } from "lucide-react";
-import { Spinner } from "@/components/ui/spinner";
-import { useBankCards } from "@/lib/hooks/useBankCardHooks";
-import { useState, useEffect } from "react";
-import { bankCardApi } from "@/lib/apis/bankCardApi";
-import { toast } from "sonner";
 import { Separator } from "@/components/ui/separator";
-
-// System withdrawal fee percentage
-const WITHDRAWAL_FEE_PERCENTAGE = 17;
-
-// Format currency
-const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("vi-VN", {
-    style: "currency",
-    currency: "VND",
-  }).format(amount);
-};
-
-// Calculate total earnings and fees
-const calculateWithdrawal = (orders: SoldOrder[]) => {
-  const totalEarnings = orders.reduce((sum, order) => sum + order.sellerEarnings, 0);
-  const fee = totalEarnings * (WITHDRAWAL_FEE_PERCENTAGE / 100);
-  const finalAmount = totalEarnings - fee;
-
-  return { totalEarnings, fee, finalAmount };
-};
-
-// Popular Vietnamese banks
-const VIETNAMESE_BANKS = ["Vietcombank - BIDV", "VietinBank", "BIDV", "Agribank", "Techcombank", "MB Bank", "VPBank", "ACB", "Sacombank", "VIB", "HDBank", "TPBank", "SHB", "SeABank", "OCB", "MSB", "VietCapital Bank", "Nam A Bank", "Bac A Bank", "Cake by VPBank", "Timo by VPBank", "TNEX"];
+import { Spinner } from "@/components/ui/spinner";
+import { VIETNAMESE_BANKS } from "@/constants/banks";
+import { bankCardApi } from "@/lib/apis/bankCardApi";
+import { useBankCards } from "@/lib/hooks/useBankCardHooks";
+import { SoldOrder } from "@/types/order";
+import { formatCurrency } from "@/utils/formatters";
+import { calculateWithdrawal } from "@/utils/orderUtils";
+import { Wallet, AlertCircle, Plus, CreditCard, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 interface WithdrawDialogProps {
   orders: SoldOrder[];
@@ -42,9 +22,10 @@ interface WithdrawDialogProps {
   onOpenChange: (open: boolean) => void;
   onConfirm: (bankCardId: string, orderIds: string[], note?: string) => void;
   isSubmitting: boolean;
+  feePercentage: number;
 }
 
-export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmitting }: WithdrawDialogProps) {
+export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmitting, feePercentage }: WithdrawDialogProps) {
   const { data: bankCardsData, mutate: mutateBankCards } = useBankCards();
   const [selectedBankCardId, setSelectedBankCardId] = useState<string>("");
   const [note, setNote] = useState("");
@@ -132,7 +113,7 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
 
   if (orders.length === 0) return null;
 
-  const { totalEarnings, fee, finalAmount } = calculateWithdrawal(orders);
+  const { totalEarnings, fee, finalAmount } = calculateWithdrawal(orders, feePercentage);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -154,7 +135,7 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
               <span className="text-base font-semibold">{formatCurrency(totalEarnings)}</span>
             </div>
             <div className="flex justify-between items-center text-red-600 dark:text-red-400">
-              <span className="text-sm">Withdrawal Fee ({WITHDRAWAL_FEE_PERCENTAGE}%):</span>
+              <span className="text-sm">Withdrawal Fee ({feePercentage}%):</span>
               <span className="text-base font-semibold">- {formatCurrency(fee)}</span>
             </div>
             <Separator />
@@ -252,7 +233,7 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
           <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-md border border-yellow-200 dark:border-yellow-800">
             <div className="flex gap-2">
               <AlertCircle className="h-4 w-4 text-yellow-700 dark:text-yellow-300 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-yellow-700 dark:text-yellow-300">A {WITHDRAWAL_FEE_PERCENTAGE}% system fee will be deducted from your withdrawal amount.</p>
+              <p className="text-sm text-yellow-700 dark:text-yellow-300">A {feePercentage}% system fee will be deducted from your withdrawal amount.</p>
             </div>
           </div>
 
