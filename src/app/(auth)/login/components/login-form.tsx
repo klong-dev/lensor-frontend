@@ -1,26 +1,23 @@
 'use client'
 
-import { authHelpers } from '@/lib/supabase'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Facebook } from 'lucide-react';
-import Image from 'next/image'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { toast } from 'sonner'
-import { useUserStore } from '@/stores/user-store'
-import { useCartStore } from '@/stores/cart-store'
-import { cartApi } from '@/lib/apis/cartApi'
-import { ROUTES } from '@/constants/path'
+import { Button } from '@/components/ui/button';
 import {
     Field,
-    FieldDescription,
+    FieldError,
     FieldGroup,
     FieldLabel,
-    FieldSet,
     FieldSeparator,
-    FieldError,
-} from "@/components/ui/field"
+    FieldSet
+} from "@/components/ui/field";
+import { Input } from '@/components/ui/input';
+import { ROUTES } from '@/constants/path';
+import { authHelpers, supabase } from '@/lib/supabase';
+import { useUserStore } from '@/stores/user-store';
+import { Facebook } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 type FormType = 'login' | 'register'
 
@@ -41,44 +38,19 @@ export function LoginForm(props: Record<string, never>) {
         password: '',
         confirmPassword: ''
     })
-    const { user } = useUserStore()
-    const { getPendingCart, clearPendingCart } = useCartStore()
-
-    // Hàm đồng bộ pending cart sau khi login
-    const syncPendingCart = async () => {
-        const pendingItems = getPendingCart();
-        if (pendingItems && pendingItems.length > 0) {
-            try {
-                // Gửi từng sản phẩm trong pending cart lên server
-                for (const item of pendingItems) {
-                    await cartApi.addItem({
-                        productId: item.productId,
-                        quantity: item.quantity
-                    });
-                }
-                clearPendingCart();
-                toast.success(`${pendingItems.length} item(s) added to your cart!`);
-            } catch (error) {
-                console.error('Error syncing pending cart:', error);
-                toast.error('Failed to sync cart items');
-            }
-        }
-    };
+    const { user, setUser } = useUserStore()
 
     useEffect(() => {
         if (user) {
-            // Nếu đã login, đồng bộ pending cart
-            syncPendingCart().then(() => {
-                // Kiểm tra redirectAfterLogin
-                const redirectUrl = typeof window !== 'undefined' ? sessionStorage.getItem('redirectAfterLogin') : null
-                if (redirectUrl) {
-                    sessionStorage.removeItem('redirectAfterLogin')
-                    router.replace(redirectUrl)
-                } else {
-                    router.replace(ROUTES.HOME)
-                }
-                toast.success('You are already logged in')
-            });
+            // Kiểm tra redirectAfterLogin
+            const redirectUrl = typeof window !== 'undefined' ? sessionStorage.getItem('redirectAfterLogin') : null
+            if (redirectUrl) {
+                sessionStorage.removeItem('redirectAfterLogin')
+                router.replace(redirectUrl)
+            } else {
+                router.replace(ROUTES.HOME)
+            }
+            toast.success('You are already logged in')
         }
     }, [user, router])
 
@@ -151,10 +123,8 @@ export function LoginForm(props: Record<string, never>) {
                     setError(signInError.message)
                     toast.error(signInError.message)
                 } else if (data.user) {
+                    await setUser(data.user)
                     toast.success('Login successful!')
-
-                    // Đồng bộ pending cart
-                    await syncPendingCart();
 
                     // Kiểm tra redirectAfterLogin
                     const redirectUrl = typeof window !== 'undefined' ? sessionStorage.getItem('redirectAfterLogin') : null
@@ -211,8 +181,6 @@ export function LoginForm(props: Record<string, never>) {
                 setLoading(false)
                 return
             }
-            console.log('Redirecting to OAuth provider:', data.url)
-
         } catch (err) {
             console.error('Error during social login:', err)
             setError('An error occurred during login. Please try again.')

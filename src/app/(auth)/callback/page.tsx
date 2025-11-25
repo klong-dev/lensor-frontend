@@ -12,26 +12,6 @@ import { cartApi } from '@/lib/apis/cartApi';
 export default function AuthCallback() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const { getPendingCart, clearPendingCart } = useCartStore()
-
-    // Hàm đồng bộ pending cart sau khi login
-    const syncPendingCart = async () => {
-        const pendingItems = getPendingCart();
-        if (pendingItems && pendingItems.length > 0) {
-            try {
-                for (const item of pendingItems) {
-                    await cartApi.addItem({
-                        productId: item.productId,
-                        quantity: item.quantity
-                    });
-                }
-                clearPendingCart();
-                toast.success(`${pendingItems.length} item(s) added to your cart!`);
-            } catch (error) {
-                console.error('Error syncing pending cart:', error);
-            }
-        }
-    };
 
     useEffect(() => {
         const handleAuthCallback = async () => {
@@ -51,9 +31,6 @@ export default function AuthCallback() {
                 if (data.session) {
                     toast.success('Login successful!')
 
-                    // Đồng bộ pending cart
-                    await syncPendingCart();
-
                     // Kiểm tra redirectAfterLogin
                     const redirectUrl = typeof window !== 'undefined' ? sessionStorage.getItem('redirectAfterLogin') : null
                     if (redirectUrl) {
@@ -63,7 +40,6 @@ export default function AuthCallback() {
                         router.replace(ROUTES.HOME)
                     }
                 } else {
-
                     await new Promise(resolve => setTimeout(resolve, 500))
                     const { data: retryData, error: retryError } = await supabase.auth.getSession()
 
@@ -74,9 +50,6 @@ export default function AuthCallback() {
                     } else {
                         console.log('Session data (retry):', retryData.session)
                         toast.success('Login successful!')
-
-                        // Đồng bộ pending cart
-                        await syncPendingCart();
 
                         // Kiểm tra redirectAfterLogin
                         const redirectUrl = typeof window !== 'undefined' ? sessionStorage.getItem('redirectAfterLogin') : null
