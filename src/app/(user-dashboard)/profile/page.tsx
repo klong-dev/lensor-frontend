@@ -1,23 +1,21 @@
 'use client'
 
+import { FollowButton } from '@/components/forum/FollowButton'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { useFollowStats, useUserFollowers, useUserFollowing } from '@/lib/hooks/useFollow'
 import { useUserStore } from '@/stores/user-store'
+import { Loader2, Users } from 'lucide-react'
+import Link from 'next/link'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import ProfileContent from './components/_profile-content/profile-content'
 import About from './components/about'
 import SuggestionList from './components/suggestion-list'
-import { authHelpers } from '@/lib/supabase'
-import { useFollowStats, useUserFollowers, useUserFollowing } from '@/lib/hooks/useFollow'
-import { useState } from 'react'
-import Link from 'next/link'
-import { Users, Loader2 } from 'lucide-react'
-import { FollowButton } from '@/components/forum/FollowButton'
-import { toast } from 'sonner'
 
 export default function ProfilePage() {
-     const isOwnProfile = false
      const { user } = useUserStore()
      const [followersDialogOpen, setFollowersDialogOpen] = useState(false)
      const [followingDialogOpen, setFollowingDialogOpen] = useState(false)
@@ -28,18 +26,13 @@ export default function ProfilePage() {
      const { followers } = useUserFollowers(userId)
      const { following } = useUserFollowing(userId)
 
+     console.log(user);
+
      return (
           <div className='container mx-auto p-2 sm:p-3 md:p-5'>
                <Card className='overflow-hidden pt-0'>
                     <div className='relative h-24 sm:h-32 md:h-48 lg:h-64 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900'>
                          <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent' />
-                         {/* <Button
-                                   variant='secondary'
-                                   size='sm'
-                                   className='absolute top-4 right-4 bg-background/80 backdrop-blur-sm hover:bg-background/90'
-                              >
-                                   Edit Cover
-                              </Button> */}
                     </div>
 
                     <div className='relative px-2 sm:px-3 md:px-4 lg:px-8'>
@@ -54,7 +47,7 @@ export default function ProfilePage() {
 
                                    <div className='mb-0 md:mb-2 lg:mb-4 space-y-0.5 sm:space-y-1 text-center md:text-left'>
                                         <h1 className='text-base sm:text-lg md:text-xl lg:text-3xl font-bold text-foreground'>
-                                             {user?.user_metadata.name || 'User Name'}
+                                             {user?.user_metadata.full_name || 'User Name'}
                                         </h1>
                                         <p className='text-[10px] sm:text-xs md:text-sm text-muted-foreground'>
                                              {user?.email || 'user@example.com'}
@@ -71,12 +64,6 @@ export default function ProfilePage() {
                                    >
                                         Edit Profile
                                    </Button>
-                                   {/* <Button variant='outline' size='lg'>
-                                        Follow
-                                   </Button>
-                                   <Button variant='default' size='lg'>
-                                        View Portfolio
-                                   </Button> */}
                               </div>
                          </div>
 
