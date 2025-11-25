@@ -1,29 +1,29 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { LoginRequiredDialog } from '@/components/ui/login-required-dialog'
 import { BASE_URL } from "@/constants"
 import { ROUTES } from "@/constants/path"
 import { postApi } from "@/lib/apis/postApi"
-import { usePosts, useCheckSavedPost } from "@/lib/hooks/usePostHooks"
+import { useCheckSavedPost, usePosts } from "@/lib/hooks/usePostHooks"
 import { useUserStore } from "@/stores/user-store"
 import { PostType } from '@/types/post'
 import clsx from 'clsx'
-import { Dot, Ellipsis, Heart, ImageIcon, MessageCircle, Share2, AlertTriangle, Eye, EyeOff, Info } from "lucide-react"
+import { formatDistanceToNow } from 'date-fns'
+import { AlertTriangle, Dot, Ellipsis, Eye, EyeOff, Heart, ImageIcon, Info, MessageCircle, Share2 } from "lucide-react"
+import { useTranslations } from "next-intl"
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import Zoom from 'react-medium-image-zoom'
+import 'react-medium-image-zoom/dist/styles.css'
 import { toast } from "sonner"
 import { Button } from '../../ui/button'
 import { Card } from "../../ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../ui/dialog"
+import { FollowButton } from '../FollowButton'
 import DialogComment from "./dialog-comment"
 import { DialogShare } from "./dialog-share"
 import DropdownMenuPost from "./dropdown-menu-post"
-import { useTranslations } from "next-intl"
-import { formatDistanceToNow } from 'date-fns'
-import Zoom from 'react-medium-image-zoom'
-import 'react-medium-image-zoom/dist/styles.css'
-import { FollowButton } from '../FollowButton'
-import { LoginRequiredDialog } from '@/components/ui/login-required-dialog'
 
 const getTimeAgo = (dateString: string) => {
      try {
@@ -35,7 +35,6 @@ const getTimeAgo = (dateString: string) => {
 
 export default function Post({ dataPost, isDetailView = false }: { dataPost: PostType, isDetailView?: boolean }) {
      const t = useTranslations("Forum")
-     const tButton = useTranslations('Button')
      const router = useRouter()
      const [expanded, setExpanded] = useState(false)
      const [isVoted, setIsVoted] = useState(dataPost?.isLiked || false)
@@ -50,10 +49,11 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      const { mutate } = usePosts()
      const user = useUserStore(state => state.user)
      const { data: savedData, mutate: mutateSaved } = useCheckSavedPost(dataPost?.id)
+     console.log(savedData)
 
      useEffect(() => {
-          if (savedData?.data?.isSaved !== undefined) {
-               setIsSaved(savedData.data.isSaved)
+          if (savedData?.data !== undefined) {
+               setIsSaved(savedData.data)
           }
      }, [savedData])
 
