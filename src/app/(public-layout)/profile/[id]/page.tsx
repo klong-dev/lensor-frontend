@@ -9,91 +9,45 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { BASE_URL } from '@/constants'
 import { ROUTES } from '@/constants/path'
 import { userApi } from '@/lib/apis/userApi'
-import { postApi } from '@/lib/apis/postApi'
 import { messageApi } from '@/lib/apis/messageApi'
 import { useUserStore } from '@/stores/user-store'
-import { UserProfile, UserPost } from '@/types'
+import { UserPost, UserProduct } from '@/types'
 import { MessageCircle, Calendar, Loader2, Package, Image as ImageIcon, Users } from 'lucide-react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import Post from '@/components/forum/post/post'
-import { PostType } from '@/types/post'
 import { formatDistanceToNow } from 'date-fns'
 import { FollowButton } from '@/components/forum/FollowButton'
 import { useFollowStats, useUserFollowers, useUserFollowing } from '@/lib/hooks/useFollow'
+import useSWR from 'swr'
 
 export default function PublicProfile() {
   const params = useParams()
   const router = useRouter()
   const currentUser = useUserStore(state => state.user)
   const userId = params.id as string
-  const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [loading, setLoading] = useState(true)
   const [messageLoading, setMessageLoading] = useState(false)
   const [followersDialogOpen, setFollowersDialogOpen] = useState(false)
   const [followingDialogOpen, setFollowingDialogOpen] = useState(false)
 
-  const { stats, refetch: refetchStats } = useFollowStats(userId)
+  const { data: profileData, isLoading } = useSWR(
+    userId ? `profile-${userId}` : null,
+    () => userApi.getUserProfile(userId)
+  )
+
+  const { stats } = useFollowStats(userId)
   const { followers } = useUserFollowers(userId)
   const { following } = useUserFollowing(userId)
 
   const isOwnProfile = currentUser?.id === userId
+  const profile = profileData?.data
 
   useEffect(() => {
     if (isOwnProfile) {
       router.replace(ROUTES.CURRENT_PROFILE)
-      return
     }
-    fetchProfile()
-  }, [userId, currentUser, isOwnProfile])
-
-  const fetchProfile = async () => {
-    try {
-      setLoading(true)
-      const { data } = await userApi.getUserProfile(userId)
-
-      // Enrich posts with full data to get accurate voteCount, commentCount, isLiked
-      const enrichedPosts = await Promise.all(
-        data.posts.map(async (post: UserPost) => {
-          try {
-            const fullPostData = await postApi.getById(post.id)
-            return {
-              ...fullPostData.data,
-              user: {
-                id: data.id,
-                name: data.name,
-                avatarUrl: data.avatarUrl,
-                isFollowed: false
-              }
-            } as PostType
-          } catch (err) {
-            console.error(`Failed to enrich post ${post.id}:`, err)
-            return {
-              ...post,
-              user: {
-                id: data.id,
-                name: data.name,
-                avatarUrl: data.avatarUrl,
-                isFollowed: false
-              }
-            } as PostType
-          }
-        })
-      )
-
-      setProfile({
-        ...data,
-        posts: enrichedPosts
-      })
-    } catch (error) {
-      console.error('Error fetching profile:', error)
-      toast.error('Failed to load profile')
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [isOwnProfile, router])
 
   const handleMessage = async () => {
     try {
@@ -108,7 +62,7 @@ export default function PublicProfile() {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className='max-w-3xl mx-auto py-6 px-4'>
         <Card>
@@ -137,6 +91,9 @@ export default function PublicProfile() {
       </div>
     )
   }
+
+  const activePosts = profile.posts || []
+  const activeProducts = profile.products || []
 
   return (
     <div className='max-w-3xl mx-auto py-3 sm:py-4 md:py-6 px-2 sm:px-3 md:px-4 space-y-3 sm:space-y-4'>
@@ -191,11 +148,11 @@ export default function PublicProfile() {
                   <span className='text-muted-foreground ml-0.5 sm:ml-1'>Following</span>
                 </button>
                 <div>
-                  <span className='font-semibold'>{profile.posts.length}</span>
+                  <span className='font-semibold'>{activePosts.length}</span>
                   <span className='text-muted-foreground ml-0.5 sm:ml-1'>Posts</span>
                 </div>
                 <div>
-                  <span className='font-semibold'>{profile.products.length}</span>
+                  <span className='font-semibold'>{activeProducts.length}</span>
                   <span className='text-muted-foreground ml-0.5 sm:ml-1'>Products</span>
                 </div>
               </div>
@@ -215,17 +172,17 @@ export default function PublicProfile() {
           <TabsTrigger value="posts" className='gap-1 sm:gap-2 text-xs sm:text-sm'>
             <ImageIcon className='h-3 w-3 sm:h-4 sm:w-4' />
             <span className='hidden sm:inline'>Posts</span>
-            <Badge variant='secondary' className='ml-0.5 sm:ml-1 text-[10px] sm:text-xs'>{profile.posts.length}</Badge>
+            <Badge variant='secondary' className='ml-0.5 sm:ml-1 text-[10px] sm:text-xs'>{activePosts.length}</Badge>
           </TabsTrigger>
           <TabsTrigger value="shop" className='gap-1 sm:gap-2 text-xs sm:text-sm'>
             <Package className='h-3 w-3 sm:h-4 sm:w-4' />
             <span className='hidden sm:inline'>Shop</span>
-            <Badge variant='secondary' className='ml-0.5 sm:ml-1 text-[10px] sm:text-xs'>{profile.products.filter(p => p.status === 'active').length}</Badge>
+            <Badge variant='secondary' className='ml-0.5 sm:ml-1 text-[10px] sm:text-xs'>{activeProducts.length}</Badge>
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value="posts" className='mt-3 sm:mt-4'>
-          {profile.posts.length === 0 ? (
+          {activePosts.length === 0 ? (
             <Card>
               <CardContent className='p-12 text-center'>
                 <ImageIcon className='h-12 w-12 mx-auto text-muted-foreground/40 mb-3' />
@@ -233,19 +190,28 @@ export default function PublicProfile() {
               </CardContent>
             </Card>
           ) : (
-            <div className='space-y-0'>
-              {(profile.posts as PostType[]).map((post, index) => (
-                <div key={post.id}>
-                  <Post dataPost={post} />
-                  {index < profile.posts.length - 1 && <hr className='solid' />}
-                </div>
+            <div className='grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4'>
+              {activePosts.map((post: UserPost) => (
+                <Link key={post.id} href={`/forum/${post.id}`} className='block'>
+                  <div className="relative w-full aspect-square bg-card rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow">
+                    <img
+                      src={`${BASE_URL}${post.thumbnailUrl}`}
+                      alt={post.title}
+                      className='absolute inset-0 w-full h-full object-cover'
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3">
+                      <h3 className="text-xs sm:text-sm text-white font-medium line-clamp-2">{post.title}</h3>
+                    </div>
+                  </div>
+                </Link>
               ))}
             </div>
           )}
         </TabsContent>
 
         <TabsContent value="shop" className='mt-3 sm:mt-4'>
-          {profile.products.filter(p => p.status === 'active').length === 0 ? (
+          {activeProducts.length === 0 ? (
             <Card>
               <CardContent className='p-8 sm:p-10 md:p-12 text-center'>
                 <Package className='h-10 w-10 sm:h-12 sm:w-12 mx-auto text-muted-foreground/40 mb-3' />
@@ -254,7 +220,7 @@ export default function PublicProfile() {
             </Card>
           ) : (
             <div className='grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3 md:gap-4'>
-              {profile.products.filter(p => p.status === 'active').map((product) => (
+              {activeProducts.map((product: UserProduct) => (
                 <Link
                   key={product.id}
                   href={`/marketplace/${product.id}`}

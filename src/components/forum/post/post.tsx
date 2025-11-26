@@ -33,7 +33,7 @@ const getTimeAgo = (dateString: string) => {
      }
 }
 
-export default function Post({ dataPost, isDetailView = false }: { dataPost: PostType, isDetailView?: boolean }) {
+export default function Post({ dataPost }: { dataPost: PostType }) {
      const t = useTranslations("Forum")
      const router = useRouter()
      const [expanded, setExpanded] = useState(false)
@@ -49,7 +49,6 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      const { mutate } = usePosts()
      const user = useUserStore(state => state.user)
      const { data: savedData, mutate: mutateSaved } = useCheckSavedPost(dataPost?.id)
-     console.log(savedData)
 
      useEffect(() => {
           if (savedData?.data !== undefined) {
@@ -92,7 +91,6 @@ export default function Post({ dataPost, isDetailView = false }: { dataPost: Pos
      const handleDeletePost = async () => {
           try {
                const { data } = await postApi.delete(dataPost.id)
-               console.log(data)
                toast.success(data.message)
                mutate()
           } catch (error) {

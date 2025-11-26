@@ -9,12 +9,8 @@ export interface UserProfile {
      updatedAt: string
      emailConfirmedAt: string
      lastSignInAt: string
-     posts: UserPost[] | PostType[]
+     posts: UserPost[]
      products: UserProduct[]
-     isFollowing?: boolean
-     followerCount?: number
-     followingCount?: number
-     postCount?: number
 }
 
 export interface UserPost {
@@ -24,9 +20,6 @@ export interface UserPost {
      imageUrl: string
      thumbnailUrl: string
      isNSFW: boolean
-     voteCount: number
-     commentCount: number
-     isLiked: boolean
      createdAt: string
 }
 

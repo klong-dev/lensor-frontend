@@ -38,7 +38,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
                })
 
                socketInstance.on('connect', () => {
-                    console.log('✅ Socket: Connected successfully', socketInstance.id)
+                    console.log('✅ Socket: Connected successfully')
                     setIsConnected(true)
                })
 
