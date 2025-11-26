@@ -22,9 +22,7 @@ export const endpoints = {
           allLikedPosts: `${API_PREFIX}/posts/liked`
      },
      payment: {
-          paypal: `${API_PREFIX}/payment/paypal/create`,
-          vnpay: `${API_PREFIX}/payment/vnpay/create`,
-          vnpayCallback: `${API_PREFIX}/payment/vnpay-return`
+          payos: `${API_PREFIX}/payos/create`
      },
      wallet: `${API_PREFIX}/wallet`,
      paymentHistory: `${API_PREFIX}/payment-history`,

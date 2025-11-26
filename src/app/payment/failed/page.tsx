@@ -9,8 +9,10 @@ import { useRouter, useSearchParams } from "next/navigation"
 export default function PaymentFailed() {
      const router = useRouter()
      const searchParams = useSearchParams()
-     const orderId = searchParams.get('orderId')
+     const orderCode = searchParams.get('orderCode')
      const code = searchParams.get('code')
+     const status = searchParams.get('status')
+     const cancel = searchParams.get('cancel')
 
      const handleBackToWallet = () => {
           router.push(ROUTES.WALLET)
@@ -31,21 +33,31 @@ export default function PaymentFailed() {
 
                     <CardContent className="space-y-4">
                          <div className="bg-muted p-4 rounded-lg space-y-2">
-                              <div className="flex justify-between text-sm">
-                                   <span className="text-muted-foreground">Order ID:</span>
-                                   <span className="font-medium text-xs">{orderId}</span>
-                              </div>
+                              {orderCode && (
+                                   <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Order Code:</span>
+                                        <span className="font-medium text-xs">{orderCode}</span>
+                                   </div>
+                              )}
                               {code && (
                                    <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Error Code:</span>
                                         <span className="font-medium">{code}</span>
                                    </div>
                               )}
+                              {status && (
+                                   <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Status:</span>
+                                        <span className="font-medium uppercase text-red-600">{status}</span>
+                                   </div>
+                              )}
                          </div>
 
                          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 p-4 rounded-lg">
                               <p className="text-sm text-red-800 dark:text-red-300">
-                                   The payment was not successful. Please try again or contact support if the problem persists.
+                                   {cancel === 'true'
+                                        ? 'Payment was cancelled. You can try again when ready.'
+                                        : 'The payment was not successful. Please try again or contact support if the problem persists.'}
                               </p>
                          </div>
 
