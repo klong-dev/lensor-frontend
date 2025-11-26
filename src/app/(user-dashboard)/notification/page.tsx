@@ -10,18 +10,17 @@ import {
      DialogHeader,
      DialogTitle,
 } from "@/components/ui/dialog"
+import { Skeleton } from "@/components/ui/skeleton"
+import { notificationApi } from "@/lib/apis/notificationApi"
+import { useMarkAllAsRead, useMarkAsRead, useNotifications } from "@/lib/hooks/useNotificationHooks"
 import { cn } from "@/lib/utils"
-import { Bell, AlertCircle, CheckCircle, Clock, MoreVertical, Settings } from "lucide-react"
-import { useNotifications, useMarkAsRead, useMarkAllAsRead } from "@/lib/hooks/useNotificationHooks"
 import { useNotificationStore } from "@/stores/notification-store"
 import { useUserStore } from "@/stores/user-store"
-import { useEffect, useState } from "react"
-import { formatDistanceToNow } from "date-fns"
-import { vi } from "date-fns/locale"
-import { Skeleton } from "@/components/ui/skeleton"
-import Link from "next/link"
 import { Notification as NotificationType } from "@/types/notification"
-import { notificationApi } from "@/lib/apis/notificationApi"
+import { formatDistanceToNow } from "date-fns"
+import { enUS } from "date-fns/locale"
+import { AlertCircle, Bell, CheckCircle, Clock } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export default function Notification() {
      const { data, isLoading } = useNotifications()
@@ -85,7 +84,7 @@ export default function Notification() {
 
      const formatTime = (time: string) => {
           try {
-               return formatDistanceToNow(new Date(time), { addSuffix: true, locale: vi })
+               return formatDistanceToNow(new Date(time), { addSuffix: true, locale: enUS })
           } catch {
                return time
           }
@@ -121,7 +120,7 @@ export default function Notification() {
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b px-4 sm:px-6 py-4 gap-3 sm:gap-0">
                          <div className="flex items-center gap-2 sm:gap-3">
                               <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-foreground" />
-                              <h1 className="text-xl sm:text-2xl font-bold text-foreground">Thông báo</h1>
+                              <h1 className="text-xl sm:text-2xl font-bold text-foreground">Notifications</h1>
                               {unreadCount > 0 && (
                                    <Badge variant="default" className="rounded-full text-xs">
                                         {unreadCount}
@@ -135,9 +134,9 @@ export default function Notification() {
                                         Đánh dấu tất cả đã đọc
                                    </Button>
                               )}
-                              <Button variant="ghost" size="icon" className='h-9 w-9'>
+                              {/* <Button variant="ghost" size="icon" className='h-9 w-9'>
                                    <Settings className="h-4 w-4 sm:h-5 sm:w-5" />
-                              </Button>
+                              </Button> */}
                          </div>
                     </div>
 
@@ -146,7 +145,7 @@ export default function Notification() {
                          {notifications.length === 0 ? (
                               <div className="px-4 sm:px-6 py-12 text-center text-muted-foreground">
                                    <Bell className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-4 opacity-50" />
-                                   <p className='text-sm sm:text-base'>Không có thông báo nào</p>
+                                   <p className='text-sm sm:text-base'>Nothing here</p>
                               </div>
                          ) : (
                               notifications.map((notification: NotificationType) => (
@@ -185,7 +184,7 @@ export default function Notification() {
                                         </div>
 
                                         {/* Menu */}
-                                        <Button
+                                        {/* <Button
                                              variant="ghost"
                                              size="icon"
                                              className="h-8 w-8 flex-shrink-0 hidden sm:flex"
@@ -194,7 +193,7 @@ export default function Notification() {
                                              }}
                                         >
                                              <MoreVertical className="h-4 w-4" />
-                                        </Button>
+                                        </Button> */}
                                    </div>
                               ))
                          )}
