@@ -21,6 +21,7 @@ import { formatDistanceToNow } from 'date-fns'
 import { FollowButton } from '@/components/forum/FollowButton'
 import { useFollowStats, useUserFollowers, useUserFollowing } from '@/lib/hooks/useFollow'
 import useSWR from 'swr'
+import { ProductDetails } from '@/types/order'
 
 export default function PublicProfile() {
   const params = useParams()
@@ -93,7 +94,7 @@ export default function PublicProfile() {
   }
 
   const activePosts = profile.posts || []
-  const activeProducts = profile.products || []
+  const activeProducts = profile.products.filter((product : any) => product.status !== 'blocked') || []
 
   return (
     <div className='max-w-3xl mx-auto py-3 sm:py-4 md:py-6 px-2 sm:px-3 md:px-4 space-y-3 sm:space-y-4'>
