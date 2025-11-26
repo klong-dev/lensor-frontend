@@ -169,9 +169,9 @@ export default function ProductInfo({
                         onClick={handleAddToCart}
                         size={'lg'}
                         className='flex-1 bg-primary text-primary-foreground py-2.5 sm:py-3 rounded-md text-sm sm:text-base font-medium hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-50'
-                        disabled={isSubmitting || isInCart}
+                        disabled={isSubmitting || (user && isInCart)}
                     >
-                        {isInCart ? (
+                        {user && isInCart ? (
                             <>
                                 <CheckCircle2 className='w-4 h-4 sm:w-5 sm:h-5' />
                                 In Cart
