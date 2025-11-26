@@ -133,7 +133,7 @@ export default function ProductInfo({
                 </div>
             }
 
-            {isInCart && (
+            {user && isInCart && (
                 <div className='flex items-center gap-2 p-2.5 sm:p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg'>
                     <CheckCircle2 className='w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-500 shrink-0' />
                     <div className='flex-1 min-w-0'>
