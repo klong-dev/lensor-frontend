@@ -60,7 +60,7 @@ export default function ImageGallery({ imagePairs, name }: Pick<MarketplaceDetai
             </div>
 
 
-            <div className='flex gap-2 overflow-x-auto pb-1'>
+            <div className='flex gap-2 overflow-x-auto p-1'>
                 {imagePairs?.map((image, index) => (
                     <div
                         key={index}
