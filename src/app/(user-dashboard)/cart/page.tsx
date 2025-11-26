@@ -8,7 +8,7 @@ import { useCart } from '@/lib/hooks/useCartHooks'
 import { CartItemData } from '@/types/cart'
 import { ChevronLeft, ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { toast } from 'sonner'
 import { CartItem } from './components/cart-item'
 import { OrderSummary } from './components/order-summary'
@@ -17,6 +17,7 @@ export default function Cart() {
   const { data: cartData, isLoading, error, mutate } = useCart()
   const [isUpdating, setIsUpdating] = useState(false)
   const [selectedItems, setSelectedItems] = useState<Set<CartItemData>>(new Set())
+  const hasSyncedTempCart = useRef(false)
 
   const cartItems = cartData?.items || []
   const selectedCartItems = cartItems.filter((item: CartItemData) =>
@@ -98,21 +99,35 @@ export default function Cart() {
       })
       if (res) {
         mutate()
+        toast.success('Item added to cart')
       }
     } catch (error) {
       console.error('Error adding product:', error)
+      toast.error('Failed to add item to cart')
     } finally {
       sessionStorage.removeItem('tempCart')
     }
   }
 
   useEffect(() => {
+    // Only run once per page load
+    if (hasSyncedTempCart.current || isLoading) return
+
     const tempCartItem = sessionStorage.getItem('tempCart')
-    const exits = cartData?.items.some((item: CartItemData) => item.productId === tempCartItem)
-    if (tempCartItem && !exits) {
+    if (!tempCartItem) return
+
+    // Check if item already exists in cart
+    const itemExists = cartData?.items?.some((item: CartItemData) => item.productId === tempCartItem)
+
+    if (!itemExists) {
+      hasSyncedTempCart.current = true
       addToCart(tempCartItem)
+    } else {
+      // Item already in cart, just remove from session
+      sessionStorage.removeItem('tempCart')
+      hasSyncedTempCart.current = true
     }
-  }, [cartData?.items])
+  }, [cartData, isLoading])
 
   if (isLoading) {
     return (
