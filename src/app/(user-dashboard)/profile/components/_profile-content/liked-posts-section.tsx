@@ -51,7 +51,7 @@ export default function LikedPostsSection() {
                {posts.map((post: PostType) => {
                     const imageUrl = post.thumbnailUrl || post.imageUrl;
                     const fullImageUrl = imageUrl ? `${BASE_URL}${imageUrl}` : '';
-                    
+
                     return (
                          <Link
                               key={post.id}

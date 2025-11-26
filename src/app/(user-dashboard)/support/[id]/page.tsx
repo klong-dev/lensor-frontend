@@ -206,11 +206,11 @@ export default function TicketDetailPage() {
                          <div>
                               <h1 className="text-3xl font-bold">{ticket.title}</h1>
                               <p className="text-muted-foreground mt-1">
-                                   Ticket ID: {ticket.id.substring(0, 12)}...
+                                   Ticket ID: {ticket.id.substring(0, 12)}
                               </p>
                          </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                          {ticket.status === 'closed' ? (
                               <Button variant="outline" onClick={handleReopenTicket}>
                                    Reopen Ticket
@@ -220,7 +220,7 @@ export default function TicketDetailPage() {
                                    Close Ticket
                               </Button>
                          )}
-                    </div>
+                    </div> */}
                </div>
 
                <div className="grid gap-6 md:grid-cols-3">
