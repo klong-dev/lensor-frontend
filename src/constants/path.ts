@@ -3,6 +3,7 @@ export const ROUTES = {
      LOGIN: '/login',
      //SIDEBAR:
      FORUM: '/forum',
+     POST: (id: string) => `/forum/${id}`,
      PROFILE: (id: string | number) => `/profile/${id}`,
      CURRENT_PROFILE: '/profile',
      PORTFOLIO: '/portfolio',

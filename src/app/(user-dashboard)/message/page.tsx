@@ -1,19 +1,16 @@
 import React from 'react'
 import { MessageCircle } from 'lucide-react'
-import { Card, CardContent } from '@/components/ui/card'
 
 export default function MessagePage() {
   return (
-    <div className="container mx-auto py-6 px-4">
-      <Card>
-        <CardContent className="p-12 text-center">
-          <MessageCircle className="h-16 w-16 mx-auto text-muted-foreground/40 mb-4" />
-          <h2 className="text-xl font-semibold mb-2">No Messages</h2>
-          <p className="text-sm text-muted-foreground">
-            You don't have any messages yet. Start a conversation to see your messages here.
-          </p>
-        </CardContent>
-      </Card>
+    <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+      <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+        <MessageCircle className="w-8 h-8 text-muted-foreground" />
+      </div>
+      <h2 className="text-lg font-semibold mb-2">Select a conversation</h2>
+      <p className="text-sm text-muted-foreground max-w-sm">
+        Choose a conversation from the sidebar to start messaging
+      </p>
     </div>
   )
 }

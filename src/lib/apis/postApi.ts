@@ -69,25 +69,14 @@ export const postApi = {
      getSavedPosts: async (limit: number = 20, offset: number = 0) => {
           const res = await apiClient.get(endpoints.savedPost.all(limit, offset))
 
-          // Response structure: { data: { savedPosts: [...], total: number } }
-          // Extract posts from savedPosts and set isSaved to true
-          if (res.data?.data?.savedPosts) {
-               const posts = res.data.data.savedPosts.map((item: any) => ({
-                    ...item.post,
-                    isSaved: true, // Override backend's isSaved value
-               }))
+          console.log('Raw API response:', res)
+          console.log('res.data:', res.data)
+          console.log('res.data.data:', res.data?.data)
+          console.log('res.data.data.post:', res.data?.data?.post)
 
-               return {
-                    data: posts,
-                    total: res.data.data.total,
-               }
-          }
-
-          // Fallback for unexpected structure
-          return {
-               data: [],
-               total: 0,
-          }
+          // Response structure: { data: { post: [...], total: number }, statusCode: 200 }
+          // Return exactly what API gives us without transformation
+          return res.data
      },
 
      getLikedPosts: async (userId: string) => {

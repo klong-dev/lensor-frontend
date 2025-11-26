@@ -44,6 +44,7 @@ export const useSavedPosts = (limit: number = 20, offset: number = 0) => {
           endpoints.savedPost.all(limit, offset),
           () => postApi.getSavedPosts(limit, offset)
      )
+     console.log(data);
      return { data, error, isLoading, mutate }
 }
 
