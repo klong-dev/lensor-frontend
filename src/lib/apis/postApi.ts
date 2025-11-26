@@ -98,18 +98,14 @@ export const postApi = {
      getAllLikedPosts: async () => {
           const res = await apiClient.get(endpoints.like.allLikedPosts)
 
-          // Set isLiked to true for all liked posts
-          if (res.data?.data) {
-               const posts = res.data.data.map((post: any) => ({
-                    ...post,
-                    isLiked: true
-               }))
+          // Handle nested data structure: { data: { message, data: [...] } }
+          const postsData = res.data?.data?.data || res.data?.data || []
 
-               return {
-                    data: posts
-               }
-          }
+          const posts = postsData.map((post: any) => ({
+               ...post,
+               isLiked: true
+          }))
 
-          return res.data
+          return { data: posts }
      }
 }

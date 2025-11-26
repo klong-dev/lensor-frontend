@@ -68,6 +68,7 @@ export const endpoints = {
      withdrawal: {
           all: `${API_PREFIX}/withdrawals`,
           create: `${API_PREFIX}/withdrawals`,
+          check: `${API_PREFIX}/withdrawals/check`,
           statistics: `${API_PREFIX}/withdrawals/statistics`
      },
      bankCard: {

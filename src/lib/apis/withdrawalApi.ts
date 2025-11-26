@@ -3,6 +3,12 @@ import { endpoints } from "./endpoints"
 import { CreateWithdrawalPayload, WithdrawalResponse, WithdrawalsResponse, WithdrawalStatisticsResponse } from "@/types/withdrawal"
 
 export const withdrawalApi = {
+     // Check withdrawal calculation before creating
+     checkWithdrawal: async (orderIds: string[]) => {
+          const res = await apiClient.post(endpoints.withdrawal.check, { orderIds })
+          return res.data
+     },
+
      // Create withdrawal request
      createWithdrawal: async (payload: CreateWithdrawalPayload): Promise<WithdrawalResponse> => {
           const res = await apiClient.post(endpoints.withdrawal.create, payload)

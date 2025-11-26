@@ -8,10 +8,10 @@ import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { VIETNAMESE_BANKS } from "@/constants/banks";
 import { bankCardApi } from "@/lib/apis/bankCardApi";
+import { withdrawalApi } from "@/lib/apis/withdrawalApi";
 import { useBankCards } from "@/lib/hooks/useBankCardHooks";
 import { SoldOrder } from "@/types/order";
 import { formatCurrency } from "@/utils/formatters";
-import { calculateWithdrawal } from "@/utils/orderUtils";
 import { Wallet, AlertCircle, Plus, CreditCard, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
@@ -37,6 +37,13 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
     accountHolder: "",
     isDefault: false,
   });
+  const [withdrawalData, setWithdrawalData] = useState<{
+    amount: number;
+    fee: number;
+    actualAmount: number;
+    feePercentage: number;
+  } | null>(null);
+  const [isLoadingCalculation, setIsLoadingCalculation] = useState(false);
 
   useEffect(() => {
     if (bankCardsData?.data && bankCardsData?.data?.length > 0 && !selectedBankCardId) {
@@ -44,6 +51,47 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
       setSelectedBankCardId(defaultCard?.id || bankCardsData.data[0].id);
     }
   }, [bankCardsData, selectedBankCardId]);
+
+  // Fetch withdrawal calculation when dialog opens
+  useEffect(() => {
+    if (open && orders.length > 0) {
+      fetchWithdrawalCalculation();
+    }
+  }, [open, orders]);
+
+  const fetchWithdrawalCalculation = async () => {
+    try {
+      setIsLoadingCalculation(true);
+      const orderIds = orders.map(order => order.id);
+      const response = await withdrawalApi.checkWithdrawal(orderIds);
+
+      // Parse nested data structure: { data: { data: { totalAmount, discountAmount, payableAmount } } }
+      const checkData = response.data?.data || response.data;
+
+      if (checkData) {
+        const totalAmount = parseFloat(checkData.totalAmount);
+        const discountAmount = parseFloat(checkData.discountAmount);
+        const payableAmount = parseFloat(checkData.payableAmount);
+
+        // Calculate fee percentage from amounts
+        const calculatedFeePercentage = totalAmount > 0
+          ? ((discountAmount / totalAmount) * 100).toFixed(2)
+          : "0.00";
+
+        setWithdrawalData({
+          amount: totalAmount,
+          fee: discountAmount,
+          actualAmount: payableAmount,
+          feePercentage: parseFloat(calculatedFeePercentage)
+        });
+      }
+    } catch (error: any) {
+      console.error('Failed to fetch withdrawal calculation:', error);
+      toast.error('Failed to calculate withdrawal amount');
+    } finally {
+      setIsLoadingCalculation(false);
+    }
+  };
 
   // Reset form when closing dialog
   useEffect(() => {
@@ -113,8 +161,6 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
 
   if (orders.length === 0) return null;
 
-  const { totalEarnings, fee, finalAmount } = calculateWithdrawal(orders, feePercentage);
-
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -125,25 +171,38 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
 
         <div className="space-y-6 py-4">
           {/* Earnings Summary */}
-          <div className="p-4 bg-muted rounded-md space-y-3">
-            <div className="flex justify-between">
-              <span className="text-sm text-muted-foreground">Orders selected:</span>
-              <span className="text-sm font-semibold">{orders.length}</span>
+          {isLoadingCalculation ? (
+            <div className="p-4 bg-muted rounded-md space-y-3">
+              <div className="flex justify-center items-center py-8">
+                <Spinner className="h-6 w-6" />
+                <span className="ml-2 text-sm text-muted-foreground">Calculating withdrawal amount...</span>
+              </div>
             </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-muted-foreground">Total Earnings:</span>
-              <span className="text-base font-semibold">{formatCurrency(totalEarnings)}</span>
+          ) : withdrawalData ? (
+            <div className="p-4 bg-muted rounded-md space-y-3">
+              <div className="flex justify-between">
+                <span className="text-sm text-muted-foreground">Orders selected:</span>
+                <span className="text-sm font-semibold">{orders.length}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Earnings:</span>
+                <span className="text-base font-semibold">{formatCurrency(withdrawalData.amount)}</span>
+              </div>
+              <div className="flex justify-between items-center text-red-600 dark:text-red-400">
+                <span className="text-sm">Withdrawal Fee ({withdrawalData.feePercentage}%):</span>
+                <span className="text-base font-semibold">- {formatCurrency(withdrawalData.fee)}</span>
+              </div>
+              <Separator />
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium">Amount to Receive:</span>
+                <span className="text-xl font-bold text-green-600">{formatCurrency(withdrawalData.actualAmount)}</span>
+              </div>
             </div>
-            <div className="flex justify-between items-center text-red-600 dark:text-red-400">
-              <span className="text-sm">Withdrawal Fee ({feePercentage}%):</span>
-              <span className="text-base font-semibold">- {formatCurrency(fee)}</span>
+          ) : (
+            <div className="p-4 bg-muted rounded-md text-center text-sm text-muted-foreground">
+              Failed to load withdrawal calculation
             </div>
-            <Separator />
-            <div className="flex justify-between items-center">
-              <span className="text-sm font-medium">Amount to Receive:</span>
-              <span className="text-xl font-bold text-green-600">{formatCurrency(finalAmount)}</span>
-            </div>
-          </div>
+          )}
 
           {/* Bank Card Selection */}
           <div className="space-y-3">
@@ -230,12 +289,14 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
           </div>
 
           {/* Warnings */}
-          <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-md border border-yellow-200 dark:border-yellow-800">
-            <div className="flex gap-2">
-              <AlertCircle className="h-4 w-4 text-yellow-700 dark:text-yellow-300 mt-0.5 flex-shrink-0" />
-              <p className="text-sm text-yellow-700 dark:text-yellow-300">A {feePercentage}% system fee will be deducted from your withdrawal amount.</p>
+          {withdrawalData && (
+            <div className="p-3 bg-yellow-50 dark:bg-yellow-950 rounded-md border border-yellow-200 dark:border-yellow-800">
+              <div className="flex gap-2">
+                <AlertCircle className="h-4 w-4 text-yellow-700 dark:text-yellow-300 mt-0.5 flex-shrink-0" />
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">A {withdrawalData.feePercentage}% system fee will be deducted from your withdrawal amount.</p>
+              </div>
             </div>
-          </div>
+          )}
 
           <div className="p-3 bg-blue-50 dark:bg-blue-950 rounded-md border border-blue-200 dark:border-blue-800">
             <p className="text-sm text-blue-700 dark:text-blue-300">
@@ -246,10 +307,10 @@ export function WithdrawDialog({ orders, open, onOpenChange, onConfirm, isSubmit
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting || isLoadingCalculation}>
             Cancel
           </Button>
-          <Button onClick={handleConfirm} disabled={isSubmitting || !selectedBankCardId}>
+          <Button onClick={handleConfirm} disabled={isSubmitting || isLoadingCalculation || !selectedBankCardId || !withdrawalData}>
             {isSubmitting && <Spinner className="mr-2 h-4 w-4" />}
             Confirm Withdrawal
           </Button>
