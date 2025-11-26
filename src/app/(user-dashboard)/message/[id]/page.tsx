@@ -4,8 +4,7 @@ import { useState, useEffect, use, useRef } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Send, MoreVertical } from 'lucide-react'
+import { Send } from 'lucide-react'
 import { useSocket } from '@/contexts/socket-context'
 import { useUserStore } from '@/stores/user-store'
 import { useChatStore } from '@/stores/chat-store'
@@ -26,9 +25,9 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
      const [isTyping, setIsTyping] = useState(false)
 
      const scrollRef = useRef<HTMLDivElement>(null)
+     const messagesEndRef = useRef<HTMLDivElement>(null)
      const typingTimerRef = useRef<any>(null)
      const lastTypingTimeRef = useRef<number>(0)
-     const hasScrolledRef = useRef(false)
 
      const otherUser = selectedConversation?.participants?.find((p: any) => p.id !== currentUser?.id)
 
@@ -36,21 +35,22 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
      useEffect(() => {
           if (messagesData?.data) {
                setMessages(messagesData.data)
-               hasScrolledRef.current = false
+               // Scroll ngay lập tức khi load messages
+               requestAnimationFrame(() => {
+                    messagesEndRef.current?.scrollIntoView({ behavior: 'instant' })
+               })
           }
      }, [messagesData])
 
-     // Auto scroll to bottom
+     // Auto scroll khi có tin nhắn mới
      useEffect(() => {
-          if (messages.length > 0 && !hasScrolledRef.current) {
-               setTimeout(() => {
-                    scrollRef.current?.scrollIntoView({ behavior: 'instant' })
-                    hasScrolledRef.current = true
-               }, 100)
-          } else if (hasScrolledRef.current) {
-               scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
+          if (messages.length > 0) {
+               // Đảm bảo scroll sau khi DOM đã render
+               requestAnimationFrame(() => {
+                    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+               })
           }
-     }, [messages])
+     }, [messages.length])
 
      // Socket connection
      useEffect(() => {
@@ -65,11 +65,12 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                     return [...filtered, newMsg]
                })
 
-               // Play sound for other user's messages
                if (newMsg.userId !== currentUser.id) {
-                    const audio = new Audio('/audio/mixkit-long-pop-2358.wav')
-                    audio.volume = 0.3
-                    audio.play().catch(() => { })
+                    try {
+                         const audio = new Audio('/audio/mixkit-long-pop-2358.wav')
+                         audio.volume = 0.3
+                         audio.play().catch(() => { })
+                    } catch { }
                }
           }
 
@@ -77,10 +78,7 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                if (data.userId !== currentUser.id) {
                     setIsTyping(data.isTyping)
 
-                    // Auto stop typing sau 5s
-                    if (data.isTyping && typingTimerRef.current) {
-                         clearTimeout(typingTimerRef.current)
-                    }
+                    if (typingTimerRef.current) clearTimeout(typingTimerRef.current)
                     if (data.isTyping) {
                          typingTimerRef.current = setTimeout(() => setIsTyping(false), 5000)
                     }
@@ -105,7 +103,6 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
           const now = Date.now()
           const timeSinceLastTyping = now - lastTypingTimeRef.current
 
-          // Chỉ gửi typing nếu đã qua 5s
           if (value.length > 0 && timeSinceLastTyping >= 5000) {
                socket.emit('typing', { roomId, userId: currentUser.id, isTyping: true })
                lastTypingTimeRef.current = now
@@ -117,7 +114,6 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
 
           const content = input.trim()
 
-          // Thêm tin nhắn tạm
           setMessages(prev => [...prev, {
                id: `temp-${Date.now()}`,
                userId: currentUser.id,
@@ -125,10 +121,7 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                createdAt: new Date().toISOString(),
           }])
 
-          // Gửi tin nhắn
           socket.emit('sendMessage', { userId: currentUser.id, roomId, content })
-
-          // Stop typing
           socket.emit('typing', { roomId, userId: currentUser.id, isTyping: false })
           lastTypingTimeRef.current = 0
 
@@ -138,7 +131,7 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
      if (!selectedConversation) {
           return (
                <div className="flex flex-col h-full">
-                    <div className="sticky top-0 z-10 border-b px-6 py-4 bg-card">
+                    <div className="flex-shrink-0 border-b px-4 py-3 bg-background">
                          <div className="flex items-center gap-3">
                               <Skeleton className="w-10 h-10 rounded-full" />
                               <div className="space-y-2">
@@ -153,94 +146,110 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
 
      return (
           <div className="flex flex-col h-full">
-               {/* Header - Cố định */}
-               <div className="sticky top-0 z-10 border-b px-6 py-4 bg-card">
-                    <div className="flex items-center justify-between">
+               {/* Header - Fixed */}
+               <div className="flex-shrink-0 border-b px-4 py-3 bg-background">
+                    <div className="flex items-center gap-3">
                          <Link
                               href={otherUser?.id ? ROUTES.PROFILE(otherUser.id) : '#'}
-                              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+                              className="flex items-center gap-3 hover:opacity-80 transition-opacity flex-1 min-w-0"
                          >
-                              <Avatar className="w-10 h-10">
+                              <Avatar className="w-10 h-10 flex-shrink-0">
                                    <AvatarImage src={otherUser?.avatar} />
-                                   <AvatarFallback>
+                                   <AvatarFallback className="text-sm">
                                         {otherUser?.name?.charAt(0)?.toUpperCase() || 'U'}
                                    </AvatarFallback>
                               </Avatar>
-                              <div>
-                                   <h2 className="font-semibold text-lg">
+                              <div className="min-w-0">
+                                   <h2 className="font-semibold text-sm truncate">
                                         {otherUser?.name || 'Unknown User'}
                                    </h2>
                                    <p className="text-xs text-muted-foreground">
-                                        {isTyping ? 'Typing...' : isConnected ? 'Online' : 'Offline'}
+                                        {isTyping ? (
+                                             <span className="flex items-center gap-1">
+                                                  <span className="flex gap-0.5">
+                                                       <span className="w-1 h-1 bg-primary rounded-full animate-bounce" />
+                                                       <span className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:150ms]" />
+                                                       <span className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:300ms]" />
+                                                  </span>
+                                                  Typing...
+                                             </span>
+                                        ) : isConnected ? 'Online' : 'Offline'}
                                    </p>
                               </div>
                          </Link>
-                         <Button variant="ghost" size="icon">
-                              <MoreVertical className="w-5 h-5" />
-                         </Button>
                     </div>
                </div>
 
-               {/* Tin nhắn */}
-               <ScrollArea className="flex-1 px-6 py-4">
-                    <div className="space-y-4">
-                         {messages.length === 0 ? (
-                              <div className="flex flex-col items-center justify-center h-full py-20 text-center">
-                                   <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-3">
-                                        <Send className="w-8 h-8 text-muted-foreground" />
-                                   </div>
-                                   <h3 className="font-semibold mb-1">No messages yet</h3>
-                                   <p className="text-sm text-muted-foreground">
-                                        Send the first message
-                                   </p>
+               {/* Messages - Scrollable */}
+               <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-4">
+                    {messages.length === 0 ? (
+                         <div className="flex flex-col items-center justify-center h-full text-center">
+                              <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-3">
+                                   <Send className="w-8 h-8 text-muted-foreground" />
                               </div>
-                         ) : (
-                              messages.map((msg) => {
+                              <h3 className="font-semibold text-sm mb-1">No messages yet</h3>
+                              <p className="text-xs text-muted-foreground">
+                                   Send a message to start the conversation
+                              </p>
+                         </div>
+                    ) : (
+                         <div className="space-y-3">
+                              {messages.map((msg, index) => {
                                    const isMyMessage = msg.userId === currentUser?.id
+                                   const prevMsg = messages[index - 1]
+                                   const showAvatar = !prevMsg || prevMsg.userId !== msg.userId
+                                   const nextMsg = messages[index + 1]
+                                   const showTime = !nextMsg || nextMsg.userId !== msg.userId
 
                                    return (
-                                        <div key={msg.id} className={`flex gap-3 ${isMyMessage ? 'flex-row-reverse' : ''}`}>
-                                             {!isMyMessage && (
-                                                  <Avatar className="w-8 h-8">
-                                                       <AvatarImage src={otherUser?.avatar} />
-                                                       <AvatarFallback>
-                                                            {otherUser?.name?.charAt(0)?.toUpperCase() || 'U'}
-                                                       </AvatarFallback>
-                                                  </Avatar>
-                                             )}
+                                        <div key={msg.id} className={`flex gap-2 ${isMyMessage ? 'flex-row-reverse' : ''}`}>
+                                             {!isMyMessage ? (
+                                                  showAvatar ? (
+                                                       <Avatar className="w-8 h-8 flex-shrink-0">
+                                                            <AvatarImage src={otherUser?.avatar} />
+                                                            <AvatarFallback className="text-xs">
+                                                                 {otherUser?.name?.charAt(0)?.toUpperCase() || 'U'}
+                                                            </AvatarFallback>
+                                                       </Avatar>
+                                                  ) : (
+                                                       <div className="w-8 flex-shrink-0" />
+                                                  )
+                                             ) : null}
 
-                                             <div className={`flex flex-col max-w-[70%] ${isMyMessage ? 'items-end' : 'items-start'}`}>
-                                                  <div className={`rounded-2xl px-4 py-2 ${isMyMessage
+                                             <div className={`flex flex-col max-w-[75%] ${isMyMessage ? 'items-end' : 'items-start'}`}>
+                                                  <div className={`rounded-2xl px-3 py-2 ${isMyMessage
                                                        ? 'bg-primary text-primary-foreground'
                                                        : 'bg-muted'
                                                        }`}>
-                                                       <p className="text-sm">{msg.content}</p>
+                                                       <p className="text-sm break-words">{msg.content}</p>
                                                   </div>
-                                                  <span className="text-[10px] text-muted-foreground mt-1">
-                                                       {new Date(msg.createdAt).toLocaleTimeString('vi-VN', {
-                                                            hour: '2-digit',
-                                                            minute: '2-digit',
-                                                       })}
-                                                  </span>
+                                                  {showTime && (
+                                                       <span className="text-[10px] text-muted-foreground mt-1 px-1">
+                                                            {new Date(msg.createdAt).toLocaleTimeString('vi-VN', {
+                                                                 hour: '2-digit',
+                                                                 minute: '2-digit',
+                                                            })}
+                                                       </span>
+                                                  )}
                                              </div>
 
-                                             {isMyMessage && <div className="w-8" />}
+                                             {isMyMessage && showAvatar && <div className="w-8 flex-shrink-0" />}
                                         </div>
                                    )
-                              })
-                         )}
-                         <div ref={scrollRef} />
-                    </div>
-               </ScrollArea>
+                              })}
+                              <div ref={messagesEndRef} />
+                         </div>
+                    )}
+               </div>
 
-               {/* Input - Cố định */}
-               <div className="sticky bottom-0 border-t px-6 py-4 bg-card">
+               {/* Input - Fixed */}
+               <div className="flex-shrink-0 border-t px-4 py-3 bg-background">
                     <div className="flex gap-2">
                          <Input
                               value={input}
                               onChange={(e) => handleInputChange(e.target.value)}
                               onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && (e.preventDefault(), sendMessage())}
-                              placeholder="Type a message..."
+                              placeholder={isConnected ? "Type a message..." : "Connecting..."}
                               className="flex-1"
                               disabled={!isConnected}
                          />
@@ -248,10 +257,16 @@ export default function MessageDetail({ params }: { params: Promise<{ id: string
                               onClick={sendMessage}
                               disabled={!input.trim() || !isConnected}
                               size="icon"
+                              className="flex-shrink-0"
                          >
                               <Send className="w-4 h-4" />
                          </Button>
                     </div>
+                    {!isConnected && (
+                         <p className="text-xs text-destructive text-center mt-2">
+                              Disconnected • Reconnecting...
+                         </p>
+                    )}
                </div>
           </div>
      )

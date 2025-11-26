@@ -3,13 +3,13 @@ import ChatSidebar from "./components/chat-sidebar"
 
 export default function MessageLayout({ children }: { children: React.ReactNode }) {
      return (
-          <div className="flex h-screen w-full">
-               <div className="hidden md:block">
+          <div className="flex h-[calc(100vh-4rem)] w-full overflow-hidden">
+               <div className="hidden md:flex md:w-80 lg:w-96 border-r flex-shrink-0">
                     <ChatSidebar />
                </div>
-               <main className="flex-1 overflow-auto w-full">
+               <div className="flex-1 flex flex-col min-w-0">
                     {children}
-               </main>
+               </div>
           </div>
      )
 }
