@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dialog'
 import { orderApi } from '@/lib/apis/orderApi'
 import { useWallet } from '@/lib/hooks/useWalletHooks'
+import { CartItemData } from '@/types/cart'
 import { AlertCircle, CreditCard, Download, Shield, Wallet } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -20,12 +21,12 @@ import { toast } from 'sonner'
 interface OrderSummaryProps {
     subtotal: number
     itemCount: number
-    selectedCartItemIds: string[]
+    selectedCartItems: CartItemData[]
     onCheckoutSuccess?: () => void
     disabled?: boolean
 }
 
-export function OrderSummary({ subtotal, itemCount, selectedCartItemIds, onCheckoutSuccess, disabled = false }: OrderSummaryProps) {
+export function OrderSummary({ subtotal, itemCount, selectedCartItems, onCheckoutSuccess, disabled = false }: OrderSummaryProps) {
     const router = useRouter()
     const [isCheckingOut, setIsCheckingOut] = useState(false)
     const [showCheckoutDialog, setShowCheckoutDialog] = useState(false)
@@ -48,7 +49,10 @@ export function OrderSummary({ subtotal, itemCount, selectedCartItemIds, onCheck
         setShowCheckoutDialog(false)
 
         try {
-            const response = await orderApi.checkout(selectedCartItemIds)
+            const productIds = selectedCartItems
+                .map(item => item.product?.id)
+                .filter((id): id is string => id !== undefined)
+            const response = await orderApi.checkout(productIds)
 
             if (response.data) {
                 toast.success('Order placed successfully!')
@@ -186,7 +190,7 @@ export function OrderSummary({ subtotal, itemCount, selectedCartItemIds, onCheck
             </Dialog>
 
             <Card>
-                <CardContent className="pt-6 space-y-4">
+                <CardContent className="pt-0 space-y-4">
                     <div className="flex items-start gap-3">
                         <Download className="h-5 w-5 text-muted-foreground mt-0.5" />
                         <div>

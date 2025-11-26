@@ -13,8 +13,9 @@ export type CartItemProps = {
     onRemove: (id: string) => void
     disabled?: boolean
     status?: 'active' | 'inactive' | 'blocked'
-    onSelect?: (id: string, selected: boolean) => void
+    onSelect?: (item: CartItemData, selected: boolean) => void
     isSelected?: boolean
+    item: CartItemData
 }
 
 export type CartItemData = {

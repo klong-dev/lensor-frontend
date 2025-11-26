@@ -28,7 +28,9 @@ export function CartItem({
     status = 'active',
     onSelect,
     isSelected = false,
+    item,
 }: CartItemProps) {
+    console.log('Cart Item: ', price)
     const isUnavailable = status !== 'active'
 
     const handleCheckboxChange = (checked: boolean) => {
@@ -36,7 +38,7 @@ export function CartItem({
             toast.error('Cannot select unavailable product')
             return
         }
-        onSelect?.(id, checked)
+        onSelect?.(item, checked)
     }
 
     const handleContainerClick = () => {

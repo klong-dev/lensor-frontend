@@ -16,17 +16,27 @@ import { OrderSummary } from './components/order-summary'
 export default function Cart() {
   const { data: cartData, isLoading, error, mutate } = useCart()
   const [isUpdating, setIsUpdating] = useState(false)
-  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set())
+  const [selectedItems, setSelectedItems] = useState<Set<CartItemData>>(new Set())
 
   const cartItems = cartData?.items || []
-  const selectedCartItems = cartItems.filter((item: CartItemData) => selectedItems.has(item.id))
+  const selectedCartItems = cartItems.filter((item: CartItemData) =>
+    Array.from(selectedItems).some(selectedItem => selectedItem.id === item.id)
+  )
   const activeItems = cartItems.filter((item: CartItemData) => item.product?.status === 'active')
   const hasUnavailableItems = activeItems.length < cartItems.length
 
   const subtotal = selectedCartItems.reduce(
-    (sum: number, item: CartItemData) => sum + parseFloat(item.price) * item.quantity,
+    (sum: number, item: CartItemData) => {
+      const priceString = item?.product?.price ?? "0";
+      const price = parseFloat(priceString) || 0;
+
+      return sum + price * item.quantity;
+    },
     0
-  )
+  );
+
+  console.log('Selected Items: ', selectedItems)
+
   const totalQuantity = selectedCartItems.reduce(
     (sum: number, item: CartItemData) => sum + item.quantity,
     0
@@ -36,8 +46,9 @@ export default function Cart() {
     setIsUpdating(true)
     try {
       await cartApi.removeCartItem(cartItemId)
-      const newSelected = new Set(selectedItems)
-      newSelected.delete(cartItemId)
+      const newSelected = new Set(
+        Array.from(selectedItems).filter(item => item.id !== cartItemId)
+      )
       setSelectedItems(newSelected)
       mutate()
       toast.success('Item removed from cart')
@@ -49,12 +60,17 @@ export default function Cart() {
     }
   }
 
-  const handleSelectItem = (itemId: string, selected: boolean) => {
+  const handleSelectItem = (item: CartItemData, selected: boolean) => {
     const newSelected = new Set(selectedItems)
     if (selected) {
-      newSelected.add(itemId)
+      newSelected.add(item)
     } else {
-      newSelected.delete(itemId)
+      // Remove by finding the matching item
+      Array.from(newSelected).forEach(selectedItem => {
+        if (selectedItem.id === item.id) {
+          newSelected.delete(selectedItem)
+        }
+      })
     }
     setSelectedItems(newSelected)
   }
@@ -189,8 +205,9 @@ export default function Cart() {
                           status={item.product?.status || 'active'}
                           onRemove={handleRemoveItem}
                           onSelect={handleSelectItem}
-                          isSelected={selectedItems.has(item.id)}
+                          isSelected={Array.from(selectedItems).some(selectedItem => selectedItem.id === item.id)}
                           disabled={isUpdating}
+                          item={item}
                         />
                       )
                     })}
@@ -205,9 +222,12 @@ export default function Cart() {
               <OrderSummary
                 subtotal={subtotal}
                 itemCount={totalQuantity}
-                selectedCartItemIds={Array.from(selectedItems)}
+                selectedCartItems={Array.from(selectedItems)}
                 onCheckoutSuccess={mutate}
-                disabled={selectedItems.size === 0 || selectedCartItems.some((item: CartItemData) => item.product?.status !== 'active')}
+                disabled={
+                  selectedItems.size === 0 ||
+                  selectedCartItems.some((item: CartItemData) => item.product?.status !== 'active')
+                }
               />
             </div>
           </div>

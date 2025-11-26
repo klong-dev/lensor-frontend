@@ -3,8 +3,8 @@ import { apiClient } from "./client"
 import { endpoints } from "./endpoints"
 
 export const orderApi = {
-    checkout: async (cartItemIds: string[]) => {
-        const res = await apiClient.post(endpoints.orders.checkout, { cartItemIds })
+    checkout: async (productIds: string[]) => {
+        const res = await apiClient.post(endpoints.orders.checkout, { productIds })
         return res.data
     },
 

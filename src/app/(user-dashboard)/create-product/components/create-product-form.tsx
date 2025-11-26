@@ -211,7 +211,7 @@ export default function CreateForm() {
             const warranty = {
                 duration: 'Lifetime',
                 coverage: 'Free updates',
-                terms: ['3-day money back guarantee', 'Support included', 'Compatible with future Lightroom versions']
+                terms: ['3-day money back guarantee', 'Compatible with future Lightroom versions']
             }
             formData.append('warranty', JSON.stringify(warranty))
 
