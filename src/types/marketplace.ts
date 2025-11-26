@@ -95,6 +95,8 @@ export type MarketplaceDetail = {
     coverage?: string
     terms?: string[]
   }
+  isUserBought: boolean
+  isUserReviewed: boolean
   reviews?: Review[]
 }
 

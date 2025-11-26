@@ -20,7 +20,9 @@ export default function ProductDetailsTabs({
     reviews,
     specifications,
     tags,
-    onReviewSuccess
+    onReviewSuccess,
+    isUserBought,
+    isUserReviewed
 }: MarketplaceDetail & { onReviewSuccess?: () => void }) {
     return (
         <div className='mt-8 sm:mt-12'>
@@ -68,57 +70,61 @@ export default function ProductDetailsTabs({
                                     <li><strong>Includes:</strong> {includesCount || 0} presets</li>
                                 </ul>
                             </div>
-                            <div>
-                                <h3 className='text-sm sm:text-base font-semibold mb-2 sm:mb-3'>Compatibility</h3>
-                                <ul className='space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground'>
-                                    {compatibility?.map((item, index) => (
-                                        <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
-                                            <Check className='w-3 h-3 sm:w-4 sm:h-4 text-green-500 shrink-0' />
-                                            {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            {compatibility !== undefined && compatibility?.length >= 1 &&
+                                <div>
+                                    <h3 className='text-sm sm:text-base font-semibold mb-2 sm:mb-3'>Compatibility</h3>
+                                    <ul className='space-y-1.5 sm:space-y-2 text-xs sm:text-sm text-muted-foreground'>
+                                        {compatibility?.map((item, index) => (
+                                            <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
+                                                <Check className='w-3 h-3 sm:w-4 sm:h-4 text-green-500 shrink-0' />
+                                                {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            }
                         </div>
 
-                        {specifications && (
-                            <div className='mt-4 sm:mt-6 pt-4 sm:pt-6 border-t'>
-                                <h3 className='text-sm sm:text-base font-semibold mb-3 sm:mb-4'>Technical Specifications</h3>
-                                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6'>
-                                    {specifications?.adjustments && specifications?.adjustments?.length > 0 && (
-                                        <div>
-                                            <h4 className='text-xs sm:text-sm font-medium mb-1.5 sm:mb-2'>Adjustments Included:</h4>
-                                            <ul className='space-y-1 text-xs sm:text-sm text-muted-foreground'>
-                                                {specifications?.adjustments?.map((adjustment, index) => (
-                                                    <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
-                                                        <Check className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 shrink-0' />
-                                                        {adjustment}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    )}
-                                    {specifications.bestFor && specifications.bestFor.length > 0 && (
-                                        <div>
-                                            <h4 className='text-xs sm:text-sm font-medium mb-1.5 sm:mb-2'>Best For:</h4>
-                                            <ul className='space-y-1 text-xs sm:text-sm text-muted-foreground'>
-                                                {specifications?.bestFor?.map((type, index) => (
-                                                    <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
-                                                        <Check className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 shrink-0' />
-                                                        {type}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                            {specifications?.difficulty && (
-                                                <div className='mt-2 sm:mt-3'>
-                                                    <span className='text-xs sm:text-sm'><strong>Difficulty:</strong> {specifications?.difficulty}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                        {((specifications?.adjustments?.length ?? 0) > 0 ||
+                            (specifications?.bestFor?.length ?? 0) > 0 ||
+                            !!specifications?.difficulty) && (
+                                <div className='mt-4 sm:mt-6 pt-4 sm:pt-6 border-t'>
+                                    <h3 className='text-sm sm:text-base font-semibold mb-3 sm:mb-4'>Technical Specifications</h3>
+                                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6'>
+                                        {specifications?.adjustments && specifications?.adjustments?.length > 0 && (
+                                            <div>
+                                                <h4 className='text-xs sm:text-sm font-medium mb-1.5 sm:mb-2'>Adjustments Included:</h4>
+                                                <ul className='space-y-1 text-xs sm:text-sm text-muted-foreground'>
+                                                    {specifications?.adjustments?.map((adjustment, index) => (
+                                                        <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
+                                                            <Check className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 shrink-0' />
+                                                            {adjustment}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                        {specifications?.bestFor && specifications?.bestFor?.length > 0 && (
+                                            <div>
+                                                <h4 className='text-xs sm:text-sm font-medium mb-1.5 sm:mb-2'>Best For:</h4>
+                                                <ul className='space-y-1 text-xs sm:text-sm text-muted-foreground'>
+                                                    {specifications?.bestFor?.map((type, index) => (
+                                                        <li key={index} className='flex items-center gap-1.5 sm:gap-2'>
+                                                            <Check className='w-2.5 h-2.5 sm:w-3 sm:h-3 text-green-500 shrink-0' />
+                                                            {type}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                                {specifications?.difficulty && (
+                                                    <div className='mt-2 sm:mt-3'>
+                                                        <span className='text-xs sm:text-sm'><strong>Difficulty:</strong> {specifications?.difficulty}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        )}
+                            )}
                     </div>
                 </TabsContent>
 
@@ -200,7 +206,9 @@ export default function ProductDetailsTabs({
                             </div>
                         </div>
 
-                        <ReviewForm productId={id} onSuccess={onReviewSuccess} />
+                        {isUserBought && !isUserReviewed &&
+                            <ReviewForm productId={id} onSuccess={onReviewSuccess} />
+                        }
 
                         <div className='border rounded-lg p-4 sm:p-6'>
                             <h3 className='text-lg sm:text-xl font-semibold mb-4 sm:mb-6'>All Reviews ({reviewCount || 0})</h3>

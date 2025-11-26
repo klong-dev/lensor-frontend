@@ -24,6 +24,8 @@ import React, { useState } from 'react'
 import { toast } from 'sonner'
 import PresetUploadModal from './preset-upload-modal'
 import { COMPATIBILITY_OPTIONS, FEATURES_OPTIONS, SPECIFICATIONS_OPTIONS } from '@/constants/productOptions'
+import { isAxiosError } from 'axios'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export default function CreateForm() {
     const router = useRouter()
@@ -47,6 +49,8 @@ export default function CreateForm() {
     const [presetItems, setPresetItems] = useState<PresetItem[]>([])
     const [priceError, setPriceError] = useState('')
     const [originalPriceError, setOriginalPriceError] = useState('')
+    const [showPresetErrorDialog, setShowPresetErrorDialog] = useState(false)
+
 
     const handleCompatibilityChange = (option: string, checked: boolean) => {
         setCompatibility(prev =>
@@ -248,7 +252,11 @@ export default function CreateForm() {
             router.push('/product-management')
         } catch (error) {
             console.error('Error creating product:', error)
-            toast.error('Failed to create product. Please try again.')
+            if (isAxiosError(error) && error.response?.status === 403) {
+                setShowPresetErrorDialog(true)
+            } else {
+                toast.error('Failed to create product. Please try again.')
+            }
         } finally {
             setIsSubmitting(false)
         }
@@ -596,6 +604,21 @@ export default function CreateForm() {
                 onSave={handleSavePresetItems}
                 existingItems={presetItems}
             />
+
+            <Dialog open={showPresetErrorDialog} onOpenChange={setShowPresetErrorDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Permission Denied</DialogTitle>
+                        <DialogDescription>
+                            This preset file belongs to another user. You cannot use it.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button onClick={() => setShowPresetErrorDialog(false)}>OK</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
         </form>
     )
 }
