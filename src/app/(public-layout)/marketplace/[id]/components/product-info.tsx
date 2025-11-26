@@ -85,21 +85,25 @@ export default function ProductInfo({
                     </div>
                 )}
             </Link>
-
-            <div className='flex items-center gap-2'>
-                <div className='flex text-yellow-500'>
-                    {[...Array(5)].map((_, i) => (
-                        <Star
-                            key={i}
-                            className='w-4 h-4 sm:w-5 sm:h-5'
-                            fill={i < Math.floor(rating || 0) ? 'currentColor' : 'none'}
-                            stroke="currentColor"
-                        />
-                    ))}
+            {rating !== undefined && rating >= 1
+                ?
+                <div className='flex items-center gap-2'>
+                    <div className='flex text-yellow-500'>
+                        {[...Array(5)].map((_, i) => (
+                            <Star
+                                key={i}
+                                className='w-4 h-4 sm:w-5 sm:h-5'
+                                fill={i < Math.floor(rating || 0) ? 'currentColor' : 'none'}
+                                stroke="currentColor"
+                            />
+                        ))}
+                    </div>
+                    <span className='text-sm sm:text-base font-medium'>{rating}</span>
+                    <span className='text-sm sm:text-base text-muted-foreground'>({reviewCount} reviews)</span>
                 </div>
-                <span className='text-sm sm:text-base font-medium'>{rating}</span>
-                <span className='text-sm sm:text-base text-muted-foreground'>({reviewCount} reviews)</span>
-            </div>
+                :
+                <span className='text-sm sm:text-base text-muted-foreground italic'>( No reviews for this product yet )</span>
+            }
 
             <div className='flex items-center gap-2 sm:gap-3'>
                 <span className='text-2xl sm:text-3xl font-bold'>{price?.toLocaleString('vi-VN') || 0} ₫</span>
@@ -108,7 +112,9 @@ export default function ProductInfo({
                 )}
             </div>
 
-            <div className='border-t pt-4 sm:pt-6'>
+            <div className='border-t pt-4 sm:pt-6'></div>
+            
+            {features && features.length > 0 &&
                 <div className='mb-4'>
                     <label className='text-xs sm:text-sm font-medium mb-2 block'>Features:</label>
                     <div className='flex flex-wrap gap-2'>
@@ -122,7 +128,8 @@ export default function ProductInfo({
                         ))}
                     </div>
                 </div>
-            </div>
+            }
+
             {isInCart && (
                 <div className='flex items-center gap-2 p-2.5 sm:p-3 bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg'>
                     <CheckCircle2 className='w-4 h-4 sm:w-5 sm:h-5 text-green-600 dark:text-green-500 shrink-0' />

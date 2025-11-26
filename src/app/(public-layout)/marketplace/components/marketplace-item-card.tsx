@@ -127,7 +127,7 @@ export default function MarketplaceItemCard(item: MarketplaceItem) {
                         <p className="text-[8px] sm:text-[10px] md:text-xs text-white/80">Price</p>
                         <p className="text-xs sm:text-sm md:text-base lg:text-lg text-white font-bold truncate">{item?.price ? item.price.toLocaleString('vi-VN') : '0'} ₫</p>
                     </div>
-                    {item?.rating !== null && item?.rating !== undefined && (
+                    {item?.rating !== null && item?.rating !== undefined && item?.rating >= 1 && (
                         <div className="flex items-center gap-0.5 sm:gap-1 shrink-0">
                             <Star fill="currentColor" stroke="currentColor" className="text-yellow-500 w-3 h-3 sm:w-3.5 sm:h-3.5 md:w-4 md:h-4 lg:w-5 lg:h-5" />
                             <span className="text-xs sm:text-sm md:text-base lg:text-lg text-white font-semibold">{item?.rating.toFixed(1)}</span>
