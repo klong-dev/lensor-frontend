@@ -34,7 +34,7 @@ export default function PostDetail() {
         <PostSkeleton />
       ) : (
         <Card className="overflow-hidden">
-          <Post dataPost={postData?.data} isDetailView />
+          <Post dataPost={postData?.data} />
 
           <div className="px-2 sm:px-3 md:px-5 pb-3 sm:pb-4 md:pb-5">
             <h2 className="text-base sm:text-lg md:text-xl font-semibold mt-3 sm:mt-4 md:mt-6 mb-2 sm:mb-3 md:mb-4 pb-2 border-b">
