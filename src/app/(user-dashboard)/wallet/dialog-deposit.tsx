@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { paymentApi } from "@/lib/apis/paymentApi"
-import { CreditCard, Wallet } from "lucide-react"
+import { Wallet } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
 
@@ -18,7 +18,6 @@ export default function DialogDeposit({ children }: { children: React.ReactNode 
      const [amount, setAmount] = useState('')
      const [displayAmount, setDisplayAmount] = useState('')
      const [isLoading, setIsLoading] = useState(false)
-     const [selectedMethod, setSelectedMethod] = useState<'paypal' | 'vnpay' | null>(null)
 
      const formatCurrency = (value: string): string => {
           // Remove all non-digit characters
@@ -36,32 +35,26 @@ export default function DialogDeposit({ children }: { children: React.ReactNode 
           setDisplayAmount(formatCurrency(rawValue))
      }
 
-     const handleDeposit = async (method: 'paypal' | 'vnpay') => {
+     const handleDeposit = async () => {
           if (!amount || Number(amount) <= 0) {
                toast.error('Please enter a valid amount')
                return
           }
 
+          const amountNumber = Number(amount)
+          if (amountNumber < 5000) {
+               toast.error('Minimum deposit amount is 5,000 VNĐ')
+               return
+          }
+
           setIsLoading(true)
           try {
-               const amountNumber = Number(amount)
-               const orderInfo = `Deposit_${amountNumber.toLocaleString('vi-VN')}_VND_to_Lensor_wallet`
-               let result
+               const result = await paymentApi.createPayos(amountNumber)
 
-               if (method === 'paypal') {
-                    result = await paymentApi.createPaypal(amountNumber, orderInfo)
-                    if (result?.data?.url) {
-                         window.location.href = result.data.url
-                    }
+               if (result?.data?.paymentUrl) {
+                    window.location.href = result.data.paymentUrl
                } else {
-                    result = await paymentApi.createVnpay(amountNumber, orderInfo)
-                    if (result?.data?.paymentUrl) {
-                         window.location.href = result.data.paymentUrl
-                    }
-               }
-
-               if (!result?.data?.url && !result?.data?.paymentUrl) {
-                    toast.success('Deposit successful')
+                    toast.error('Failed to get payment URL')
                }
           } catch (error) {
                console.error('Error creating payment:', error)
@@ -100,33 +93,21 @@ export default function DialogDeposit({ children }: { children: React.ReactNode 
 
                          <div className="space-y-2">
                               <Label>Payment Method</Label>
-                              <div className="grid grid-cols-2 gap-3">
-                                   <Button
-                                        variant={selectedMethod === 'paypal' ? 'default' : 'outline'}
-                                        className="h-20 flex flex-col gap-2"
-                                        onClick={() => setSelectedMethod('paypal')}
-                                        type="button"
-                                   >
-                                        <CreditCard className="h-6 w-6" />
-                                        <span>PayPal</span>
-                                   </Button>
-
-                                   <Button
-                                        variant={selectedMethod === 'vnpay' ? 'default' : 'outline'}
-                                        className="h-20 flex flex-col gap-2"
-                                        onClick={() => setSelectedMethod('vnpay')}
-                                        type="button"
-                                   >
-                                        <Wallet className="h-6 w-6" />
-                                        <span>VNPay</span>
-                                   </Button>
+                              <div className="border rounded-lg p-4 bg-muted/50">
+                                   <div className="flex items-center gap-3">
+                                        <Wallet className="h-8 w-8 text-primary" />
+                                        <div>
+                                             <p className="font-medium">PayOS</p>
+                                             <p className="text-xs text-muted-foreground">Secure payment via PayOS</p>
+                                        </div>
+                                   </div>
                               </div>
                          </div>
 
                          <Button
                               className="w-full"
-                              onClick={() => selectedMethod && handleDeposit(selectedMethod)}
-                              disabled={isLoading || !selectedMethod || !amount}
+                              onClick={handleDeposit}
+                              disabled={isLoading || !amount}
                          >
                               {isLoading ? 'Processing...' : 'Continue to Payment'}
                          </Button>

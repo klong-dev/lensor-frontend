@@ -5,11 +5,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ROUTES } from "@/constants/path"
 import { CheckCircle, Wallet } from "lucide-react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { useEffect } from "react"
+import { useWalletStore } from "@/stores/wallet-store"
 
 export default function PaymentSuccess() {
      const router = useRouter()
      const searchParams = useSearchParams()
-     const orderId = searchParams.get('orderId')
+     const orderCode = searchParams.get('orderCode')
+     const status = searchParams.get('status')
+     const { fetchWallet } = useWalletStore()
+
+     useEffect(() => {
+          // Refetch wallet data to update balance
+          fetchWallet()
+     }, [fetchWallet])
 
      const handleBackToWallet = () => {
           router.push(ROUTES.WALLET)
@@ -30,10 +39,18 @@ export default function PaymentSuccess() {
 
                     <CardContent className="space-y-4">
                          <div className="bg-muted p-4 rounded-lg space-y-2">
-                              <div className="flex justify-between text-sm">
-                                   <span className="text-muted-foreground">Order ID:</span>
-                                   <span className="font-medium text-xs">{orderId}</span>
-                              </div>
+                              {orderCode && (
+                                   <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Order Code:</span>
+                                        <span className="font-medium text-xs">{orderCode}</span>
+                                   </div>
+                              )}
+                              {status && (
+                                   <div className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">Status:</span>
+                                        <span className="font-medium uppercase text-green-600">{status}</span>
+                                   </div>
+                              )}
                          </div>
 
                          <div className="bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-900 p-4 rounded-lg">
