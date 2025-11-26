@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { useUserStore } from '@/stores/user-store'
 import { useRouter } from 'next/navigation'
 import { LoginRequiredDialog } from '@/components/ui/login-required-dialog'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 export default function ProductInfo({
     id,
@@ -23,11 +24,14 @@ export default function ProductInfo({
     price,
     originalPrice,
     features,
-    author }:
-    MarketplaceDetail) {
+    author,
+    isUserBought
+}: MarketplaceDetail) {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [showLoginDialog, setShowLoginDialog] = useState(false)
     const { data: cartData, mutate: mutateCart } = useCart()
+    const [showBoughtDialog, setShowBoughtDialog] = useState(false)
+
 
     const isInCart = useMemo(() => {
         if (!cartData?.items || !id) return false
@@ -38,6 +42,11 @@ export default function ProductInfo({
     const router = useRouter()
 
     const handleAddToCart = async () => {
+        if (isUserBought) {
+            setShowBoughtDialog(true)
+            return
+        }
+
         if (!user) {
             // Nếu chưa login, hiển thị dialog yêu cầu login
             sessionStorage.setItem('tempCart', id)
@@ -113,7 +122,7 @@ export default function ProductInfo({
             </div>
 
             <div className='border-t pt-4 sm:pt-6'></div>
-            
+
             {features && features.length > 0 &&
                 <div className='mb-4'>
                     <label className='text-xs sm:text-sm font-medium mb-2 block'>Features:</label>
@@ -171,6 +180,36 @@ export default function ProductInfo({
                 title="Login Required"
                 description="Product has been added to cart, please login to continue."
             />
+
+            <Dialog open={showBoughtDialog} onOpenChange={setShowBoughtDialog}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>You already purchased this</DialogTitle>
+                        <DialogDescription>
+                            You've purchased this preset before. Want to download it now?
+                        </DialogDescription>
+                    </DialogHeader>
+
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => setShowBoughtDialog(false)}
+                        >
+                            Cancel
+                        </Button>
+
+                        <Button
+                            onClick={() => {
+                                setShowBoughtDialog(false)
+                                router.push(ROUTES.PURCHASED_PRESETS)
+                            }}
+                        >
+                            Go to Purchased Presets
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
         </div>
     )
 }
